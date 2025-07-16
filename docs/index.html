@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <!-- Meta -->
+    <title>input-terminal</title>
+    <meta name="description" content=""/>
+    <link rel="icon" href="icon.svg">
+
+    <!-- Schema.org (For Google+) -->
+    <meta itemprop="name" content="input-terminal">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="icon.svg">
+
+    <!-- Twitter Card markup-->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="nickesc">
+    <meta name="twitter:url" content="">
+    <meta name="twitter:title" content="input-terminal">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:site" content="N. Escobar Media">
+    <meta name="twitter:image" content="capsule.png">
+    <meta name="twitter:image:alt" content="">
+
+    <!-- Open Graph markup (Facebook) -->
+    <meta property="og:url" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="input-terminal"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:image" content="capsule.png"/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="og:site_name" content="nickesc.github.io"/>
+
+    <style>
+        :root {
+            color-scheme: light dark;
+            --black:#111111AA;
+            --dark:#333;
+            --light:#EEE;
+            --white:#ffffffAA;
+
+        }
+        html {
+            box-sizing: border-box;
+            max-width: 70ch;
+            margin: auto;
+            font-size: 1.25em;
+            line-height: 1.4;
+            color: light-dark(var(--dark),var(--light));
+            background-color: light-dark(var(--white),var(--black));
+        }
+
+        * {
+            box-sizing: inherit;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: sans-serif;
+        }
+        p {
+            font-family: serif;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            min-width: 100px;
+        }
+
+        input[type=text]{
+            width: 150px;
+        }
+
+        header > h1, footer, .badge {
+            display: flex;
+            align-items: center;
+            column-gap: .5em;
+            flex-wrap: wrap;
+        }
+
+    </style>
+  </head>
+  <body>
+    <header>
+        <h1>
+            <code class="code-inline">input-terminal</code>
+        </h1>
+    </header>
+    <div>
+        <h6>by <a href="https://nickesc.github.io">N. Escobar</a> / <a href="https://github.com/nickesc">nickesc</a> </h6>
+        <div>
+            <a href="https://github.com/nickesc/input-terminal"><img alt="Source: Github" src="https://img.shields.io/badge/source-nickesc%2Finput-terminal-brightgreen?style=for-the-badge&logo=github&labelColor=%23333"></a>
+            <a href="https://github.com/nickesc/input-terminal/actions/workflows/ts-tests.yml"><img alt="Tests: github.com/nickesc/input-terminal/actions/workflows/ts-tests.yml" src="https://img.shields.io/github/actions/workflow/status/nickesc/input-terminal/ts-tests.yml?logo=github&label=tests&logoColor=white&style=for-the-badge&labelColor=%23333"></a>
+            <a href="https://www.npmjs.com/package/input-terminal"><img alt="NPM: npmjs.com/package/input-terminal" src="https://img.shields.io/npm/v/input-terminal?style=for-the-badge&logo=npm&logoColor=white&label=npm&color=%23C12127&labelColor=%23333"></a>
+        </div>
+    </div>
+
+    <footer>
+        <h6>© 2025, nickesc & N. Escobar Media </h6><a class="badge" href="https://github.com/nickesc/input-terminal/blob/main/LICENSE"><img class="badge-img" alt="GitHub License" src="https://img.shields.io/github/license/nickesc/input-terminal?style=for-the-badge&labelColor=%23333&color=%230070ff"></a>
+    </footer>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>
