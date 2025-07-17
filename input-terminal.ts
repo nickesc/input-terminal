@@ -71,6 +71,14 @@ export class Terminal {
         return this._commandHistory;
     }
 
+    public pop_history(): Command | undefined {
+        return this._commandHistory.pop();
+    }
+
+    public push_history(command: Command): number {
+        return this._commandHistory.push(command);
+    }
+
     private _main(): void{
         return;
     }
