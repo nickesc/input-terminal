@@ -14,6 +14,8 @@ export class Command {
     }
 }
 
+
+
 /**
  * @class
  */
@@ -35,6 +37,25 @@ export class Terminal {
         this._commandHistory = commandHistory;
         this._main();
 
+    }
+    public get_prompt(): string {
+        return this._prompt;
+    }
+
+    public set_prompt(prompt: string): void {
+        this._prompt = prompt;
+    }
+
+    public get_preprompt(): string {
+        return this._preprompt;
+    }
+
+    public set_preprompt(preprompt: string): void {
+        this._preprompt = preprompt;
+    }
+
+    public get_history(): Command[] {
+        return this._commandHistory;
     }
 
     private _main(): void{
