@@ -4,6 +4,10 @@ import { JSDOM } from 'jsdom';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+export function isTerminal(target: any): boolean {
+  return target instanceof Terminal;
+}
+
 describe('input-terminal', () => {
     it('should construct', () => {
         const app = new input-terminal();
