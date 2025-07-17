@@ -48,9 +48,21 @@ export class Terminal {
         this.input = input;
         this._commandHistory = commandHistory;
         this._commandList = commandList;
-        this._main();
-
     }
+
+    public attach_input_listeners(previousKey: string = "ArrowUp", nextKey: string = "ArrowDown"): void {
+        this.input.addEventListener("keydown", (e: KeyboardEvent) => {
+            switch (e.key) {
+                case previousKey:
+                    this.previous_history()
+                    break;
+                case nextKey:
+                    this.next_history
+                    break;
+            }
+        });
+    }
+
 
     public execute_command(command: Command, callback?: TermCallback): number {
         let output: object = {}
