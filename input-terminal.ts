@@ -19,10 +19,21 @@ export class Command {
  */
 export class Terminal {
 
+    public input: HTMLInputElement;
+    private _preprompt: string;
+    private _prompt: string;
+    private _commandHistory: Command[];
+
+
     /**
      * @constructor
      */
-    constructor() {
+    constructor(input: HTMLInputElement, commandHistory: Command[] = [], preprompt: string = "", prompt: string = "> ",) {
+        this.input = input;
+        this._preprompt = preprompt;
+        this._prompt = prompt;
+        this._commandHistory = commandHistory;
+        this._main();
 
     }
 
