@@ -165,7 +165,7 @@ describe('input-terminal', () => {
     });
 
     // PREVIOUS HISTORY TESTS
-    it('should return to the last executed command on previous history call',  async () => {
+    it('should return the last executed command on previous history call',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
         const test_commands: Command[] = [{user_input: ["test1"]}, {user_input: ["test2"]}, {user_input: ["test3"]}];
@@ -178,7 +178,7 @@ describe('input-terminal', () => {
         expect(term.previous_history()).toBe(test_commands[2]);
         expect(term.previous_history()).toBe(test_commands[1]);
         expect(term.previous_history()).toBe(test_commands[0]);
-        expect(term.previous_history()).toBe(undefined);
+        expect(term.previous_history()).toBe(test_commands[0]);
     });
     it('should return undefined on previous history call with no command history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);

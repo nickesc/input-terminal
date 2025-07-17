@@ -97,7 +97,7 @@ export class Terminal {
         if (this._commandHistory.length > 0){
             if (this._historyIndex == undefined) {
                 this._historyIndex = 0
-            } else if (this._historyIndex < this._commandHistory.length){
+            } else if (this._historyIndex < this._commandHistory.length-1){
                 this._historyIndex++;
             }
             return this._commandHistory[this._historyIndex];
