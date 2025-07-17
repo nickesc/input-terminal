@@ -38,6 +38,15 @@ export class Terminal {
         this._main();
 
     }
+
+    public execute_command(command: Command, callback?: TermCallback): number {
+        let output: object = {}
+        const callbackResponse = callback?.(output)
+        const exitCode: number = 0;
+        return exitCode;
+    }
+
+
     public get_prompt(): string {
         return this._prompt;
     }
