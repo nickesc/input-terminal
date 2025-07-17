@@ -99,6 +99,14 @@ describe('input-terminal', () => {
         const term: Terminal = new Terminal(test_input, test_history, "", "");
         expect(term.get_history()).toBe(test_history);
     });
+    it('should push command to history',  async () => {
+        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+        const test_command: Command = {user_input: ["test"]};
+
+        const term: Terminal = new Terminal(test_input);
+        expect(term.push_history(test_command)).toBe(1);
+    });
 
 
     // PREDICTION TESTS
