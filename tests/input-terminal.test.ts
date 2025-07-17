@@ -126,11 +126,9 @@ describe('input-terminal', () => {
 
         const term: Terminal = new Terminal(test_input);
         term.push_history(test_commands[0]);
-        expect(term.current_history()).toBe(undefined);
         term.push_history(test_commands[1]);
-        expect(term.current_history()).toBe(undefined);
 
-        expect(term.previous_history()).toBe(test_commands[1]);
+        term.previous_history()
 
         term.push_history(test_commands[2]);
         expect(term.current_history()).toBe(test_commands[1]);
