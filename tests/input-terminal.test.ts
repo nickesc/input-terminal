@@ -82,6 +82,23 @@ describe('input-terminal', () => {
     });
 
 
+    // COMMAND HISTORY TESTS
+    it('should have empty command history by default', async () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+        const test_history: Command[] = [];
+
+        const term = new Terminal(test_input);
+        expect(term.get_history()).toEqual([]);
+    });
+    it('should construct with custom command history',  async () => {
+        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+        const test_history: Command[] = [{user_input: ["test"]}];
+
+        const term: Terminal = new Terminal(test_input, test_history, "", "");
+        expect(term.get_history()).toBe(test_history);
+    });
 
 
     // PREDICTION TESTS
