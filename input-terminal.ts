@@ -7,10 +7,22 @@
 interface TermCallback { (object: object): any }
 
 export class Command {
-    public user_input: string[];
+    public command: string;
 
-    constructor(user_input: string[]) {
-        this.user_input = user_input;
+    constructor(command: string) {
+        this.command = command;
+    }
+}
+
+export class HistoryCommand{
+    command: Command | undefined;
+    timestamp: Date;
+    exit_code: number;
+
+    constructor(user_input: string[], command: Command | undefined, exit_code: number) {
+        this.command = command;
+        this.timestamp = new Date();
+        this.exit_code = exit_code;
     }
 }
 
@@ -24,7 +36,7 @@ export class Terminal {
     public input: HTMLInputElement;
     private _preprompt: string = "";
     private _prompt: string = "> ";
-    private _commandHistory: Command[];
+    private _commandHistory: HistoryCommand[];
     private _historyIndex?: number;
     private _commandList: Command[];
 
@@ -32,7 +44,7 @@ export class Terminal {
     /**
      * @constructor
      */
-    constructor(input: HTMLInputElement, commandHistory: Command[] = [], commandList: Command[] = []) {
+    constructor(input: HTMLInputElement, commandHistory: HistoryCommand[] = [], commandList: Command[] = []) {
         this.input = input;
         this._commandHistory = commandHistory;
         this._commandList = commandList;
@@ -70,11 +82,11 @@ export class Terminal {
         this._preprompt = preprompt;
     }
 
-    public get_history(): Command[] {
+    public get_history(): HistoryCommand[] {
         return this._commandHistory;
     }
 
-    public current_history(): Command | undefined {
+    public current_history(): HistoryCommand | undefined {
         if (this._historyIndex != undefined){
             return this._commandHistory[this._historyIndex];
         }
@@ -83,20 +95,20 @@ export class Terminal {
     }
 
 
-    public pop_history(): Command | undefined {
+    public pop_history(): HistoryCommand | undefined {
         if (this._historyIndex == 0){this._historyIndex = undefined;}
         else if (this._historyIndex != undefined){this._historyIndex--;}
 
         return this._commandHistory.shift();
     }
 
-    public push_history(command: Command): number {
+    public push_history(command: HistoryCommand): number {
         if (this._historyIndex != undefined){this._historyIndex++;}
 
         return this._commandHistory.unshift(command);
     }
 
-    public previous_history(): Command | undefined {
+    public previous_history(): HistoryCommand | undefined {
         if (this._commandHistory.length > 0){
             if (this._historyIndex == undefined) {
                 this._historyIndex = 0
@@ -108,7 +120,7 @@ export class Terminal {
         return undefined;
     }
 
-    public next_history(): Command | undefined {
+    public next_history(): HistoryCommand | undefined {
 
         if (this._commandHistory.length <= 0 || this._historyIndex == undefined){
             this._historyIndex = undefined;
