@@ -25,7 +25,7 @@ export class Terminal {
     private _preprompt: string;
     private _prompt: string;
     private _commandHistory: Command[];
-
+    private _historyIndex?: number;
 
     /**
      * @constructor
@@ -43,6 +43,8 @@ export class Terminal {
         let output: object = {}
         const callbackResponse = callback?.(output)
         const exitCode: number = 0;
+
+        this._historyIndex = undefined;
         return exitCode;
     }
 
@@ -70,6 +72,15 @@ export class Terminal {
     public get_history(): Command[] {
         return this._commandHistory;
     }
+
+    public current_history(): Command | undefined {
+        if (this._historyIndex != undefined){
+            return this._commandHistory[this._historyIndex];
+        }
+        return undefined;
+
+    }
+
 
     public pop_history(): Command | undefined {
         return this._commandHistory.pop();
