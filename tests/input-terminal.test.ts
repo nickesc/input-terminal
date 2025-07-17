@@ -16,4 +16,13 @@ describe('input-terminal', () => {
         const term = new Terminal(test_input);
         expect(isTerminal(term)).toBe(true);
     });
-});
+
+
+    // INPUT TESTS
+    it('should construct with correct input',  async () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        expect(term.input).toBe(test_input);
+    });
