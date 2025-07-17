@@ -214,6 +214,18 @@ describe('input-terminal', () => {
         const term: Terminal = new Terminal(test_input);
         expect(term.next_history()).toBe(undefined);
     });
+    it('should return undefined on next history call at top of history',  async () => {
+        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+        const test_commands: Command[] = [{user_input: ["test1"]}, {user_input: ["test2"]}, {user_input: ["test3"]}];
+
+        const term: Terminal = new Terminal(test_input);
+        term.push_history(test_commands[0]);
+        term.push_history(test_commands[1]);
+        term.push_history(test_commands[2]);
+
+        expect(term.next_history()).toBe(undefined);
+    });
 
     // PREDICTION TESTS
     it('should return a prediction as a string', () => {
