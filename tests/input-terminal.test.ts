@@ -55,6 +55,33 @@ describe('input-terminal', () => {
     });
 
 
+    // PROMPT TESTS
+    it('should have a default prompt property',  async () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        expect(term.get_prompt()).toEqual("> ");
+    });
+    it('should construct with custom prompt property',  async () => {
+        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+        const test_prompt: string = "a"
+
+        const term: Terminal = new Terminal(test_input, [], "", test_prompt);
+        expect(term.get_prompt()).toEqual(test_prompt);
+    });
+    it('should set custom prompt property',  async () => {
+        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+        const test_prompt: string = "a"
+
+        const term: Terminal = new Terminal(test_input);
+        term.set_prompt(test_prompt)
+        expect(term.get_prompt()).toEqual(test_prompt);
+    });
+
+
 
 
     // PREDICTION TESTS
