@@ -26,13 +26,16 @@ export class Terminal {
     private _prompt: string = "> ";
     private _commandHistory: Command[];
     private _historyIndex?: number;
+    private _commandList: Command[];
+
 
     /**
      * @constructor
      */
-    constructor(input: HTMLInputElement, commandHistory: Command[] = []) {
+    constructor(input: HTMLInputElement, commandHistory: Command[] = [], commandList: Command[] = []) {
         this.input = input;
         this._commandHistory = commandHistory;
+        this._commandList = commandList;
         this._main();
 
     }
