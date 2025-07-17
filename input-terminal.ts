@@ -95,6 +95,18 @@ export class Terminal {
         return this._commandHistory.unshift(command);
     }
 
+    public previous_history(): Command | undefined {
+        if (this._commandHistory.length > 0){
+            if (this._historyIndex == undefined) {
+                this._historyIndex = 0
+            } else if (this._historyIndex < this._commandHistory.length){
+                this._historyIndex++;
+            }
+            return this._commandHistory[this._historyIndex];
+        }
+        return undefined;
+    }
+
 
     private _main(): void{
         return;
