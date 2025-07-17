@@ -4,6 +4,8 @@
  * @module input-terminal
  */
 
+interface TermCallback { (object: object): any }
+
 export class Command {
     public user_input: string[];
 
