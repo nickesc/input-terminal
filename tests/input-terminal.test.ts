@@ -1,5 +1,6 @@
 import { Terminal, Command } from '../input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { JSDOM } from 'jsdom';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
