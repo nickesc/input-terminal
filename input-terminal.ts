@@ -83,7 +83,10 @@ export class Terminal {
 
 
     public pop_history(): Command | undefined {
-        return this._commandHistory.pop();
+        if (this._historyIndex == 0){this._historyIndex = undefined;}
+        else if (this._historyIndex != undefined){this._historyIndex--;}
+
+        return this._commandHistory.shift();
     }
 
     public push_history(command: Command): number {
