@@ -46,6 +46,10 @@ export class Terminal {
         return exitCode;
     }
 
+    public get_prediction(text?: string): string {
+        let prediction: string = ""
+        return prediction;
+    }
 
     public get_prompt(): string {
         return this._prompt;
