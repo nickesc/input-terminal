@@ -90,8 +90,11 @@ export class Terminal {
     }
 
     public push_history(command: Command): number {
-        return this._commandHistory.push(command);
+        if (this._historyIndex != undefined){this._historyIndex++;}
+
+        return this._commandHistory.unshift(command);
     }
+
 
     private _main(): void{
         return;
