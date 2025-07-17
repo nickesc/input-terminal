@@ -105,6 +105,22 @@ export class Terminal {
         return undefined;
     }
 
+    public next_history(): Command | undefined {
+
+        if (this._commandHistory.length <= 0 || this._historyIndex == undefined){
+            this._historyIndex = undefined;
+            return undefined;
+        }
+
+        if (this._historyIndex >= this._commandHistory.length){
+            this._historyIndex = this._commandHistory.length - 1;
+        } else {
+            this._historyIndex--;
+        }
+
+        return this._commandHistory[this._historyIndex];
+
+    }
 
     private _main(): void{
         return;
