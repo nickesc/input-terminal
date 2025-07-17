@@ -9,8 +9,11 @@ export function isTerminal(target: any): boolean {
 }
 
 describe('input-terminal', () => {
-    it('should construct', () => {
-        const app = new input-terminal();
-        expect(app).toBe(app);
+    it('should construct a Terminal object',  async () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        expect(isTerminal(term)).toBe(true);
     });
 });
