@@ -34,7 +34,9 @@
     "LICENSE"
   ],
   "devDependencies": {
+    "@types/jsdom": "^21.1.7",
     "jsdoc-to-markdown": "^9.1.1",
+    "jsdom": "^26.1.0",
     "svg2png": "^4.1.1",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
