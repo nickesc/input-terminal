@@ -1,4 +1,4 @@
-import { input-terminal } from '../input-terminal';
+import { Terminal, Command } from '../input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
