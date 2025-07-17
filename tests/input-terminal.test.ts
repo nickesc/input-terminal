@@ -26,3 +26,12 @@ describe('input-terminal', () => {
         const term = new Terminal(test_input);
         expect(term.input).toBe(test_input);
     });
+    // COMMAND EXECUTION TESTS
+    it('should return an exit code after commands', () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        expect(typeof term.execute_command({user_input: ["test"]})).toBe("number");
+    });
+});
