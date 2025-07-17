@@ -7,7 +7,7 @@
 /**
  * @class
  */
-export class input-terminal {
+export class Terminal {
 
     /**
      * @constructor
