@@ -36,14 +36,6 @@ describe('input-terminal', () => {
         const term = new Terminal(test_input);
         expect(term.get_preprompt()).toEqual("");
     });
-    it('should construct with custom preprompt property',  async () => {
-        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
-        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
-        const test_prompt: string = "a"
-
-        const term: Terminal = new Terminal(test_input, [], test_prompt);
-        expect(term.get_preprompt()).toEqual(test_prompt);
-    });
     it('should set custom preprompt property',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
@@ -62,14 +54,6 @@ describe('input-terminal', () => {
 
         const term = new Terminal(test_input);
         expect(term.get_prompt()).toEqual("> ");
-    });
-    it('should construct with custom prompt property',  async () => {
-        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
-        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
-        const test_prompt: string = "a"
-
-        const term: Terminal = new Terminal(test_input, [], "", test_prompt);
-        expect(term.get_prompt()).toEqual(test_prompt);
     });
     it('should set custom prompt property',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -96,7 +80,7 @@ describe('input-terminal', () => {
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
         const test_history: Command[] = [{user_input: ["test"]}];
 
-        const term: Terminal = new Terminal(test_input, test_history, "", "");
+        const term: Terminal = new Terminal(test_input, test_history);
         expect(term.get_history()).toBe(test_history);
     });
 

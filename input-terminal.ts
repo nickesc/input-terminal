@@ -22,18 +22,16 @@ export class Command {
 export class Terminal {
 
     public input: HTMLInputElement;
-    private _preprompt: string;
-    private _prompt: string;
+    private _preprompt: string = "";
+    private _prompt: string = "> ";
     private _commandHistory: Command[];
     private _historyIndex?: number;
 
     /**
      * @constructor
      */
-    constructor(input: HTMLInputElement, commandHistory: Command[] = [], preprompt: string = "", prompt: string = "> ",) {
+    constructor(input: HTMLInputElement, commandHistory: Command[] = []) {
         this.input = input;
-        this._preprompt = preprompt;
-        this._prompt = prompt;
         this._commandHistory = commandHistory;
         this._main();
 
