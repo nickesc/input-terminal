@@ -2,9 +2,9 @@
   "compilerOptions": {
     /* Base Options: */
     "outDir": "build",
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node10",
     "esModuleInterop": true,
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
@@ -20,7 +20,7 @@
     //"noUnusedParameters": true,
 
     /* If your code runs in the DOM: */
-    //"lib": ["es2015", "dom", "dom.iterable"]
+    "lib": ["es6", "dom", "dom.iterable"],
   },
   "exclude": [
     "tests",
