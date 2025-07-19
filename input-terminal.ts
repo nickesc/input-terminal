@@ -18,11 +18,14 @@ export class HistoryCommand{
     command: Command | undefined;
     timestamp: Date;
     exit_code: number;
+    user_input: string[];
+
 
     constructor(user_input: string[], command: Command | undefined, exit_code: number) {
         this.command = command;
         this.timestamp = new Date();
         this.exit_code = exit_code;
+        this.user_input = user_input;
     }
 }
 
