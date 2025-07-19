@@ -53,6 +53,11 @@ export class Terminal {
         this._commandList = commandList;
     }
 
+    public init(): void {
+        this.attach_input_listeners();
+        this.update_input();
+    }
+
     public attach_input_listeners(previousKey: string = "ArrowUp", nextKey: string = "ArrowDown"): void {
         this.input.addEventListener("keydown", (e: KeyboardEvent) => {
             switch (e.key) {
