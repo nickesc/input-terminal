@@ -59,16 +59,32 @@ export class Terminal {
     }
 
     public attach_input_listeners(previousKey: string = "ArrowUp", nextKey: string = "ArrowDown"): void {
-        this.input.addEventListener("keydown", (e: KeyboardEvent) => {
-            switch (e.key) {
+        this.input.addEventListener("keydown", (event: KeyboardEvent) => {
+            switch (event.key) {
                 case previousKey:
-                    this.previous_history()
+                    event.preventDefault();
+                    this.update_input(this.previous_history()?.user_input.join(" "))
                     break;
                 case nextKey:
-                    this.next_history
+                    event.preventDefault();
+                    this.update_input(this.next_history()?.user_input.join(" "))
+                    break;
+                case "Backspace":
+                case "Delete":
+                case "ArrowLeft":
+                    if (this.input.selectionStart !== null && this.input.selectionStart <= (this._preprompt + this._prompt).length) {
+                        event.preventDefault();
+                    }
                     break;
             }
         });
+        this.input.addEventListener("selectionchange", (event: Event) => {
+            if (this.input.selectionStart !== null && this.input.selectionStart < (this._preprompt + this._prompt).length) {
+                this.input.selectionStart = (this._preprompt + this._prompt).length;
+            }
+        })
+    }
+
     public update_input(user_input?: string): void {
         this.input.value = this._preprompt + this._prompt + (user_input || "");
     }
