@@ -79,8 +79,15 @@ export class Terminal {
             }
         });
         this.input.addEventListener("selectionchange", (event: Event) => {
+            const end: number | null = this.input.selectionEnd;
+
             if (this.input.selectionStart !== null && this.input.selectionStart < (this._preprompt + this._prompt).length) {
-                this.input.selectionStart = (this._preprompt + this._prompt).length;
+
+                if (end !== null) {
+                    this.input.setSelectionRange((this._preprompt + this._prompt).length, end)
+                } else {
+                    this.input.selectionStart = (this._preprompt + this._prompt).length;
+                }
             }
         })
     }
