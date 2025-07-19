@@ -64,7 +64,10 @@ export class Terminal {
                     break;
             }
         });
+    public update_input(user_input?: string): void {
+        this.input.value = this._preprompt + this._prompt + (user_input || "");
     }
+
 
 
     public execute_command(command: Command, callback?: TermCallback): number {
