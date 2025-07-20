@@ -6,15 +6,13 @@ export class ExitObject{
     private _exit_code: number;
     private _user_input: string[];
     private _output: object;
-    private _callbackResponse: any;
 
-    constructor(user_input: string[], command: Command | undefined, exit_code: number, output: object, callbackResponse?: any) {
+    constructor(user_input: string[], command: Command | undefined, exit_code: number, output: object) {
         this._command = command;
         this._timestamp = new Date();
         this._exit_code = exit_code;
         this._user_input = user_input;
         this._output = output;
-        this._callbackResponse = callbackResponse;
     }
 
     public get command(): Command | undefined {
@@ -35,10 +33,6 @@ export class ExitObject{
 
     public get output(): object {
         return this._output;
-    }
-
-    public get callbackResponse(): any {
-        return this._callbackResponse;
     }
 }
 

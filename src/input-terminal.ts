@@ -9,8 +9,6 @@ import { TermOptions } from './options.ts';
  * @module input-terminal
  */
 
-interface TermCallback { (object: object): any }
-
 /**
  * @class
  */
@@ -63,22 +61,18 @@ export class Terminal {
         return new Command("key");
     }
 
-    public execute_command(input: string, callback?: TermCallback): ExitObject {
+    public execute_command(input: string): ExitObject {
         // EXECUTION CODE TO GO HERE.....
         // remove callback for now
 
         const user_input: string[] = input.split(" ");
         const command: Command | undefined = this.parse_command(input);
         const output: object = {}
-        let response: any = undefined;
-        if (callback) {
-            response = callback(output)
-        }
         const exitCode: number = 0;
 
         this.history.reset_index();
 
-        return new ExitObject(user_input, command, exitCode, output, response);
+        return new ExitObject(user_input, command, exitCode, output);
     }
 
 

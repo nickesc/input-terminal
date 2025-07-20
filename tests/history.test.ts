@@ -6,14 +6,14 @@ function isHistory(target: any): boolean {
 }
 
 function tExitObject(text: string): ExitObject {
-    return new ExitObject([text], undefined, 0, {}, undefined);
+    return new ExitObject([text], undefined, 0, {});
 }
 
 let test_commands: ExitObject[];
 
 describe('input-terminal', () => {
     beforeEach(() => {
-        test_commands = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
+        test_commands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
     });
 
     // CONSTRUCTION TEST

@@ -70,11 +70,4 @@ describe('input-terminal', () => {
         const term = new Terminal(test_input);
         expect(isExitObject(term.execute_command("command"))).toBe(true);
     });
-    it('should call the callback after execution', () => {
-        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
-        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
-
-        const term = new Terminal(test_input);
-        expect(term.execute_command("command", () => {return}))
-    });
 });
