@@ -37,7 +37,7 @@ export class TermHistory {
     }
 
 
-    public pop_history(): HistoryCommand | undefined {
+    public pop(): HistoryCommand | undefined {
         if (this._index == 0){this._index = undefined;}
         else if (this._index != undefined){this._index--;}
 

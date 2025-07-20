@@ -133,7 +133,7 @@ describe('input-terminal', () => {
 
         const term: Terminal = new Terminal(test_input);
         term.history.push_history(test_command);
-        expect(term.history.pop_history()).toBe(test_command);
+        expect(term.history.pop()).toBe(test_command);
     });
     it('should remove first command from history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -143,7 +143,7 @@ describe('input-terminal', () => {
         const term: Terminal = new Terminal(test_input);
         term.history.push_history(test_commands[0]);
         term.history.push_history(test_commands[1]);
-        term.history.pop_history()
+        term.history.pop()
         expect(term.history.list).toEqual([test_commands[0]]);
     });
     it('should retain index in history if command is popped',  async () => {
@@ -157,15 +157,15 @@ describe('input-terminal', () => {
         term.history.push_history(test_commands[2]);
         term.history.previous_history();
 
-        term.history.pop_history();
+        term.history.pop();
         expect(term.history.current()).toBe(undefined);
 
         expect(term.history.previous_history()).toBe(test_commands[1]);
         expect(term.history.previous_history()).toBe(test_commands[0]);
 
-        term.history.pop_history();
+        term.history.pop();
         expect(term.history.current()).toBe(test_commands[0]);
-        term.history.pop_history();
+        term.history.pop();
         expect(term.history.current()).toBe(undefined);
 
     });
