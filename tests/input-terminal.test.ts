@@ -24,6 +24,16 @@ describe('input-terminal', () => {
     });
 
 
+    // INITIALIZATION TESTS
+    it('should initialize and mark itself started',  () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        term.init();
+        expect(term.isStarted()).toBe(true);
+    });
+
     // INPUT TESTS
     it('should construct with correct input',  () => {
         const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
