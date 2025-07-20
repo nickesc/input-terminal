@@ -1,4 +1,4 @@
-import { Command } from './command';
+import { TermCommands, Command } from './command';
 import { TermHistory, HistoryCommand } from './history';
 
 /**
@@ -16,9 +16,9 @@ export class Terminal {
 
     public input: HTMLInputElement;
     public history: TermHistory;
+    public commands: TermCommands;
     private _preprompt: string = "";
     private _prompt: string = "> ";
-    private _commandList: Command[];
     private _startFocused: boolean = false;
 
     /**
@@ -27,7 +27,7 @@ export class Terminal {
     constructor(input: HTMLInputElement, commandHistory: HistoryCommand[] = [], commandList: Command[] = []) {
         this.input = input;
         this.history = new TermHistory(commandHistory);
-        this._commandList = commandList;
+        this.commands = new TermCommands(commandList);
     }
 
     public init(focused?: boolean): void {
