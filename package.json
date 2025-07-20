@@ -21,6 +21,7 @@
   },
   "scripts": {
     "test": "vitest run --reporter=verbose",
+    "coverage": "vitest run --coverage",
     "docs": "npx tsc -p tsconfig.docs.json && jsdoc2md --files build/input-terminal.js > docs/documentation.md && npm run capsule",
     "capsule": "[ -e  docs/capsule.png ] && rm docs/capsule.png; svg2png docs/icon.svg --output=docs/capsule.png --width=2048 --height=1024",
     "build": "npx tsc",
@@ -35,6 +36,7 @@
   ],
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
+    "@vitest/coverage-v8": "^3.2.4",
     "jsdoc-to-markdown": "^9.1.1",
     "jsdom": "^26.1.0",
     "svg2png": "^4.1.1",
