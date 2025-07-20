@@ -46,6 +46,11 @@ export class Terminal {
         }
     }
 
+    public isStarted(): boolean {
+        return this._started;
+    }
+
+
     public update_input(user_input?: string): void {
         this.input.value = this.options.preprompt + this.options.prompt + (user_input || "");
     }
