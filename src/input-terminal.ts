@@ -1,5 +1,5 @@
-import { TermCommands, Command } from './commands.ts';
-import { TermHistory, ExitObject } from './history.ts';
+import { TermCommands, Command, ExitObject } from './commands.ts';
+import { TermHistory } from './history.ts';
 import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
 

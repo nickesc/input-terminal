@@ -1,4 +1,5 @@
-import { ExitObject, TermHistory } from '../src/history';
+import { TermHistory } from '../src/history';
+import { ExitObject } from '../src/commands.ts';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 function isHistory(target: any): boolean {
