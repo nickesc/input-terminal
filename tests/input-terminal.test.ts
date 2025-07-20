@@ -16,7 +16,7 @@ function tHistoryCommand(text: string): HistoryCommand {
 
 describe('input-terminal', () => {
     it('should construct a Terminal object',  () => {
-        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
@@ -26,7 +26,7 @@ describe('input-terminal', () => {
 
     // INPUT TESTS
     it('should construct with correct input',  () => {
-        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
@@ -35,7 +35,7 @@ describe('input-terminal', () => {
 
     // PREDICTION TESTS
     it('should return a prediction as a string', () => {
-        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
@@ -45,7 +45,7 @@ describe('input-terminal', () => {
 
     // COMMAND EXECUTION TESTS
     it('should return an exit code after commands', () => {
-        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
