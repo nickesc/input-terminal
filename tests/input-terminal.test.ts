@@ -40,16 +40,16 @@ describe('input-terminal', () => {
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
-        expect(term.get_preprompt()).toEqual("");
+        expect(term.preprompt).toEqual("");
     });
     it('should set custom preprompt property',  () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
-        const test_pre: string = "a"
+        const test_pre: string = "a";
 
         const term: Terminal = new Terminal(test_input);
-        term.set_preprompt(test_pre)
-        expect(term.get_preprompt()).toEqual(test_pre);
+        term.preprompt = test_pre;
+        expect(term.preprompt).toEqual(test_pre);
     });
 
 
@@ -59,7 +59,7 @@ describe('input-terminal', () => {
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
-        expect(term.get_prompt()).toEqual("> ");
+        expect(term.prompt).toEqual("> ");
     });
     it('should set custom prompt property',  () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -67,8 +67,8 @@ describe('input-terminal', () => {
         const test_prompt: string = "a"
 
         const term: Terminal = new Terminal(test_input);
-        term.set_prompt(test_prompt)
-        expect(term.get_prompt()).toEqual(test_prompt);
+        term.prompt = test_prompt;
+        expect(term.prompt).toEqual(test_prompt);
     });
 
 

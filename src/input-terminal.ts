@@ -93,19 +93,19 @@ export class Terminal {
         return prediction;
     }
 
-    public get_prompt(): string {
+    public get prompt(): string {
         return this._prompt;
     }
 
-    public set_prompt(prompt: string): void {
+    public set prompt(prompt: string) {
         this._prompt = prompt;
     }
 
-    public get_preprompt(): string {
+    public get preprompt(): string {
         return this._preprompt;
     }
 
-    public set_preprompt(preprompt: string): void {
+    public set preprompt(preprompt: string) {
         this._preprompt = preprompt;
     }
 
