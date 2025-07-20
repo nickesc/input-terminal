@@ -15,7 +15,7 @@ function tHistoryCommand(text: string): HistoryCommand {
 }
 
 describe('input-terminal', () => {
-    it('should construct a Terminal object',  async () => {
+    it('should construct a Terminal object',  () => {
         const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
@@ -25,7 +25,7 @@ describe('input-terminal', () => {
 
 
     // INPUT TESTS
-    it('should construct with correct input',  async () => {
+    it('should construct with correct input',  () => {
         const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
@@ -35,14 +35,14 @@ describe('input-terminal', () => {
 
 
     // PREPROMPT TESTS
-    it('should have empty preprompt property by default',  async () => {
+    it('should have empty preprompt property by default',  () => {
         const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
         expect(term.get_preprompt()).toEqual("");
     });
-    it('should set custom preprompt property',  async () => {
+    it('should set custom preprompt property',  () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
         const test_pre: string = "a"
@@ -54,14 +54,14 @@ describe('input-terminal', () => {
 
 
     // PROMPT TESTS
-    it('should have a default prompt property',  async () => {
+    it('should have a default prompt property',  () => {
         const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
         expect(term.get_prompt()).toEqual("> ");
     });
-    it('should set custom prompt property',  async () => {
+    it('should set custom prompt property',  () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
         const test_prompt: string = "a"
