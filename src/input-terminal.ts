@@ -18,7 +18,6 @@ export class Terminal {
     public commandHistory: TermHistory;
     private _preprompt: string = "";
     private _prompt: string = "> ";
-    private _historyIndex?: number;
     private _commandList: Command[];
     private _startFocused: boolean = false;
 
@@ -85,7 +84,7 @@ export class Terminal {
         const callbackResponse = callback?.(output)
         const exitCode: number = 0;
 
-        this._historyIndex = undefined;
+        this.commandHistory.reset_index();
         return exitCode;
     }
 

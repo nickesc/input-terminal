@@ -24,6 +24,10 @@ export class TermHistory {
         this.history = history;
     }
 
+    public reset_index(): void {
+        this._index = undefined;
+    }
+
     public current_history(): HistoryCommand | undefined {
         if (this._index != undefined){
             return this.history[this._index];
