@@ -28,7 +28,7 @@ export class TermHistory {
         this._index = undefined;
     }
 
-    public current_history(): HistoryCommand | undefined {
+    public current(): HistoryCommand | undefined {
         if (this._index != undefined){
             return this.list[this._index];
         }

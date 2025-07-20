@@ -121,7 +121,7 @@ describe('input-terminal', () => {
         term.history.previous_history()
 
         term.history.push_history(test_commands[2]);
-        expect(term.history.current_history()).toBe(test_commands[1]);
+        expect(term.history.current()).toBe(test_commands[1]);
         expect(term.history.previous_history()).toBe(test_commands[0]);
     });
 
@@ -158,15 +158,15 @@ describe('input-terminal', () => {
         term.history.previous_history();
 
         term.history.pop_history();
-        expect(term.history.current_history()).toBe(undefined);
+        expect(term.history.current()).toBe(undefined);
 
         expect(term.history.previous_history()).toBe(test_commands[1]);
         expect(term.history.previous_history()).toBe(test_commands[0]);
 
         term.history.pop_history();
-        expect(term.history.current_history()).toBe(test_commands[0]);
+        expect(term.history.current()).toBe(test_commands[0]);
         term.history.pop_history();
-        expect(term.history.current_history()).toBe(undefined);
+        expect(term.history.current()).toBe(undefined);
 
     });
 
