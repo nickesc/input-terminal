@@ -113,3 +113,5 @@ export class Terminal {
         return;
     }
 }
+
+export { Command, HistoryCommand, TermCommands, TermHistory }
