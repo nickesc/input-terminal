@@ -44,7 +44,7 @@ export class Terminal {
                     break;
                 case nextKey:
                     event.preventDefault();
-                    this.update_input(this.history.next_history()?.user_input.join(" "))
+                    this.update_input(this.history.next()?.user_input.join(" "))
                     break;
                 case "Backspace":
                 case "Delete":

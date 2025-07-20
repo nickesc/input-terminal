@@ -62,7 +62,7 @@ export class TermHistory {
         return undefined;
     }
 
-    public next_history(): HistoryCommand | undefined {
+    public next(): HistoryCommand | undefined {
 
         if (this.list.length <= 0 || this._index == undefined){
             this._index = undefined;

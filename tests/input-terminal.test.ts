@@ -208,17 +208,17 @@ describe('input-terminal', () => {
         expect(term.history.previous()).toBe(test_commands[2]);
         expect(term.history.previous()).toBe(test_commands[1]);
         expect(term.history.previous()).toBe(test_commands[0]);
-        expect(term.history.next_history()).toBe(test_commands[1]);
-        expect(term.history.next_history()).toBe(test_commands[2]);
-        expect(term.history.next_history()).toBe(undefined);
-        expect(term.history.next_history()).toBe(undefined);
+        expect(term.history.next()).toBe(test_commands[1]);
+        expect(term.history.next()).toBe(test_commands[2]);
+        expect(term.history.next()).toBe(undefined);
+        expect(term.history.next()).toBe(undefined);
     });
     it('should return undefined on next history call with no command history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term: Terminal = new Terminal(test_input);
-        expect(term.history.next_history()).toBe(undefined);
+        expect(term.history.next()).toBe(undefined);
     });
     it('should return undefined on next history call at top of history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -230,7 +230,7 @@ describe('input-terminal', () => {
         term.history.push(test_commands[1]);
         term.history.push(test_commands[2]);
 
-        expect(term.history.next_history()).toBe(undefined);
+        expect(term.history.next()).toBe(undefined);
     });
 
     // PREDICTION TESTS
