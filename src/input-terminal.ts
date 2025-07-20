@@ -107,10 +107,6 @@ export class Terminal {
     public set preprompt(preprompt: string) {
         this._preprompt = preprompt;
     }
-
-    private _main(): void{
-        return;
-    }
 }
 
 export { Command, HistoryCommand, TermCommands, TermHistory }
