@@ -18,7 +18,7 @@ export class HistoryCommand{
 export class TermHistory {
 
     public list: HistoryCommand[];
-    public _index: number | undefined;
+    private _index: number | undefined;
 
     constructor(history: HistoryCommand[] = []) {
         this.list = history;
