@@ -17,11 +17,11 @@ export class HistoryCommand{
 
 export class TermHistory {
 
-    public history: HistoryCommand[];
+    public list: HistoryCommand[];
     public _index: number | undefined;
 
     constructor(history: HistoryCommand[] = []) {
-        this.history = history;
+        this.list = history;
     }
 
     public reset_index(): void {
@@ -30,7 +30,7 @@ export class TermHistory {
 
     public current_history(): HistoryCommand | undefined {
         if (this._index != undefined){
-            return this.history[this._index];
+            return this.list[this._index];
         }
         return undefined;
 
@@ -41,41 +41,41 @@ export class TermHistory {
         if (this._index == 0){this._index = undefined;}
         else if (this._index != undefined){this._index--;}
 
-        return this.history.shift();
+        return this.list.shift();
     }
 
     public push_history(command: HistoryCommand): number {
         if (this._index != undefined){this._index++;}
 
-        return this.history.unshift(command);
+        return this.list.unshift(command);
     }
 
     public previous_history(): HistoryCommand | undefined {
-        if (this.history.length > 0){
+        if (this.list.length > 0){
             if (this._index == undefined) {
                 this._index = 0
-            } else if (this._index < this.history.length-1){
+            } else if (this._index < this.list.length-1){
                 this._index++;
             }
-            return this.history[this._index];
+            return this.list[this._index];
         }
         return undefined;
     }
 
     public next_history(): HistoryCommand | undefined {
 
-        if (this.history.length <= 0 || this._index == undefined){
+        if (this.list.length <= 0 || this._index == undefined){
             this._index = undefined;
             return undefined;
         }
 
-        if (this._index >= this.history.length){
-            this._index = this.history.length - 1;
+        if (this._index >= this.list.length){
+            this._index = this.list.length - 1;
         } else {
             this._index--;
         }
 
-        return this.history[this._index];
+        return this.list[this._index];
 
     }
 
