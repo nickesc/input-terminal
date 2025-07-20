@@ -33,45 +33,6 @@ describe('input-terminal', () => {
         expect(term.input).toBe(test_input);
     });
 
-
-    // PREPROMPT TESTS
-    it('should have empty preprompt property by default',  () => {
-        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
-        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
-
-        const term = new Terminal(test_input);
-        expect(term.preprompt).toEqual("");
-    });
-    it('should set custom preprompt property',  () => {
-        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
-        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
-        const test_pre: string = "a";
-
-        const term: Terminal = new Terminal(test_input);
-        term.preprompt = test_pre;
-        expect(term.preprompt).toEqual(test_pre);
-    });
-
-
-    // PROMPT TESTS
-    it('should have a default prompt property',  () => {
-        const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
-        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
-
-        const term = new Terminal(test_input);
-        expect(term.prompt).toEqual("> ");
-    });
-    it('should set custom prompt property',  () => {
-        const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
-        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
-        const test_prompt: string = "a"
-
-        const term: Terminal = new Terminal(test_input);
-        term.prompt = test_prompt;
-        expect(term.prompt).toEqual(test_prompt);
-    });
-
-
     // PREDICTION TESTS
     it('should return a prediction as a string', () => {
         const dom = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
