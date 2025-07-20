@@ -79,14 +79,21 @@ export class Terminal {
             }
         });
         this.input.addEventListener("selectionchange", (event: Event) => {
+            const promptLength: number = (this._preprompt + this._prompt).length;
+            const valueLength: number = this.input.value.length;
+            const start: number | null = this.input.selectionStart;
             const end: number | null = this.input.selectionEnd;
+            const direction = this.input.selectionDirection;
 
-            if (this.input.selectionStart !== null && this.input.selectionStart < (this._preprompt + this._prompt).length) {
+            console.log("help")
 
+            if (start !== null && (start <= promptLength)) {
                 if (end !== null) {
-                    this.input.setSelectionRange((this._preprompt + this._prompt).length, end)
+                    this.input.setSelectionRange(promptLength, valueLength);
+                    console.log("help")
                 } else {
-                    this.input.selectionStart = (this._preprompt + this._prompt).length;
+                    console.log("help")
+                    this.input.selectionStart = promptLength;
                 }
             }
         })
