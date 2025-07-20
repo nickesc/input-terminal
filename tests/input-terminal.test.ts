@@ -1,6 +1,6 @@
 import { Terminal } from '../src/input-terminal';
 import { Command } from '../src/commands';
-import { HistoryCommand } from '../src/history';
+import { ExitObject } from '../src/history';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 
@@ -10,9 +10,10 @@ function isTerminal(target: any): boolean {
   return target instanceof Terminal;
 }
 
-function tHistoryCommand(text: string): HistoryCommand {
-    return new HistoryCommand([text], undefined, 0);
+function isExitObject(target: any): boolean {
+  return target instanceof ExitObject;
 }
+
 
 describe('input-terminal', () => {
     it('should construct a Terminal object',  () => {
@@ -62,11 +63,18 @@ describe('input-terminal', () => {
 
 
     // COMMAND EXECUTION TESTS
-    it('should return an exit code after commands', () => {
+    it('should return an exit code after execution', () => {
         const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
-        expect(typeof term.execute_command(new Command("test"))).toBe("number");
+        expect(isExitObject(term.execute_command("command"))).toBe(true);
+    });
+    it('should call the callback after execution', () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        expect(term.execute_command("command", () => {return}))
     });
 });
