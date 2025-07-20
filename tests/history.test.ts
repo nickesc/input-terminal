@@ -1,8 +1,6 @@
 import { Terminal } from '../src/input-terminal';
-import { Command, TermCommands } from '../src/commands';
 import { HistoryCommand, TermHistory } from '../src/history';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { JSDOM } from 'jsdom';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
