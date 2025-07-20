@@ -19,7 +19,6 @@ export class Terminal {
     public commands: TermCommands;
     private _preprompt: string = "";
     private _prompt: string = "> ";
-    private _startFocused: boolean = false;
 
     /**
      * @constructor
@@ -30,7 +29,7 @@ export class Terminal {
         this.commands = new TermCommands(commandList);
     }
 
-    public init(focused?: boolean): void {
+    public init(): void {
         this.attach_input_listeners();
         this.update_input();
     }
