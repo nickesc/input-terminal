@@ -19,6 +19,7 @@ describe('input-terminal-options', () => {
         expect(options.nextKey).toEqual("ArrowDown");
         expect(options.enterKey).toEqual("Enter");
         expect(options.tabKey).toEqual("Tab");
+        expect(options.modKey).toEqual("Ctrl");
     });
 
     it('should construct with custom options', () => {
@@ -26,13 +27,15 @@ describe('input-terminal-options', () => {
             previousKey: "Up",
             nextKey: "Down",
             enterKey: "Return",
-            tabKey: "Tabulator"
+            tabKey: "Tabulator",
+            modKey: "Ctrl"
         };
         const options: TermOptions = new TermOptions(customOptions);
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
         expect(options.enterKey).toEqual(customOptions.enterKey);
         expect(options.tabKey).toEqual(customOptions.tabKey);
+        expect(options.modKey).toEqual(customOptions.modKey);
     });
 
     it('should construct with partial custom options', () => {
