@@ -1,15 +1,15 @@
-import { HistoryCommand, TermHistory } from '../src/history';
+import { ExitObject, TermHistory } from '../src/history';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 function isHistory(target: any): boolean {
   return target instanceof TermHistory;
 }
 
-function tHistoryCommand(text: string): HistoryCommand {
-    return new HistoryCommand([text], undefined, 0);
+function tHistoryCommand(text: string): ExitObject {
+    return new ExitObject([text], undefined, 0, {}, undefined);
 }
 
-let test_commands: HistoryCommand[];
+let test_commands: ExitObject[];
 
 describe('input-terminal', () => {
     beforeEach(() => {
@@ -25,7 +25,7 @@ describe('input-terminal', () => {
 
     // COMMAND HISTORY TESTS
     it('should have empty command history by default', () => {
-        const test_history: HistoryCommand[] = [];
+        const test_history: ExitObject[] = [];
         const history: TermHistory = new TermHistory();
         expect(history.commands).toEqual(test_history);
     });

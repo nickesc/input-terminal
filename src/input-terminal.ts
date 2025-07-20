@@ -1,8 +1,7 @@
 import { TermCommands, Command } from './commands.ts';
-import { TermHistory, HistoryCommand } from './history.ts';
+import { TermHistory, ExitObject } from './history.ts';
 import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
-
 
 /**
  * @fileoverview description
@@ -29,7 +28,7 @@ export class Terminal {
     /**
      * @constructor
      */
-    constructor(input: HTMLInputElement, options: object = {}, commandHistory: HistoryCommand[] = [], commandList: Command[] = []) {
+    constructor(input: HTMLInputElement, options: object = {}, commandHistory: ExitObject[] = [], commandList: Command[] = []) {
         this.input = input;
         this.history = new TermHistory(commandHistory);
         this.commands = new TermCommands(commandList);
@@ -60,16 +59,29 @@ export class Terminal {
         return prediction;
     }
 
-    public execute_command(command: Command, callback?: TermCallback): number {
-        let output: object = {}
-        const callbackResponse = callback?.(output)
+    public parse_command(input: string): Command | undefined {
+        return new Command("key");
+    }
+
+    public execute_command(input: string, callback?: TermCallback): ExitObject {
+        // EXECUTION CODE TO GO HERE.....
+        // remove callback for now
+
+        const user_input: string[] = input.split(" ");
+        const command: Command | undefined = this.parse_command(input);
+        const output: object = {}
+        let response: any = undefined;
+        if (callback) {
+            response = callback(output)
+        }
         const exitCode: number = 0;
 
         this.history.reset_index();
-        return exitCode;
+
+        return new ExitObject(user_input, command, exitCode, output, response);
     }
 
 
 }
 
-export { Command, HistoryCommand, TermCommands, TermHistory, TermOptions }
+export {Command, ExitObject, TermCommands, TermHistory, TermOptions }

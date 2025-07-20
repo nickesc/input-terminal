@@ -1,36 +1,63 @@
 import { Command } from './commands.ts';
 
-export class HistoryCommand{
-    command: Command | undefined;
-    timestamp: Date;
-    exit_code: number;
-    user_input: string[];
+export class ExitObject{
+    private _command: Command | undefined;
+    private _timestamp: Date;
+    private _exit_code: number;
+    private _user_input: string[];
+    private _output: object;
+    private _callbackResponse: any;
 
+    constructor(user_input: string[], command: Command | undefined, exit_code: number, output: object, callbackResponse?: any) {
+        this._command = command;
+        this._timestamp = new Date();
+        this._exit_code = exit_code;
+        this._user_input = user_input;
+        this._output = output;
+        this._callbackResponse = callbackResponse;
+    }
 
-    constructor(user_input: string[], command: Command | undefined, exit_code: number) {
-        this.command = command;
-        this.timestamp = new Date();
-        this.exit_code = exit_code;
-        this.user_input = user_input;
+    public get command(): Command | undefined {
+        return this._command;
+    }
+
+    public get timestamp(): Date {
+        return this._timestamp;
+    }
+
+    public get exit_code(): number {
+        return this._exit_code;
+    }
+
+    public get user_input(): string[] {
+        return this._user_input;
+    }
+
+    public get output(): object {
+        return this._output;
+    }
+
+    public get callbackResponse(): any {
+        return this._callbackResponse;
     }
 }
 
 export class TermHistory {
 
-    private _commands: HistoryCommand[];
+    private _commands: ExitObject[];
     private _index: number | undefined;
 
-    public get commands(): HistoryCommand[] {
+    public get commands(): ExitObject[] {
         return this._commands;
     }
 
-    public set commands(command_list: HistoryCommand[]) {
+    public set commands(command_list: ExitObject[]) {
         this._commands = command_list;
     }
 
 
 
-    constructor(history: HistoryCommand[] = []) {
+    constructor(history: ExitObject[] = []) {
         this._commands = history;
     }
 
@@ -38,27 +65,27 @@ export class TermHistory {
         this._index = undefined;
     }
 
-    public current(): HistoryCommand | undefined {
+    public current(): ExitObject | undefined {
         if (this._index != undefined){
             return this._commands[this._index];
         }
         return undefined;
     }
 
-    public pop(): HistoryCommand | undefined {
+    public pop(): ExitObject | undefined {
         if (this._index == 0){this._index = undefined;}
         else if (this._index != undefined){this._index--;}
 
         return this._commands.shift();
     }
 
-    public push(command: HistoryCommand): number {
+    public push(command: ExitObject): number {
         if (this._index != undefined){this._index++;}
 
         return this._commands.unshift(command);
     }
 
-    public previous(): HistoryCommand | undefined {
+    public previous(): ExitObject | undefined {
         if (this._commands.length > 0){
             if (this._index == undefined) {
                 this._index = 0
@@ -70,7 +97,7 @@ export class TermHistory {
         return undefined;
     }
 
-    public next(): HistoryCommand | undefined {
+    public next(): ExitObject | undefined {
 
         if (this._commands.length <= 0 || this._index == undefined || this._index <= 0){
             this._index = undefined;
