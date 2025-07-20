@@ -1,8 +1,5 @@
-import { Terminal } from '../src/input-terminal';
 import { HistoryCommand, TermHistory } from '../src/history';
 import { describe, it, expect, beforeEach } from 'vitest';
-
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 function isHistory(target: any): boolean {
   return target instanceof TermHistory;
@@ -14,12 +11,12 @@ function tHistoryCommand(text: string): HistoryCommand {
 
 let test_commands: HistoryCommand[];
 
-
 describe('input-terminal', () => {
     beforeEach(() => {
         test_commands = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
     });
 
+    // CONSTRUCTION TEST
     it('should construct a History object',  () => {
         const history: TermHistory = new TermHistory();
         expect(isHistory(history)).toBe(true);
@@ -30,12 +27,18 @@ describe('input-terminal', () => {
     it('should have empty command history by default', () => {
         const test_history: HistoryCommand[] = [];
         const history: TermHistory = new TermHistory();
-        expect(history.list).toEqual(test_history);
+        expect(history.commands).toEqual(test_history);
     });
     it('should construct with custom command history',  () => {
         const history: TermHistory = new TermHistory(test_commands);
-        expect(history.list).toBe(test_commands);
+        expect(history.commands).toBe(test_commands);
     });
+    it('should set custom command history',  () => {
+        const history: TermHistory = new TermHistory();
+        history.commands = test_commands;
+        expect(history.commands).toEqual(test_commands);
+    });
+
 
     // PUSH HISTORY TESTS
     it('should return the length of the command history on push',  () => {
@@ -46,20 +49,20 @@ describe('input-terminal', () => {
         const history: TermHistory = new TermHistory();
         history.push(test_commands[0]);
         history.push(test_commands[1]);
-        expect(history.list).toEqual([test_commands[1],test_commands[0]]);
+        expect(history.commands).toEqual([test_commands[1],test_commands[0]]);
     });
-    it('should retain index in history if command is pushed',  () => {
+    it('should retain index in history when command is pushed',  () => {
         const history: TermHistory = new TermHistory();
 
         history.push(test_commands[0]);
         history.push(test_commands[1]);
-
         history.previous()
 
         history.push(test_commands[2]);
         expect(history.current()).toBe(test_commands[1]);
         expect(history.previous()).toBe(test_commands[0]);
     });
+
 
     // POP HISTORY TESTS
     it('should return the removed command on pop',  () => {
@@ -71,7 +74,7 @@ describe('input-terminal', () => {
         history.push(test_commands[0]);
         history.push(test_commands[1]);
         history.pop()
-        expect(history.list).toEqual([test_commands[0]]);
+        expect(history.commands).toEqual([test_commands[0]]);
     });
     it('should retain index in history if command is popped',  () => {
         const history: TermHistory = new TermHistory(test_commands);
@@ -82,7 +85,6 @@ describe('input-terminal', () => {
 
         history.pop();
         expect(history.current()).toBe(undefined);
-
         expect(history.previous()).toBe(test_commands[1]);
         expect(history.previous()).toBe(test_commands[0]);
 
@@ -91,6 +93,7 @@ describe('input-terminal', () => {
         history.pop();
         expect(history.current()).toBe(undefined);
     });
+
 
     // PREVIOUS HISTORY TESTS
     it('should return the last executed command on previous history call',  () => {
@@ -108,6 +111,7 @@ describe('input-terminal', () => {
         const history: TermHistory = new TermHistory();
         expect(history.previous()).toBe(undefined);
     });
+
 
     // NEXT HISTORY TESTS
     it('should return the next executed command on next history call',  () => {
@@ -130,7 +134,6 @@ describe('input-terminal', () => {
     });
     it('should return undefined on next history call at top of history',  () => {
         const history: TermHistory = new TermHistory(test_commands);
-
         expect(history.next()).toBe(undefined);
     });
 
