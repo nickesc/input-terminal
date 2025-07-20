@@ -1,5 +1,6 @@
 import { TermCommands, Command } from './commands.ts';
 import { TermHistory, HistoryCommand } from './history.ts';
+import { TermOptions } from './options.ts';
 
 /**
  * @fileoverview description
@@ -17,16 +18,16 @@ export class Terminal {
     public input: HTMLInputElement;
     public history: TermHistory;
     public commands: TermCommands;
-    private _preprompt: string = "";
-    private _prompt: string = "> ";
+    public options: TermOptions;
 
     /**
      * @constructor
      */
-    constructor(input: HTMLInputElement, commandHistory: HistoryCommand[] = [], commandList: Command[] = []) {
+    constructor(input: HTMLInputElement, options: object = {}, commandHistory: HistoryCommand[] = [], commandList: Command[] = []) {
         this.input = input;
         this.history = new TermHistory(commandHistory);
         this.commands = new TermCommands(commandList);
+        this.options = new TermOptions(options);
     }
 
     public init(): void {
@@ -73,10 +74,13 @@ export class Terminal {
     }
 
     public update_input(user_input?: string): void {
-        this.input.value = this._preprompt + this._prompt + (user_input || "");
+        this.input.value = this.options.preprompt + this.options.prompt + (user_input || "");
     }
 
-
+    public get_prediction(text?: string): string {
+        let prediction: string = ""
+        return prediction;
+    }
 
     public execute_command(command: Command, callback?: TermCallback): number {
         let output: object = {}
@@ -87,26 +91,7 @@ export class Terminal {
         return exitCode;
     }
 
-    public get_prediction(text?: string): string {
-        let prediction: string = ""
-        return prediction;
-    }
 
-    public get prompt(): string {
-        return this._prompt;
-    }
-
-    public set prompt(prompt: string) {
-        this._prompt = prompt;
-    }
-
-    public get preprompt(): string {
-        return this._preprompt;
-    }
-
-    public set preprompt(preprompt: string) {
-        this._preprompt = preprompt;
-    }
 }
 
-export { Command, HistoryCommand, TermCommands, TermHistory }
+export { Command, HistoryCommand, TermCommands, TermHistory, TermOptions }
