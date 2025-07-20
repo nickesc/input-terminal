@@ -1,4 +1,4 @@
-import { Command } from './command';
+import { Command } from './commands.ts';
 
 export class HistoryCommand{
     command: Command | undefined;

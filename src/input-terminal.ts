@@ -1,5 +1,5 @@
-import { TermCommands, Command } from './command';
-import { TermHistory, HistoryCommand } from './history';
+import { TermCommands, Command } from './commands.ts';
+import { TermHistory, HistoryCommand } from './history.ts';
 
 /**
  * @fileoverview description

@@ -1,5 +1,5 @@
 import { Terminal } from '../src/input-terminal';
-import { Command } from '../src/command';
+import { Command } from '../src/commands';
 import { HistoryCommand } from '../src/history';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
