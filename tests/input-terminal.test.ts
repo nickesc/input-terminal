@@ -1,4 +1,6 @@
-import { Terminal, HistoryCommand } from '../input-terminal';
+import { Terminal } from '../src/input-terminal';
+import { Command } from '../src/command';
+import { HistoryCommand } from '../src/history';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 
@@ -77,7 +79,7 @@ describe('input-terminal', () => {
         const test_history: HistoryCommand[] = [];
 
         const term = new Terminal(test_input);
-        expect(term.get_history()).toEqual([]);
+        expect(term.commandHistory.history).toEqual([]);
     });
     it('should construct with custom command history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -85,7 +87,7 @@ describe('input-terminal', () => {
         const test_history: HistoryCommand[] = [tHistoryCommand("test")];
 
         const term: Terminal = new Terminal(test_input, test_history);
-        expect(term.get_history()).toBe(test_history);
+        expect(term.commandHistory.history).toBe(test_history);
     });
 
     // PUSH HISTORY TESTS
@@ -95,7 +97,7 @@ describe('input-terminal', () => {
         const test_command: HistoryCommand = tHistoryCommand("test");
 
         const term: Terminal = new Terminal(test_input);
-        expect(term.push_history(test_command)).toBe(1);
+        expect(term.commandHistory.push_history(test_command)).toBe(1);
     });
     it('should push command to history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -103,9 +105,9 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2")];
 
         const term: Terminal = new Terminal(test_input);
-        term.push_history(test_commands[0]);
-        term.push_history(test_commands[1]);
-        expect(term.get_history()).toEqual([test_commands[1],test_commands[0]]);
+        term.commandHistory.push_history(test_commands[0]);
+        term.commandHistory.push_history(test_commands[1]);
+        expect(term.commandHistory.history).toEqual([test_commands[1],test_commands[0]]);
     });
     it('should retain index in history if command is pushed',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -113,14 +115,14 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.push_history(test_commands[0]);
-        term.push_history(test_commands[1]);
+        term.commandHistory.push_history(test_commands[0]);
+        term.commandHistory.push_history(test_commands[1]);
 
-        term.previous_history()
+        term.commandHistory.previous_history()
 
-        term.push_history(test_commands[2]);
-        expect(term.current_history()).toBe(test_commands[1]);
-        expect(term.previous_history()).toBe(test_commands[0]);
+        term.commandHistory.push_history(test_commands[2]);
+        expect(term.commandHistory.current_history()).toBe(test_commands[1]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[0]);
     });
 
     // POP HISTORY TESTS
@@ -130,8 +132,8 @@ describe('input-terminal', () => {
         const test_command: HistoryCommand = tHistoryCommand("test");
 
         const term: Terminal = new Terminal(test_input);
-        term.push_history(test_command);
-        expect(term.pop_history()).toBe(test_command);
+        term.commandHistory.push_history(test_command);
+        expect(term.commandHistory.pop_history()).toBe(test_command);
     });
     it('should remove first command from history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -139,10 +141,10 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2")];
 
         const term: Terminal = new Terminal(test_input);
-        term.push_history(test_commands[0]);
-        term.push_history(test_commands[1]);
-        term.pop_history()
-        expect(term.get_history()).toEqual([test_commands[0]]);
+        term.commandHistory.push_history(test_commands[0]);
+        term.commandHistory.push_history(test_commands[1]);
+        term.commandHistory.pop_history()
+        expect(term.commandHistory.history).toEqual([test_commands[0]]);
     });
     it('should retain index in history if command is popped',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -150,21 +152,21 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.push_history(test_commands[0]);
-        term.push_history(test_commands[1]);
-        term.push_history(test_commands[2]);
-        term.previous_history();
+        term.commandHistory.push_history(test_commands[0]);
+        term.commandHistory.push_history(test_commands[1]);
+        term.commandHistory.push_history(test_commands[2]);
+        term.commandHistory.previous_history();
 
-        term.pop_history();
-        expect(term.current_history()).toBe(undefined);
+        term.commandHistory.pop_history();
+        expect(term.commandHistory.current_history()).toBe(undefined);
 
-        expect(term.previous_history()).toBe(test_commands[1]);
-        expect(term.previous_history()).toBe(test_commands[0]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[1]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[0]);
 
-        term.pop_history();
-        expect(term.current_history()).toBe(test_commands[0]);
-        term.pop_history();
-        expect(term.current_history()).toBe(undefined);
+        term.commandHistory.pop_history();
+        expect(term.commandHistory.current_history()).toBe(test_commands[0]);
+        term.commandHistory.pop_history();
+        expect(term.commandHistory.current_history()).toBe(undefined);
 
     });
 
@@ -175,21 +177,21 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.push_history(test_commands[0]);
-        term.push_history(test_commands[1]);
-        term.push_history(test_commands[2]);
+        term.commandHistory.push_history(test_commands[0]);
+        term.commandHistory.push_history(test_commands[1]);
+        term.commandHistory.push_history(test_commands[2]);
 
-        expect(term.previous_history()).toBe(test_commands[2]);
-        expect(term.previous_history()).toBe(test_commands[1]);
-        expect(term.previous_history()).toBe(test_commands[0]);
-        expect(term.previous_history()).toBe(test_commands[0]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[2]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[1]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[0]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[0]);
     });
     it('should return undefined on previous history call with no command history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term: Terminal = new Terminal(test_input);
-        expect(term.previous_history()).toBe(undefined);
+        expect(term.commandHistory.previous_history()).toBe(undefined);
     });
 
     // NEXT HISTORY TESTS
@@ -199,24 +201,24 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.push_history(test_commands[0]);
-        term.push_history(test_commands[1]);
-        term.push_history(test_commands[2]);
+        term.commandHistory.push_history(test_commands[0]);
+        term.commandHistory.push_history(test_commands[1]);
+        term.commandHistory.push_history(test_commands[2]);
 
-        expect(term.previous_history()).toBe(test_commands[2]);
-        expect(term.previous_history()).toBe(test_commands[1]);
-        expect(term.previous_history()).toBe(test_commands[0]);
-        expect(term.next_history()).toBe(test_commands[1]);
-        expect(term.next_history()).toBe(test_commands[2]);
-        expect(term.next_history()).toBe(undefined);
-        expect(term.next_history()).toBe(undefined);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[2]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[1]);
+        expect(term.commandHistory.previous_history()).toBe(test_commands[0]);
+        expect(term.commandHistory.next_history()).toBe(test_commands[1]);
+        expect(term.commandHistory.next_history()).toBe(test_commands[2]);
+        expect(term.commandHistory.next_history()).toBe(undefined);
+        expect(term.commandHistory.next_history()).toBe(undefined);
     });
     it('should return undefined on next history call with no command history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term: Terminal = new Terminal(test_input);
-        expect(term.next_history()).toBe(undefined);
+        expect(term.commandHistory.next_history()).toBe(undefined);
     });
     it('should return undefined on next history call at top of history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -224,11 +226,11 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.push_history(test_commands[0]);
-        term.push_history(test_commands[1]);
-        term.push_history(test_commands[2]);
+        term.commandHistory.push_history(test_commands[0]);
+        term.commandHistory.push_history(test_commands[1]);
+        term.commandHistory.push_history(test_commands[2]);
 
-        expect(term.next_history()).toBe(undefined);
+        expect(term.commandHistory.next_history()).toBe(undefined);
     });
 
     // PREDICTION TESTS
@@ -247,6 +249,6 @@ describe('input-terminal', () => {
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
-        expect(typeof term.execute_command(tHistoryCommand("test"))).toBe("number");
+        expect(typeof term.execute_command(new Command("test"))).toBe("number");
     });
 });
