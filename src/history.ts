@@ -44,7 +44,7 @@ export class TermHistory {
         return this.list.shift();
     }
 
-    public push_history(command: HistoryCommand): number {
+    public push(command: HistoryCommand): number {
         if (this._index != undefined){this._index++;}
 
         return this.list.unshift(command);

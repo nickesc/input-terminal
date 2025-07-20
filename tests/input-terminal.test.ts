@@ -97,7 +97,7 @@ describe('input-terminal', () => {
         const test_command: HistoryCommand = tHistoryCommand("test");
 
         const term: Terminal = new Terminal(test_input);
-        expect(term.history.push_history(test_command)).toBe(1);
+        expect(term.history.push(test_command)).toBe(1);
     });
     it('should push command to history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
@@ -105,8 +105,8 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2")];
 
         const term: Terminal = new Terminal(test_input);
-        term.history.push_history(test_commands[0]);
-        term.history.push_history(test_commands[1]);
+        term.history.push(test_commands[0]);
+        term.history.push(test_commands[1]);
         expect(term.history.list).toEqual([test_commands[1],test_commands[0]]);
     });
     it('should retain index in history if command is pushed',  async () => {
@@ -115,12 +115,12 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.history.push_history(test_commands[0]);
-        term.history.push_history(test_commands[1]);
+        term.history.push(test_commands[0]);
+        term.history.push(test_commands[1]);
 
         term.history.previous_history()
 
-        term.history.push_history(test_commands[2]);
+        term.history.push(test_commands[2]);
         expect(term.history.current()).toBe(test_commands[1]);
         expect(term.history.previous_history()).toBe(test_commands[0]);
     });
@@ -132,7 +132,7 @@ describe('input-terminal', () => {
         const test_command: HistoryCommand = tHistoryCommand("test");
 
         const term: Terminal = new Terminal(test_input);
-        term.history.push_history(test_command);
+        term.history.push(test_command);
         expect(term.history.pop()).toBe(test_command);
     });
     it('should remove first command from history',  async () => {
@@ -141,8 +141,8 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2")];
 
         const term: Terminal = new Terminal(test_input);
-        term.history.push_history(test_commands[0]);
-        term.history.push_history(test_commands[1]);
+        term.history.push(test_commands[0]);
+        term.history.push(test_commands[1]);
         term.history.pop()
         expect(term.history.list).toEqual([test_commands[0]]);
     });
@@ -152,9 +152,9 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.history.push_history(test_commands[0]);
-        term.history.push_history(test_commands[1]);
-        term.history.push_history(test_commands[2]);
+        term.history.push(test_commands[0]);
+        term.history.push(test_commands[1]);
+        term.history.push(test_commands[2]);
         term.history.previous_history();
 
         term.history.pop();
@@ -177,9 +177,9 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.history.push_history(test_commands[0]);
-        term.history.push_history(test_commands[1]);
-        term.history.push_history(test_commands[2]);
+        term.history.push(test_commands[0]);
+        term.history.push(test_commands[1]);
+        term.history.push(test_commands[2]);
 
         expect(term.history.previous_history()).toBe(test_commands[2]);
         expect(term.history.previous_history()).toBe(test_commands[1]);
@@ -201,9 +201,9 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.history.push_history(test_commands[0]);
-        term.history.push_history(test_commands[1]);
-        term.history.push_history(test_commands[2]);
+        term.history.push(test_commands[0]);
+        term.history.push(test_commands[1]);
+        term.history.push(test_commands[2]);
 
         expect(term.history.previous_history()).toBe(test_commands[2]);
         expect(term.history.previous_history()).toBe(test_commands[1]);
@@ -226,9 +226,9 @@ describe('input-terminal', () => {
         const test_commands: HistoryCommand[] = [tHistoryCommand("test1"), tHistoryCommand("test2"), tHistoryCommand("test3")];
 
         const term: Terminal = new Terminal(test_input);
-        term.history.push_history(test_commands[0]);
-        term.history.push_history(test_commands[1]);
-        term.history.push_history(test_commands[2]);
+        term.history.push(test_commands[0]);
+        term.history.push(test_commands[1]);
+        term.history.push(test_commands[2]);
 
         expect(term.history.next_history()).toBe(undefined);
     });
