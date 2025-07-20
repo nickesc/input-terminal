@@ -77,11 +77,7 @@ export class TermHistory {
             return undefined;
         }
 
-        if (this._index >= this._commands.length){
-            this._index = this._commands.length - 1;
-        } else {
-            this._index--;
-        }
+        this._index--;
 
         return this._commands[this._index];
 
