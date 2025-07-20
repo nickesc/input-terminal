@@ -5,7 +5,7 @@ function isHistory(target: any): boolean {
   return target instanceof TermHistory;
 }
 
-function tHistoryCommand(text: string): ExitObject {
+function tExitObject(text: string): ExitObject {
     return new ExitObject([text], undefined, 0, {}, undefined);
 }
 
