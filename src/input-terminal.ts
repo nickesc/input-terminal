@@ -40,7 +40,7 @@ export class Terminal {
             switch (event.key) {
                 case previousKey:
                     event.preventDefault();
-                    this.update_input(this.history.previous_history()?.user_input.join(" "))
+                    this.update_input(this.history.previous()?.user_input.join(" "))
                     break;
                 case nextKey:
                     event.preventDefault();

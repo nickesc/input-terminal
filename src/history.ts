@@ -50,7 +50,7 @@ export class TermHistory {
         return this.list.unshift(command);
     }
 
-    public previous_history(): HistoryCommand | undefined {
+    public previous(): HistoryCommand | undefined {
         if (this.list.length > 0){
             if (this._index == undefined) {
                 this._index = 0

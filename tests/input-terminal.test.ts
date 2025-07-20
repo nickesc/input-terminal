@@ -118,11 +118,11 @@ describe('input-terminal', () => {
         term.history.push(test_commands[0]);
         term.history.push(test_commands[1]);
 
-        term.history.previous_history()
+        term.history.previous()
 
         term.history.push(test_commands[2]);
         expect(term.history.current()).toBe(test_commands[1]);
-        expect(term.history.previous_history()).toBe(test_commands[0]);
+        expect(term.history.previous()).toBe(test_commands[0]);
     });
 
     // POP HISTORY TESTS
@@ -155,13 +155,13 @@ describe('input-terminal', () => {
         term.history.push(test_commands[0]);
         term.history.push(test_commands[1]);
         term.history.push(test_commands[2]);
-        term.history.previous_history();
+        term.history.previous();
 
         term.history.pop();
         expect(term.history.current()).toBe(undefined);
 
-        expect(term.history.previous_history()).toBe(test_commands[1]);
-        expect(term.history.previous_history()).toBe(test_commands[0]);
+        expect(term.history.previous()).toBe(test_commands[1]);
+        expect(term.history.previous()).toBe(test_commands[0]);
 
         term.history.pop();
         expect(term.history.current()).toBe(test_commands[0]);
@@ -181,17 +181,17 @@ describe('input-terminal', () => {
         term.history.push(test_commands[1]);
         term.history.push(test_commands[2]);
 
-        expect(term.history.previous_history()).toBe(test_commands[2]);
-        expect(term.history.previous_history()).toBe(test_commands[1]);
-        expect(term.history.previous_history()).toBe(test_commands[0]);
-        expect(term.history.previous_history()).toBe(test_commands[0]);
+        expect(term.history.previous()).toBe(test_commands[2]);
+        expect(term.history.previous()).toBe(test_commands[1]);
+        expect(term.history.previous()).toBe(test_commands[0]);
+        expect(term.history.previous()).toBe(test_commands[0]);
     });
     it('should return undefined on previous history call with no command history',  async () => {
         const dom: JSDOM = new JSDOM(`<!DOCTYPE html><input id=="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term: Terminal = new Terminal(test_input);
-        expect(term.history.previous_history()).toBe(undefined);
+        expect(term.history.previous()).toBe(undefined);
     });
 
     // NEXT HISTORY TESTS
@@ -205,9 +205,9 @@ describe('input-terminal', () => {
         term.history.push(test_commands[1]);
         term.history.push(test_commands[2]);
 
-        expect(term.history.previous_history()).toBe(test_commands[2]);
-        expect(term.history.previous_history()).toBe(test_commands[1]);
-        expect(term.history.previous_history()).toBe(test_commands[0]);
+        expect(term.history.previous()).toBe(test_commands[2]);
+        expect(term.history.previous()).toBe(test_commands[1]);
+        expect(term.history.previous()).toBe(test_commands[0]);
         expect(term.history.next_history()).toBe(test_commands[1]);
         expect(term.history.next_history()).toBe(test_commands[2]);
         expect(term.history.next_history()).toBe(undefined);
