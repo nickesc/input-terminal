@@ -1,6 +1,8 @@
 import { TermCommands, Command } from './commands.ts';
 import { TermHistory, HistoryCommand } from './history.ts';
+import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
+
 
 /**
  * @fileoverview description
@@ -20,6 +22,10 @@ export class Terminal {
     public commands: TermCommands;
     public options: TermOptions;
 
+    private _listeners: TermListeners
+    private _started: boolean = false;
+
+
     /**
      * @constructor
      */
@@ -28,49 +34,16 @@ export class Terminal {
         this.history = new TermHistory(commandHistory);
         this.commands = new TermCommands(commandList);
         this.options = new TermOptions(options);
+        this._listeners = new TermListeners(this);
+
     }
 
     public init(): void {
-        this.attach_input_listeners();
-        this.update_input();
-    }
-
-    public attach_input_listeners(previousKey: string = "ArrowUp", nextKey: string = "ArrowDown"): void {
-        this.input.addEventListener("keydown", (event: KeyboardEvent) => {
-            switch (event.key) {
-                case previousKey:
-                    event.preventDefault();
-                    this.update_input(this.history.previous()?.user_input.join(" "))
-                    break;
-                case nextKey:
-                    event.preventDefault();
-                    this.update_input(this.history.next()?.user_input.join(" "))
-                    break;
-                case "Backspace":
-                case "Delete":
-                case "ArrowLeft":
-                    if (this.input.selectionStart !== null && this.input.selectionStart <= (this._preprompt + this._prompt).length) {
-                        event.preventDefault();
-                    }
-                    break;
-            }
-        });
-        this.input.addEventListener("selectionchange", (event: Event) => {
-            const promptLength: number = (this._preprompt + this._prompt).length;
-            const start: number | null = this.input.selectionStart;
-            const end: number | null = this.input.selectionEnd;
-            const direction = this.input.selectionDirection;
-
-            if (start !== null && start < promptLength) {
-                if (end !== null && end <= promptLength) {
-                    this.input.setSelectionRange(promptLength, promptLength);
-                } else if (end !== null) {
-                    this.input.setSelectionRange(promptLength, end, direction || undefined);
-                } else {
-                    this.input.selectionStart = promptLength;
-                }
-            }
-        })
+        if (!this._started){
+            this._listeners.attach_input_listeners();
+            this.update_input();
+            this._started = true
+        }
     }
 
     public update_input(user_input?: string): void {
