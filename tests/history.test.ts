@@ -27,16 +27,16 @@ describe('input-terminal', () => {
     it('should have empty command history by default', () => {
         const test_history: ExitObject[] = [];
         const history: TermHistory = new TermHistory();
-        expect(history.commands).toEqual(test_history);
+        expect(history.items).toEqual(test_history);
     });
     it('should construct with custom command history',  () => {
         const history: TermHistory = new TermHistory(test_commands);
-        expect(history.commands).toBe(test_commands);
+        expect(history.items).toBe(test_commands);
     });
     it('should set custom command history',  () => {
         const history: TermHistory = new TermHistory();
-        history.commands = test_commands;
-        expect(history.commands).toEqual(test_commands);
+        history.items = test_commands;
+        expect(history.items).toEqual(test_commands);
     });
 
 
@@ -49,7 +49,7 @@ describe('input-terminal', () => {
         const history: TermHistory = new TermHistory();
         history.push(test_commands[0]);
         history.push(test_commands[1]);
-        expect(history.commands).toEqual([test_commands[1],test_commands[0]]);
+        expect(history.items).toEqual([test_commands[1],test_commands[0]]);
     });
     it('should retain index in history when command is pushed',  () => {
         const history: TermHistory = new TermHistory();
@@ -74,7 +74,7 @@ describe('input-terminal', () => {
         history.push(test_commands[0]);
         history.push(test_commands[1]);
         history.pop()
-        expect(history.commands).toEqual([test_commands[0]]);
+        expect(history.items).toEqual([test_commands[0]]);
     });
     it('should retain index in history if command is popped',  () => {
         const history: TermHistory = new TermHistory(test_commands);

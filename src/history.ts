@@ -38,21 +38,21 @@ export class ExitObject{
 
 export class TermHistory {
 
-    private _commands: ExitObject[];
+    private _items: ExitObject[];
     private _index: number | undefined;
 
-    public get commands(): ExitObject[] {
-        return this._commands;
+    public get items(): ExitObject[] {
+        return this._items;
     }
 
-    public set commands(command_list: ExitObject[]) {
-        this._commands = command_list;
+    public set items(command_list: ExitObject[]) {
+        this._items = command_list;
     }
 
 
 
     constructor(history: ExitObject[] = []) {
-        this._commands = history;
+        this._items = history;
     }
 
     public reset_index(): void {
@@ -61,7 +61,7 @@ export class TermHistory {
 
     public current(): ExitObject | undefined {
         if (this._index != undefined){
-            return this._commands[this._index];
+            return this._items[this._index];
         }
         return undefined;
     }
@@ -70,37 +70,37 @@ export class TermHistory {
         if (this._index == 0){this._index = undefined;}
         else if (this._index != undefined){this._index--;}
 
-        return this._commands.shift();
+        return this._items.shift();
     }
 
     public push(command: ExitObject): number {
         if (this._index != undefined){this._index++;}
 
-        return this._commands.unshift(command);
+        return this._items.unshift(command);
     }
 
     public previous(): ExitObject | undefined {
-        if (this._commands.length > 0){
+        if (this._items.length > 0){
             if (this._index == undefined) {
                 this._index = 0
-            } else if (this._index < this._commands.length-1){
+            } else if (this._index < this._items.length-1){
                 this._index++;
             }
-            return this._commands[this._index];
+            return this._items[this._index];
         }
         return undefined;
     }
 
     public next(): ExitObject | undefined {
 
-        if (this._commands.length <= 0 || this._index == undefined || this._index <= 0){
+        if (this._items.length <= 0 || this._index == undefined || this._index <= 0){
             this._index = undefined;
             return undefined;
         }
 
         this._index--;
 
-        return this._commands[this._index];
+        return this._items[this._index];
 
     }
 
