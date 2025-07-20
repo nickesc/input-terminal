@@ -15,7 +15,7 @@ interface TermCallback { (object: object): any }
 export class Terminal {
 
     public input: HTMLInputElement;
-    public commandHistory: TermHistory;
+    public history: TermHistory;
     private _preprompt: string = "";
     private _prompt: string = "> ";
     private _commandList: Command[];
@@ -26,7 +26,7 @@ export class Terminal {
      */
     constructor(input: HTMLInputElement, commandHistory: HistoryCommand[] = [], commandList: Command[] = []) {
         this.input = input;
-        this.commandHistory = new TermHistory(commandHistory);
+        this.history = new TermHistory(commandHistory);
         this._commandList = commandList;
     }
 
@@ -40,11 +40,11 @@ export class Terminal {
             switch (event.key) {
                 case previousKey:
                     event.preventDefault();
-                    this.update_input(this.commandHistory.previous_history()?.user_input.join(" "))
+                    this.update_input(this.history.previous_history()?.user_input.join(" "))
                     break;
                 case nextKey:
                     event.preventDefault();
-                    this.update_input(this.commandHistory.next_history()?.user_input.join(" "))
+                    this.update_input(this.history.next_history()?.user_input.join(" "))
                     break;
                 case "Backspace":
                 case "Delete":
@@ -84,7 +84,7 @@ export class Terminal {
         const callbackResponse = callback?.(output)
         const exitCode: number = 0;
 
-        this.commandHistory.reset_index();
+        this.history.reset_index();
         return exitCode;
     }
 
