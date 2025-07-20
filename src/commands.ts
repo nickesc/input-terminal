@@ -7,22 +7,37 @@ export class Command {
 }
 
 export class TermCommands{
-    public list: Command[];
+    private _list: Command[] = [];
 
-    constructor(commands: Command[] = []) {
-        this.list = commands;
+    constructor(commands?: Command[]) {
+        if (commands){
+            this.list = commands;
+        }
     }
 
-    public add_command(command: Command): void {
-        this.list.push(command);
+    public get list(): Command[] {
+        return this._list;
     }
 
-    public remove_command(command: Command): void {
-        this.list.splice(this.list.indexOf(command), 1);
+    public set list(commands: Command[]) {
+        for (let command of commands){
+            this.add(command);
+        }
     }
 
-    public execute_command(command: Command): number {
-        let exit_code: number = 0;
-        return exit_code;
+    public add(command: Command): number {
+        if (!this._list.includes(command)){
+            this._list.push(command);
+        }
+        return this._list.length
+    }
+
+    public remove(command: Command): Command | undefined {
+        if (this._list.includes(command)){
+            this._list.splice(this._list.indexOf(command), 1);
+            return command;
+        } else {
+            return undefined;
+        }
     }
 }
