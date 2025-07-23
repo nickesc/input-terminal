@@ -1,8 +1,43 @@
 export class Command {
     public key: string;
+    public action: Function;
+    public option: string[] = [];
+    public args: string[] = [];
 
-    constructor(key: string) {
+
+    constructor(key: string, action: Function = () => {}) {
         this.key = key;
+        this.action = action;
+    }
+
+    public addOption(key: string, alt?: string): void {}
+    public removeOption(key: string): void {}
+
+    public addArgument(argument: string): void {
+        if (!this.args.includes(argument)){
+            this.args.push(argument);
+        }
+    }
+    public removeArgument(argument: string): void {
+        if (this.args.includes(argument)){
+            this.args.splice(this.args.indexOf(argument), 1);
+        }
+    }
+
+    public run(user_input: string[]): ExitObject {
+        let return_value: object;
+        let exit_code: number;
+        try {
+            return_value = this.action(user_input);
+            exit_code = 0;
+
+        } catch (error) {
+            return_value = {};
+            exit_code = 1;
+        }
+        //const return_value: object = this.action(user_input)
+        const exit_reply: ExitObject = new ExitObject(user_input, this, exit_code, return_value);
+        return exit_reply;
     }
 }
 
