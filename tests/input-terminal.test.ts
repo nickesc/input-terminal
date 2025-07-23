@@ -63,11 +63,69 @@ describe('input-terminal', () => {
 
 
     // COMMAND EXECUTION TESTS
-    it('should return an exit code after execution', () => {
+    it('should return an ExitObject after execution', () => {
         const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
         const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
 
         const term = new Terminal(test_input);
+        term.commands.add(new Command("test", (args, options, terminal) => {
+            return true
+        }))
         expect(isExitObject(term.execute_command("command"))).toBe(true);
+    });
+    it('should successfully execute a known command', () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        term.commands.add(new Command("test", (args, options, terminal) => {
+            return true
+        }))
+        expect(term.execute_command("test").exit_code).toEqual(0);
+    });
+    it('should fail to execute an unknown command', () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        expect(term.execute_command("test").exit_code).toEqual(1);
+    });
+    it('should have an exit code of 0 for an empty command', () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        expect(term.execute_command("").exit_code).toEqual(0);
+    });
+    it('should return the correct exit object', () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        const command = new Command("test", (args, options, terminal) => {
+            return true
+        })
+        term.commands.add(command)
+        expect(term.execute_command("test")).toEqual(new ExitObject(["test"], command, 0, true));
+    });
+    it('should pass options and arguments correctly', () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        term.commands.add(new Command("test", (args, options, terminal) => {
+            return [args,options]
+        }))
+        expect(term.execute_command("test arg1 arg2 -o --option -value=10").output).toEqual([["arg1","arg2"],[{key: "o"},{key: "option"}, {key: "value", value: "10"}]]);
+    });
+    it('should pass terminal correctly', () => {
+        const dom = new JSDOM(`<!DOCTYPE html><input id="test"></input>`);
+        const test_input = dom.window.document.getElementById("test") as HTMLInputElement;
+
+        const term = new Terminal(test_input);
+        term.commands.add(new Command("test", (args, options, terminal) => {
+            return terminal;
+        }))
+        expect(term.execute_command("test").output).toBe(term);
     });
 });
