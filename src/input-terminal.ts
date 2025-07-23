@@ -75,7 +75,7 @@ export class Terminal {
         } else {
             exitObject = new ExitObject(user_input, undefined, 1, output);
         }
-        console.log(exitObject);
+        //console.log(exitObject);
 
         //const exitObject = new ExitObject(user_input, command, exitCode, output);
         this._lastExitCode = exitObject.exit_code;
