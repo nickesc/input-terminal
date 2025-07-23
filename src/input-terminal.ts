@@ -57,16 +57,15 @@ export class Terminal {
         return prediction;
     }
 
-    public parse_command(input: string): Command | undefined {
+    public parse_command(input: string[]): Command | undefined {
         return new Command("key");
     }
 
     public execute_command(input: string): ExitObject {
         // EXECUTION CODE TO GO HERE.....
-        // remove callback for now
 
         const user_input: string[] = input.split(" ");
-        const command: Command | undefined = this.parse_command(input);
+        const command: Command | undefined = this.parse_command(user_input);
         const output: object = {}
         const exitCode: number = 0;
 
