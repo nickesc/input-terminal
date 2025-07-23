@@ -17,7 +17,7 @@ describe('input-terminal-options', () => {
         const options: TermOptions = new TermOptions();
         expect(options.previousKey).toEqual("ArrowUp");
         expect(options.nextKey).toEqual("ArrowDown");
-        expect(options.enterKey).toEqual("Enter");
+        expect(options.returnKey).toEqual("Enter");
         expect(options.tabKey).toEqual("Tab");
         expect(options.modKey).toEqual("Ctrl");
         expect(options.preprompt).toEqual("");
@@ -38,7 +38,7 @@ describe('input-terminal-options', () => {
         const options: TermOptions = new TermOptions(customOptions);
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
-        expect(options.enterKey).toEqual(customOptions.enterKey);
+        expect(options.returnKey).toEqual(customOptions.enterKey);
         expect(options.tabKey).toEqual(customOptions.tabKey);
         expect(options.modKey).toEqual(customOptions.modKey);
         expect(options.preprompt).toEqual("preprompt");
@@ -53,7 +53,7 @@ describe('input-terminal-options', () => {
         const options: TermOptions = new TermOptions(customOptions);
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
-        expect(options.enterKey).toEqual("Enter"); // Default
+        expect(options.returnKey).toEqual("Enter"); // Default
         expect(options.tabKey).toEqual("Tab"); // Default
     });
 

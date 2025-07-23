@@ -17,6 +17,10 @@ export class TermListeners {
                 event.preventDefault();
                 this._terminal.update_input(this._terminal.history.next()?.user_input.join(" "))
                 break;
+            case this._terminal.options.returnKey:
+                event.preventDefault();
+                this._terminal.execute_command(this._terminal.input.value);
+                break;
             case "Backspace":
             case "Delete":
             case "ArrowLeft":
