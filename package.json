@@ -22,10 +22,11 @@
   "scripts": {
     "test": "vitest run --reporter=verbose",
     "coverage": "vitest run --coverage",
-    "docs": "npx tsc -p tsconfig.docs.json && jsdoc2md --files build/input-terminal.js > docs/documentation.md && npm run capsule",
+    "docs": "npm run build:site && jsdoc2md --files build/input-terminal.js > docs/documentation.md && npm run capsule",
     "capsule": "[ -e  docs/capsule.png ] && rm docs/capsule.png; svg2png docs/icon.svg --output=docs/capsule.png --width=2048 --height=1024",
     "build": "npx tsc",
-    "build:docs": "npm run build && npm run docs"
+    "build:docs": "npm run build && npm run docs",
+    "build:site": "npx tsc -p tsconfig.docs.json"
   },
   "files": [
     "build/**/*",
