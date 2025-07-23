@@ -3,7 +3,7 @@ import { ExitObject } from '../src/commands.ts';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 function isHistory(target: any): boolean {
-  return target instanceof TermHistory;
+    return target instanceof TermHistory;
 }
 
 function tExitObject(text: string): ExitObject {

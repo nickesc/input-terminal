@@ -19,7 +19,9 @@ export class TermListeners {
                 break;
             case this._terminal.options.returnKey:
                 event.preventDefault();
-                this._terminal.execute_command(this._terminal.input.value);
+                const promptLen: number = this._terminal.options.preprompt.length + this._terminal.options.prompt.length;
+                this._terminal.execute_command(this._terminal.input.value.slice(promptLen));
+                this._terminal.update_input();
                 break;
             case "Backspace":
             case "Delete":
@@ -30,6 +32,7 @@ export class TermListeners {
                 break;
         }
     }
+
 
     private _handle_selection_event(event: Event): void {
         const promptLength: number = (this._terminal.options.preprompt + this._terminal.options.prompt).length;

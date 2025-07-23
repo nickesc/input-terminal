@@ -1,16 +1,41 @@
-export class Command {
-    public key: string;
-    public action: Function;
-    public option: string[] = [];
+import { Terminal } from './input-terminal.ts';
+
+class ArgsOptions {
+    public user_input: string[];
+    public options: string[] = [];
     public args: string[] = [];
 
+    constructor(user_input: string[]) {
+        this.user_input = user_input;
+        this.parse_input();
+    }
 
-    constructor(key: string, action: Function = () => {}) {
+    private parse_input(): void {
+        for (let i = 1; i < this.user_input.length; i++) {
+            const item: string = this.user_input[i] || "";
+            if (item.startsWith("--")){
+                this.options.push(item.substring(2));
+            } else if (item.startsWith("-")){
+                this.options.push(item.substring(1));
+            } else {
+                this.args.push(item);
+            }
+        }
+    }
+}
+
+export class Command {
+    public key: string;
+    public action: (args: string[], options: string[], terminal: Terminal) => {};
+    public options: string[] = [];
+    public args: string[] = [];
+
+    constructor(key: string, action: (args: string[], options: string[], terminal: Terminal) => {}) {
         this.key = key;
         this.action = action;
     }
 
-    public addOption(key: string, alt?: string): void {}
+/*     public addOption(key: string, alt?: string): void {}
     public removeOption(key: string): void {}
 
     public addArgument(argument: string): void {
@@ -22,13 +47,20 @@ export class Command {
         if (this.args.includes(argument)){
             this.args.splice(this.args.indexOf(argument), 1);
         }
+    } */
+
+    public parse_input(user_input: string[]): ArgsOptions {
+        return new ArgsOptions(user_input);
     }
 
-    public run(user_input: string[]): ExitObject {
+    public run(user_input: string[], term: Terminal): ExitObject {
         let return_value: object;
         let exit_code: number;
+
+        const parsed_input: ArgsOptions = this.parse_input(user_input);
+
         try {
-            return_value = this.action(user_input);
+            return_value = this.action(parsed_input.args, parsed_input.options, term);
             exit_code = 0;
 
         } catch (error) {
@@ -43,14 +75,14 @@ export class Command {
 
 export class ExitObject{
     private _command: Command | undefined;
-    private _timestamp: Date;
+    private _timestamp: number;
     private _exit_code: number;
     private _user_input: string[];
     private _output: object;
 
     constructor(user_input: string[], command: Command | undefined, exit_code: number, output: object) {
         this._command = command;
-        this._timestamp = new Date();
+        this._timestamp = Date.now();
         this._exit_code = exit_code;
         this._user_input = user_input;
         this._output = output;
@@ -60,7 +92,7 @@ export class ExitObject{
         return this._command;
     }
 
-    public get timestamp(): Date {
+    public get timestamp(): number {
         return this._timestamp;
     }
 
@@ -94,6 +126,13 @@ export class TermCommands{
         for (let command of commands){
             this.add(command);
         }
+    }
+
+    public find(commandKey?: string): Command | undefined {
+        if (!commandKey){return undefined;}
+        //const commandKey = user_input[0];
+        //return new Command("key");
+        return this.list.find(command => command.key === commandKey);
     }
 
     public add(command: Command): number {

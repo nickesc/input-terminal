@@ -19,9 +19,13 @@ export class Terminal {
     public commands: TermCommands;
     public options: TermOptions;
 
-    private _listeners: TermListeners
+    private _listeners: TermListeners;
     private _started: boolean = false;
+    private _lastExitCode?: number = undefined;
 
+    public get lastExitCode(): number | undefined {
+        return this._lastExitCode;
+    }
 
     /**
      * @constructor
@@ -47,7 +51,6 @@ export class Terminal {
         return this._started;
     }
 
-
     public update_input(user_input?: string): void {
         this.input.value = this.options.preprompt + this.options.prompt + (user_input || "");
     }
@@ -57,21 +60,29 @@ export class Terminal {
         return prediction;
     }
 
-    public parse_command(input: string[]): Command | undefined {
-        return new Command("key");
-    }
-
     public execute_command(input: string): ExitObject {
-        // EXECUTION CODE TO GO HERE.....
-
         const user_input: string[] = input.split(" ");
-        const command: Command | undefined = this.parse_command(user_input);
+        const command: Command | undefined = this.commands.find(user_input[0]);
         const output: object = {}
-        const exitCode: number = 0;
+        //const exitCode: number = 0;
 
+        let exitObject: ExitObject;
+        if (command) {
+            //exitObject = new ExitObject(user_input, command, exitCode, output);
+            exitObject = command.run(user_input, this);
+        } else if (user_input[0] == "") {
+            exitObject = new ExitObject(user_input, undefined, 0, output);
+        } else {
+            exitObject = new ExitObject(user_input, undefined, 1, output);
+        }
+        console.log(exitObject);
+
+        //const exitObject = new ExitObject(user_input, command, exitCode, output);
+        this._lastExitCode = exitObject.exit_code;
+        this.history.push(exitObject);
         this.history.reset_index();
 
-        return new ExitObject(user_input, command, exitCode, output);
+        return exitObject
     }
 
 

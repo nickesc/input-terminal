@@ -2,7 +2,7 @@ import { TermOptions } from '../src/options';
 import { describe, it, expect } from 'vitest';
 
 function isOptions(target: any): boolean {
-  return target instanceof TermOptions;
+    return target instanceof TermOptions;
 }
 
 describe('input-terminal-options', () => {
@@ -29,7 +29,7 @@ describe('input-terminal-options', () => {
         const customOptions = {
             previousKey: "Up",
             nextKey: "Down",
-            enterKey: "Return",
+            returnKey: "Return",
             tabKey: "Tabulator",
             modKey: "Ctrl",
             prompt: "prompt",
@@ -38,7 +38,7 @@ describe('input-terminal-options', () => {
         const options: TermOptions = new TermOptions(customOptions);
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
-        expect(options.returnKey).toEqual(customOptions.enterKey);
+        expect(options.returnKey).toEqual(customOptions.returnKey);
         expect(options.tabKey).toEqual(customOptions.tabKey);
         expect(options.modKey).toEqual(customOptions.modKey);
         expect(options.preprompt).toEqual("preprompt");
