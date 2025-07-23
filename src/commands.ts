@@ -1,8 +1,13 @@
 import { Terminal } from './input-terminal.ts';
 
+type Opt = {
+    key: string;
+    value?: string;
+}
+
 class ArgsOptions {
     public user_input: string[];
-    public options: string[] = [];
+    public options: Opt[] = [];
     public args: string[] = [];
 
     constructor(user_input: string[]) {
@@ -10,27 +15,44 @@ class ArgsOptions {
         this.parse_input();
     }
 
+    private string2opt(string: string): Opt {
+        const split: string[] = string.split("=");
+
+        if (split[0] && split[1]){
+            return {key: split[0], value: split[1]};
+        } else if (split[0]){
+            return {key: split[0]};
+        } else {
+            throw new Error("Unable to split string to option and key")
+        }
+    }
+
+
     private parse_input(): void {
         for (let i = 1; i < this.user_input.length; i++) {
             const item: string = this.user_input[i] || "";
             if (item.startsWith("--")){
-                this.options.push(item.substring(2));
+                this.options.push(this.string2opt(item.slice(2)));
             } else if (item.startsWith("-")){
-                this.options.push(item.substring(1));
+                this.options.push(this.string2opt(item.slice(1)));
             } else {
                 this.args.push(item);
             }
         }
     }
+
+
 }
+
+
 
 export class Command {
     public key: string;
-    public action: (args: string[], options: string[], terminal: Terminal) => {};
+    public action: (args: string[], options: Opt[], terminal: Terminal) => {};
     public options: string[] = [];
     public args: string[] = [];
 
-    constructor(key: string, action: (args: string[], options: string[], terminal: Terminal) => {}) {
+    constructor(key: string, action: (args: string[], options: Opt[], terminal: Terminal) => {}) {
         this.key = key;
         this.action = action;
     }
@@ -78,9 +100,9 @@ export class ExitObject{
     private _timestamp: number;
     private _exit_code: number;
     private _user_input: string[];
-    private _output: object;
+    private _output: any;
 
-    constructor(user_input: string[], command: Command | undefined, exit_code: number, output: object) {
+    constructor(user_input: string[], command: Command | undefined, exit_code: number, output: any) {
         this._command = command;
         this._timestamp = Date.now();
         this._exit_code = exit_code;
