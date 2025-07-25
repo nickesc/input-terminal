@@ -1,13 +1,8 @@
 import { Terminal } from './input-terminal.ts';
 
-type Opt = {
-    key: string;
-    value?: string;
-}
-
 class ArgsOptions {
     public user_input: string[];
-    public options: Opt[] = [];
+    public options = {};
     public args: string[] = [];
 
     constructor(user_input: string[]) {
@@ -15,61 +10,43 @@ class ArgsOptions {
         this.parse_input();
     }
 
-    private string2opt(string: string): Opt {
-        const split: string[] = string.split("=");
+    private string2opt(string: string): void {
+        const key: string = string.split("=")[0] || "";
+        const value: string = string.split("=").slice(1).join("=");
 
-        if (split[0] && split[1]){
-            return {key: split[0], value: split[1]};
-        } else if (split[0]){
-            return {key: split[0]};
+        if (key && value){
+            Object.assign(this.options, {[key]: {value:value}});
+        } else if (key){
+            Object.assign(this.options, {[key]: {value:undefined}});
         } else {
             throw new Error("Unable to split string to option and key")
         }
     }
 
-
     private parse_input(): void {
         for (let i = 1; i < this.user_input.length; i++) {
             const item: string = this.user_input[i] || "";
             if (item.startsWith("--")){
-                this.options.push(this.string2opt(item.slice(2)));
+                this.string2opt(item.slice(2));
             } else if (item.startsWith("-")){
-                this.options.push(this.string2opt(item.slice(1)));
+                this.string2opt(item.slice(1));
             } else {
                 this.args.push(item);
             }
         }
     }
-
-
 }
-
-
 
 export class Command {
     public key: string;
-    public action: (args: string[], options: Opt[], terminal: Terminal) => {};
+    public action: (args: string[], options: {}, terminal: Terminal) => {};
     public options: string[] = [];
     public args: string[] = [];
 
-    constructor(key: string, action: (args: string[], options: Opt[], terminal: Terminal) => {}) {
+    constructor(key: string, action: (args: string[], options: {}, terminal: Terminal) => {}) {
         this.key = key;
         this.action = action;
     }
-
-/*     public addOption(key: string, alt?: string): void {}
-    public removeOption(key: string): void {}
-
-    public addArgument(argument: string): void {
-        if (!this.args.includes(argument)){
-            this.args.push(argument);
-        }
-    }
-    public removeArgument(argument: string): void {
-        if (this.args.includes(argument)){
-            this.args.splice(this.args.indexOf(argument), 1);
-        }
-    } */
 
     public parse_input(user_input: string[]): ArgsOptions {
         return new ArgsOptions(user_input);
@@ -89,7 +66,6 @@ export class Command {
             return_value = {};
             exit_code = 1;
         }
-        //const return_value: object = this.action(user_input)
         const exit_reply: ExitObject = new ExitObject(user_input, this, exit_code, return_value);
         return exit_reply;
     }
