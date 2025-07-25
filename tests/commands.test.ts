@@ -10,7 +10,7 @@ function isTermCommands(target: any): boolean {
 }
 
 function tCommand(key: string): Command {
-    return new Command(key);
+    return new Command(key, () => {return {}});
 }
 
 let test_commands: Command[];
@@ -24,11 +24,11 @@ describe('input-terminal-commands', () => {
 
     // COMMAND TESTS
     it('should construct a Command object',  () => {
-        const command: Command = new Command("test");
+        const command: Command = new Command("test", () => {return {}});
         expect(isCommand(command)).toBe(true);
     });
     it('should construct with a key',  () => {
-        const command: Command = new Command("test");
+        const command: Command = new Command("test", () => {return {}});
         expect(command.key).toEqual("test");
     });
 
