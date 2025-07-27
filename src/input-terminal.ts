@@ -60,8 +60,55 @@ export class Terminal {
         return prediction;
     }
 
+    public getInputArray(input: string): string[] {
+
+        if (input.trim().length === 0) {
+            return [""];
+        }
+
+        function clean_buffer(toClean: string){
+            toClean = toClean.trim()
+            toClean = toClean.replace(/\\/g, "")
+            return toClean
+        }
+
+        const quotes: string[] = ['"', "'", "`"];
+        let currQuote: string | null = null;
+        let buffer: string = "";
+        let result: string[] = [];
+
+        for (let i = 0; i < input.length; i++) {
+            const char = input[i] || "";
+
+            if (quotes.includes(char) && buffer.slice(-1) !== "\\") {
+                if (currQuote == null) {
+                    currQuote = char;
+                } else if (currQuote === char) {
+                    result.push(clean_buffer(buffer));
+                    buffer = "";
+                    currQuote = null;
+                } else {
+                    buffer += char;
+                }
+            } else if (char === " " && currQuote == null) {
+                if (buffer.length > 0){
+                    result.push(clean_buffer(buffer));
+                    buffer = "";
+                }
+
+            } else {
+                buffer += char;
+            }
+
+        }
+        if (buffer.length > 0){
+            result.push(clean_buffer(buffer));
+        }
+        return result;
+    }
+
     public execute_command(input: string): ExitObject {
-        const user_input: string[] = input.split(" ");
+        const user_input: string[] = this.getInputArray(input);
         const command: Command | undefined = this.commands.find(user_input[0]);
         const output: object = {}
         //const exitCode: number = 0;
