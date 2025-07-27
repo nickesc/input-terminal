@@ -56,7 +56,7 @@ export class TermListeners {
             this._handle_keyboard_event(event)
         });
         this._terminal.input.addEventListener("selectionchange", (event: Event) => {
-            this,this._handle_selection_event(event)
+            this._handle_selection_event(event)
         })
     }
 }
