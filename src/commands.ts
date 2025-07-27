@@ -127,9 +127,7 @@ export class TermCommands{
     }
 
     public find(commandKey?: string): Command | undefined {
-        if (!commandKey){return undefined;}
-        //const commandKey = user_input[0];
-        //return new Command("key");
+        if (!commandKey){return undefined;};
         return this.list.find(command => command.key === commandKey);
     }
 
@@ -137,7 +135,7 @@ export class TermCommands{
         if (!this._list.includes(command)){
             this._list.push(command);
         }
-        return this._list.length
+        return this._list.length;
     }
 
     public remove(command: Command): Command | undefined {
