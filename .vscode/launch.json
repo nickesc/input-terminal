@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Test Page (Served/Chrome)",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}/docs",
+      "serverReadyAction": {
+        "pattern": "Local:",
+        "uriFormat": "http://localhost:8080",
+        "action": "debugWithChrome"
+      },
+      "preLaunchTask": "serve-docs"
+    },
+    {
+      "command": "npm test",
+      "name": "npm test",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm run test:watch",
+      "name": "vitest",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}
