@@ -23,11 +23,17 @@ describe('TermListeners', () => {
     });
 
     it('should handle next key', () => {
-        terminal.history.push(new ExitObject(['test'], undefined, 0, 'test'));
+        terminal.history.push(new ExitObject(['test2'], undefined, 0, 'test'));
+        terminal.history.push(new ExitObject(['test1'], undefined, 0, 'test'));
         terminal.history.previous();
-        const event = new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' });
+        let event = new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' });
         input.dispatchEvent(event);
         expect(input.value).toBe(`${terminal.options.preprompt}${terminal.options.prompt}`);
+        terminal.history.previous();
+        terminal.history.previous();
+        event = new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' });
+        input.dispatchEvent(event);
+        expect(input.value).toBe(`${terminal.options.preprompt}${terminal.options.prompt}test1`);
     });
 
     it('should handle return key', () => {
@@ -89,5 +95,14 @@ describe('TermListeners', () => {
         input.dispatchEvent(event);
         expect(input.selectionStart).toBe((`${terminal.options.preprompt}${terminal.options.prompt}`).length);
         expect(input.selectionEnd).toBe(5);
+    });
+
+    it('should handle selection change with start in prompt and null end', () => {
+        terminal.update_input('test');
+        input.selectionStart = 0;
+        input.selectionEnd = null;
+        const event = new dom.window.Event('selectionchange');
+        input.dispatchEvent(event);
+        expect(input.selectionStart).toBe((`${terminal.options.preprompt}${terminal.options.prompt}`).length);
     });
 });
