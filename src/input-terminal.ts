@@ -78,28 +78,29 @@ export class Terminal {
         let result: string[] = [];
 
         for (let i = 0; i < input.length; i++) {
-            const char = input[i] || "";
+            const char = input[i];
 
-            if (quotes.includes(char) && buffer.slice(-1) !== "\\") {
-                if (currQuote == null) {
-                    currQuote = char;
-                } else if (currQuote === char) {
-                    result.push(clean_buffer(buffer));
-                    buffer = "";
-                    currQuote = null;
+            if (char) {
+                if (quotes.includes(char) && buffer.slice(-1) !== "\\") {
+                    if (currQuote == null) {
+                        currQuote = char;
+                    } else if (currQuote === char) {
+                        result.push(clean_buffer(buffer));
+                        buffer = "";
+                        currQuote = null;
+                    } else {
+                        buffer += char;
+                    }
+                } else if (char === " " && currQuote == null) {
+                    if (buffer.length > 0){
+                        result.push(clean_buffer(buffer));
+                        buffer = "";
+                    }
+
                 } else {
                     buffer += char;
                 }
-            } else if (char === " " && currQuote == null) {
-                if (buffer.length > 0){
-                    result.push(clean_buffer(buffer));
-                    buffer = "";
-                }
-
-            } else {
-                buffer += char;
             }
-
         }
         if (buffer.length > 0){
             result.push(clean_buffer(buffer));

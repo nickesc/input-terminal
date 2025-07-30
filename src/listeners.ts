@@ -15,7 +15,10 @@ export class TermListeners {
                 break;
             case this._terminal.options.nextKey:
                 event.preventDefault();
-                this._terminal.update_input(this._terminal.history.next()?.user_input.join(" "))
+                const next = this._terminal.history.next()
+                if (next) {
+                    this._terminal.update_input(next.user_input.join(" "))
+                }
                 break;
             case this._terminal.options.returnKey:
                 event.preventDefault();
@@ -37,14 +40,17 @@ export class TermListeners {
     private _handle_selection_event(event: Event): void {
         const promptLength: number = (this._terminal.options.preprompt + this._terminal.options.prompt).length;
         const start: number | null = this._terminal.input.selectionStart;
-        const end: number | null = this._terminal.input.selectionEnd;
+        let end: number | null = this._terminal.input.selectionEnd;
         const direction = this._terminal.input.selectionDirection;
 
+        if (start === end) { end = null };
+
         if (start !== null && start < promptLength) {
+
             if (end !== null && end <= promptLength) {
                 this._terminal.input.setSelectionRange(promptLength, promptLength);
             } else if (end !== null) {
-                this._terminal.input.setSelectionRange(promptLength, end, direction || undefined);
+                this._terminal.input.setSelectionRange(promptLength, end, direction!);
             } else {
                 this._terminal.input.selectionStart = promptLength;
             }
