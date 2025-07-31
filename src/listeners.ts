@@ -22,6 +22,10 @@ export class TermListeners {
                     this._terminal.update_input();
                 }
                 break;
+            case this._terminal.options.autocompleteKey:
+                event.preventDefault();
+                this._terminal.update_input(this._terminal.get_prediction(this._terminal.get_input_value()));
+                break;
             case this._terminal.options.returnKey:
                 event.preventDefault();
                 const promptLen: number = this._terminal.options.preprompt.length + this._terminal.options.prompt.length;
