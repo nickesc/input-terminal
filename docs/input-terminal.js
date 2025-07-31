@@ -43,8 +43,53 @@ export class Terminal {
         let prediction = "";
         return prediction;
     }
+    getInputArray(input) {
+        if (input.trim().length === 0) {
+            return [""];
+        }
+        function clean_buffer(toClean) {
+            toClean = toClean.trim();
+            toClean = toClean.replace(/\\/g, "");
+            return toClean;
+        }
+        const quotes = ['"', "'", "`"];
+        let currQuote = null;
+        let buffer = "";
+        let result = [];
+        for (let i = 0; i < input.length; i++) {
+            const char = input[i];
+            if (char) {
+                if (quotes.includes(char) && buffer.slice(-1) !== "\\") {
+                    if (currQuote == null) {
+                        currQuote = char;
+                    }
+                    else if (currQuote === char) {
+                        result.push(clean_buffer(buffer));
+                        buffer = "";
+                        currQuote = null;
+                    }
+                    else {
+                        buffer += char;
+                    }
+                }
+                else if (char === " " && currQuote == null) {
+                    if (buffer.length > 0) {
+                        result.push(clean_buffer(buffer));
+                        buffer = "";
+                    }
+                }
+                else {
+                    buffer += char;
+                }
+            }
+        }
+        if (buffer.length > 0) {
+            result.push(clean_buffer(buffer));
+        }
+        return result;
+    }
     execute_command(input) {
-        const user_input = input.split(" ");
+        const user_input = this.getInputArray(input);
         const command = this.commands.find(user_input[0]);
         const output = {};
         //const exitCode: number = 0;
@@ -59,7 +104,7 @@ export class Terminal {
         else {
             exitObject = new ExitObject(user_input, undefined, 1, output);
         }
-        console.log(exitObject);
+        //console.log(exitObject);
         //const exitObject = new ExitObject(user_input, command, exitCode, output);
         this._lastExitCode = exitObject.exit_code;
         this.history.push(exitObject);

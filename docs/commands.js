@@ -1,19 +1,32 @@
 import { Terminal } from "./input-terminal.js";
 class ArgsOptions {
     constructor(user_input) {
-        this.options = [];
+        this.options = {};
         this.args = [];
         this.user_input = user_input;
         this.parse_input();
+    }
+    string2opt(string) {
+        const key = string.split("=")[0] || "";
+        const value = string.split("=").slice(1).join("=");
+        if (key && value) {
+            Object.assign(this.options, { [key]: { value: value } });
+        }
+        else if (key) {
+            Object.assign(this.options, { [key]: { value: undefined } });
+        }
+        else {
+            throw new Error("Unable to split string to option and key");
+        }
     }
     parse_input() {
         for (let i = 1; i < this.user_input.length; i++) {
             const item = this.user_input[i] || "";
             if (item.startsWith("--")) {
-                this.options.push(item.substring(2));
+                this.string2opt(item.slice(2));
             }
             else if (item.startsWith("-")) {
-                this.options.push(item.substring(1));
+                this.string2opt(item.slice(1));
             }
             else {
                 this.args.push(item);
@@ -28,19 +41,6 @@ export class Command {
         this.key = key;
         this.action = action;
     }
-    /*     public addOption(key: string, alt?: string): void {}
-        public removeOption(key: string): void {}
-    
-        public addArgument(argument: string): void {
-            if (!this.args.includes(argument)){
-                this.args.push(argument);
-            }
-        }
-        public removeArgument(argument: string): void {
-            if (this.args.includes(argument)){
-                this.args.splice(this.args.indexOf(argument), 1);
-            }
-        } */
     parse_input(user_input) {
         return new ArgsOptions(user_input);
     }
@@ -56,7 +56,6 @@ export class Command {
             return_value = {};
             exit_code = 1;
         }
-        //const return_value: object = this.action(user_input)
         const exit_reply = new ExitObject(user_input, this, exit_code, return_value);
         return exit_reply;
     }
@@ -104,8 +103,7 @@ export class TermCommands {
         if (!commandKey) {
             return undefined;
         }
-        //const commandKey = user_input[0];
-        //return new Command("key");
+        ;
         return this.list.find(command => command.key === commandKey);
     }
     add(command) {
