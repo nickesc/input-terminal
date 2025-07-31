@@ -12,8 +12,11 @@ export class TermListeners {
             case this._terminal.options.nextKey:
                 event.preventDefault();
                 const next = this._terminal.history.next();
-                if (next) {
+                if (next !== undefined) {
                     this._terminal.update_input(next.user_input.join(" "));
+                }
+                else {
+                    this._terminal.update_input();
                 }
                 break;
             case this._terminal.options.returnKey:
