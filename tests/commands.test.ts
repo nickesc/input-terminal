@@ -86,9 +86,24 @@ describe('Command Tests', () => {
         const command: Command = new Command("test", () => {return {}});
         expect(isCommand(command)).toBe(true);
     });
-    it('should construct with a key',  () => {
+    it('should construct with the correct properties',  () => {
         const command: Command = new Command("test", () => {return {}});
         expect(command.key).toEqual("test");
+        expect(command.action).toBeDefined();
+    });
+    it('should parse the input correctly',  () => {
+        const command: Command = new Command("test", () => {return {}});
+        const input: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
+        const parsed_input = command.parse_input(input);
+        expect(parsed_input.options).toEqual({option1: {value:undefined}, option2: {value: "1"}, option3: {value:undefined}});
+        expect(parsed_input.args).toEqual(["arg1", "arg2", "arg 3"]);
+    });
+
+    it('should log error if unable to parse input',  () => {
+        const command: Command = new Command("test", () => {return {}});
+        const input: string[] = ["test", "--="];
+        const parsed_input = command.parse_input(input);
+        expect(parsed_input.options).toEqual({});
     });
 });
 
@@ -102,8 +117,7 @@ describe('ExitObject Tests', () => {
         const exit_object: ExitObject = new ExitObject([], test_command, 0, {});
         expect(isExitObject(exit_object)).toBe(true);
     });
-
-    it('should construct an exit object',  () => {
+    it('should construct with the correct property values',  () => {
         const exit_object: ExitObject = new ExitObject([], test_command, 0, {});
         expect(exit_object.command).toEqual(test_command);
         expect(exit_object.timestamp).toBeDefined();
