@@ -18,6 +18,8 @@ class ArgsOptions {
             Object.assign(this.options, {[key]: {value:value}});
         } else if (key){
             Object.assign(this.options, {[key]: {value:undefined}});
+        } else {
+            console.error(`Unable to parse option: ${string}`);
         }
     }
 
