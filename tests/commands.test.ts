@@ -52,6 +52,14 @@ describe('TermCommands Tests', () => {
         commands.list = test_commands;
         expect(commands.list).toEqual(test_commands);
     });
+    it('should get the correct list', () => {
+        const commands: TermCommands = new TermCommands(test_commands);
+        expect(commands.list).toEqual(test_commands);
+    });
+    it('should get the correct key list', () => {
+        const commands: TermCommands = new TermCommands(test_commands);
+        expect(commands.get_key_list()).toEqual(["test1", "test2", "test3"]);
+    });
 
 
     // ADD COMMAND TESTS

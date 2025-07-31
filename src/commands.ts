@@ -141,6 +141,10 @@ export class TermCommands{
         }
     }
 
+    public get_key_list(): string[] {
+        return this._list.map(command => command.key);
+    }
+
     public find(commandKey?: string): Command | undefined {
         if (!commandKey){return undefined;};
         return this.list.find(command => command.key === commandKey);
