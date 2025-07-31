@@ -7,7 +7,7 @@ class ArgsOptions {
 
     constructor(user_input: string[]) {
         this.user_input = user_input;
-        this.parse_input();
+        this.init();
     }
 
     private string2opt(string: string): void {
@@ -21,7 +21,7 @@ class ArgsOptions {
         }
     }
 
-    private parse_input(): void {
+    private init(): void {
         for (let i = 1; i < this.user_input.length; i++) {
             const item: string = this.user_input[i] || "";
             if (item.startsWith("--")){
