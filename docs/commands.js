@@ -1,27 +1,33 @@
 import { Terminal } from "./input-terminal.js";
-class ArgsOptions {
+export class ArgsOptions {
+    get options() {
+        return this._options;
+    }
+    get args() {
+        return this._args;
+    }
     constructor(user_input) {
-        this.options = {};
-        this.args = [];
-        this.user_input = user_input;
-        this.parse_input();
+        this._options = {};
+        this._args = [];
+        this._user_input = user_input;
+        this.init();
     }
     string2opt(string) {
         const key = string.split("=")[0] || "";
         const value = string.split("=").slice(1).join("=");
         if (key && value) {
-            Object.assign(this.options, { [key]: { value: value } });
+            Object.assign(this._options, { [key]: { value: value } });
         }
         else if (key) {
-            Object.assign(this.options, { [key]: { value: undefined } });
+            Object.assign(this._options, { [key]: { value: undefined } });
         }
         else {
-            throw new Error("Unable to split string to option and key");
+            console.error(`Unable to parse option: ${string}`);
         }
     }
-    parse_input() {
-        for (let i = 1; i < this.user_input.length; i++) {
-            const item = this.user_input[i] || "";
+    init() {
+        for (let i = 1; i < this._user_input.length; i++) {
+            const item = this._user_input[i];
             if (item.startsWith("--")) {
                 this.string2opt(item.slice(2));
             }
@@ -29,17 +35,21 @@ class ArgsOptions {
                 this.string2opt(item.slice(1));
             }
             else {
-                this.args.push(item);
+                this._args.push(item);
             }
         }
     }
 }
 export class Command {
+    get key() {
+        return this._key;
+    }
+    get action() {
+        return this._action;
+    }
     constructor(key, action) {
-        this.options = [];
-        this.args = [];
-        this.key = key;
-        this.action = action;
+        this._key = key;
+        this._action = action;
     }
     parse_input(user_input) {
         return new ArgsOptions(user_input);
@@ -49,7 +59,7 @@ export class Command {
         let exit_code;
         const parsed_input = this.parse_input(user_input);
         try {
-            return_value = this.action(parsed_input.args, parsed_input.options, term);
+            return_value = this._action(parsed_input.args, parsed_input.options, term);
             exit_code = 0;
         }
         catch (error) {

@@ -21,7 +21,7 @@ export class Terminal {
 
     private _listeners: TermListeners;
     private _started: boolean = false;
-    private _lastExitCode?: number = undefined;
+    private _lastExitCode: number | undefined = undefined;
 
     public get lastExitCode(): number | undefined {
         return this._lastExitCode;

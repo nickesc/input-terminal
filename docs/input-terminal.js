@@ -1,4 +1,4 @@
-import { TermCommands, Command, ExitObject } from "./commands.js";
+import { TermCommands, Command, ExitObject, ArgsOptions } from "./commands.js";
 import { TermHistory } from "./history.js";
 import { TermListeners } from "./listeners.js";
 import { TermOptions } from "./options.js";
@@ -102,8 +102,9 @@ export class Terminal {
             exitObject = new ExitObject(user_input, undefined, 0, output);
         }
         else {
-            console.error(`Command ${user_input[0]} not found`);
-            exitObject = new ExitObject(user_input, undefined, 1, output);
+            const errText = `Command ${user_input[0]} not found`;
+            console.error(errText);
+            exitObject = new ExitObject(user_input, undefined, 1, { error: errText });
         }
         //console.log(exitObject);
         //const exitObject = new ExitObject(user_input, command, exitCode, output);
@@ -113,4 +114,4 @@ export class Terminal {
         return exitObject;
     }
 }
-export { Command, ExitObject, TermCommands, TermHistory, TermOptions };
+export { Command, ArgsOptions, ExitObject, TermCommands, TermHistory, TermOptions };
