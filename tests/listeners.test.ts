@@ -19,7 +19,7 @@ describe('TermListeners Tests', () => {
         terminal.history.push(new ExitObject(['test'], undefined, 0, 'test'));
         const event = new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' });
         input.dispatchEvent(event);
-        expect(input.value).toBe(`${terminal.options.preprompt}${terminal.options.prompt}test`);
+        expect(terminal.get_input_value()).toBe("test");
     });
 
     it('should handle next key', () => {
@@ -33,14 +33,14 @@ describe('TermListeners Tests', () => {
         terminal.history.previous();
         event = new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' });
         input.dispatchEvent(event);
-        expect(input.value).toBe(`${terminal.options.preprompt}${terminal.options.prompt}test1`);
+        expect(terminal.get_input_value()).toBe("test1");
     });
 
     it('should handle return key', () => {
         terminal.update_input('test');
         const event = new dom.window.KeyboardEvent('keydown', { key: 'Enter' });
         input.dispatchEvent(event);
-        expect(input.value).toBe(`${terminal.options.preprompt}${terminal.options.prompt}`);
+        expect(terminal.get_input_value()).toBe("");
     });
 
     it('should prevent backspace on prompt', () => {
@@ -48,7 +48,7 @@ describe('TermListeners Tests', () => {
         input.selectionStart = 0;
         const event = new dom.window.KeyboardEvent('keydown', { key: 'Backspace' });
         input.dispatchEvent(event);
-        expect(input.value).toBe(`${terminal.options.preprompt}${terminal.options.prompt}test`);
+        expect(terminal.get_input_value()).toBe("test");
     });
 
     it('should prevent delete on prompt', () => {
@@ -56,7 +56,7 @@ describe('TermListeners Tests', () => {
         input.selectionStart = 0;
         const event = new dom.window.KeyboardEvent('keydown', { key: 'Delete' });
         input.dispatchEvent(event);
-        expect(input.value).toBe(`${terminal.options.preprompt}${terminal.options.prompt}test`);
+        expect(terminal.get_input_value()).toBe("test");
     });
 
     it('should prevent arrow left on prompt', () => {
@@ -64,7 +64,7 @@ describe('TermListeners Tests', () => {
         input.selectionStart = 0;
         const event = new dom.window.KeyboardEvent('keydown', { key: 'ArrowLeft' });
         input.dispatchEvent(event);
-        expect(input.value).toBe(`${terminal.options.preprompt}${terminal.options.prompt}test`);
+        expect(terminal.get_input_value()).toBe("test");
     });
 
     it('should handle selection change', () => {
