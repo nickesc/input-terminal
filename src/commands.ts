@@ -63,7 +63,8 @@ export class Command {
             exit_code = 0;
 
         } catch (error) {
-            return_value = {};
+            return_value = {error: error};
+            console.error(error);
             exit_code = 1;
         }
         const exit_reply: ExitObject = new ExitObject(user_input, this, exit_code, return_value);
