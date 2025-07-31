@@ -102,6 +102,7 @@ export class Terminal {
             exitObject = new ExitObject(user_input, undefined, 0, output);
         }
         else {
+            console.error(`Command ${user_input[0]} not found`);
             exitObject = new ExitObject(user_input, undefined, 1, output);
         }
         //console.log(exitObject);
