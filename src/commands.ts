@@ -38,8 +38,6 @@ class ArgsOptions {
 export class Command {
     public key: string;
     public action: (args: string[], options: {}, terminal: Terminal) => {};
-    public options: string[] = [];
-    public args: string[] = [];
 
     constructor(key: string, action: (args: string[], options: {}, terminal: Terminal) => {}) {
         this.key = key;
