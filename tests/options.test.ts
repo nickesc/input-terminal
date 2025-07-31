@@ -5,7 +5,7 @@ function isOptions(target: any): boolean {
     return target instanceof TermOptions;
 }
 
-describe('input-terminal-options', () => {
+describe('TermOptions Tests', () => {
 
     // CONSTRUCTION TEST
     it('should construct a TermOptions object',  () => {

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 import { Terminal, ExitObject } from '../src/input-terminal';
 
-describe('TermListeners', () => {
+describe('TermListeners Tests', () => {
     let terminal: Terminal;
     let input: HTMLInputElement;
     let dom: JSDOM;

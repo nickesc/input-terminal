@@ -16,7 +16,7 @@ function tCommand(key: string): Command {
 let test_commands: Command[];
 let test_command: Command;
 
-describe('input-terminal-commands', () => {
+describe('TermCommands Tests', () => {
     beforeEach(() => {
         test_command = tCommand("test0");
         test_commands = [tCommand("test1"), tCommand("test2"), tCommand("test3")];

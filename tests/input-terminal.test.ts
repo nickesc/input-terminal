@@ -13,7 +13,7 @@ function isExitObject(target: any): boolean {
 }
 
 
-describe('input-terminal', () => {
+describe('Terminal Tests', () => {
     let term: Terminal;
     let input: HTMLInputElement;
     let dom: JSDOM;

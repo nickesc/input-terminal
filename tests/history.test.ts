@@ -11,7 +11,7 @@ function tExitObject(text: string): ExitObject {
 
 let test_commands: ExitObject[];
 
-describe('input-terminal', () => {
+describe('TermHistory Tests', () => {
     beforeEach(() => {
         test_commands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
     });
