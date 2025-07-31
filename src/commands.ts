@@ -25,7 +25,7 @@ export class ArgsOptions {
 
     private init(): void {
         for (let i = 1; i < this.user_input.length; i++) {
-            const item: string = this.user_input[i] || "";
+            const item: string = this.user_input[i]!;
             if (item.startsWith("--")){
                 this.string2opt(item.slice(2));
             } else if (item.startsWith("-")){
