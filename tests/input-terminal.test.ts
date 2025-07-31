@@ -33,11 +33,11 @@ describe('Terminal Tests', () => {
     // INITIALIZATION TESTS
     it('should initialize and mark itself started',  () => {
         term.init();
-        expect(term.isStarted()).toBe(true);
+        expect(term.is_started()).toBe(true);
     });
     it('should initialize and mark itself started',  () => {
         term.init();
-        expect(term.isStarted()).toBe(true);
+        expect(term.is_started()).toBe(true);
     });
 
     // INPUT TESTS

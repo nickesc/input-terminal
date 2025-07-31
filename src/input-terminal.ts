@@ -36,7 +36,6 @@ export class Terminal {
         this.commands = new TermCommands(commandList);
         this.options = new TermOptions(options);
         this._listeners = new TermListeners(this);
-
     }
 
     public init(): void {
@@ -47,7 +46,7 @@ export class Terminal {
         }
     }
 
-    public isStarted(): boolean {
+    public is_started(): boolean {
         return this._started;
     }
 
