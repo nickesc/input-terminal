@@ -1,13 +1,13 @@
 export class TermOptions {
+    previousKey = "ArrowUp";
+    nextKey = "ArrowDown";
+    returnKey = "Enter";
+    tabKey = "Tab";
+    modKey = "Ctrl";
+    startFocused = false;
+    prompt = "> ";
+    preprompt = "";
     constructor(options) {
-        this.previousKey = "ArrowUp";
-        this.nextKey = "ArrowDown";
-        this.returnKey = "Enter";
-        this.tabKey = "Tab";
-        this.modKey = "Ctrl";
-        this.startFocused = false;
-        this.prompt = "> ";
-        this.preprompt = "";
         Object.assign(this, options);
     }
 }

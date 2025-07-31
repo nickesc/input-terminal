@@ -1,13 +1,13 @@
 export class TermListeners {
+    _terminal;
     constructor(terminal) {
         this._terminal = terminal;
     }
     _handle_keyboard_event(event) {
-        var _a;
         switch (event.key) {
             case this._terminal.options.previousKey:
                 event.preventDefault();
-                this._terminal.update_input((_a = this._terminal.history.previous()) === null || _a === void 0 ? void 0 : _a.user_input.join(" "));
+                this._terminal.update_input(this._terminal.history.previous()?.user_input.join(" "));
                 break;
             case this._terminal.options.nextKey:
                 event.preventDefault();

@@ -1,5 +1,8 @@
 import { Terminal } from "./input-terminal.js";
 export class ArgsOptions {
+    _user_input;
+    _options = {};
+    _args = [];
     get options() {
         return this._options;
     }
@@ -7,8 +10,6 @@ export class ArgsOptions {
         return this._args;
     }
     constructor(user_input) {
-        this._options = {};
-        this._args = [];
         this._user_input = user_input;
         this.init();
     }
@@ -41,6 +42,8 @@ export class ArgsOptions {
     }
 }
 export class Command {
+    _key;
+    _action;
     get key() {
         return this._key;
     }
@@ -72,6 +75,11 @@ export class Command {
     }
 }
 export class ExitObject {
+    _command;
+    _timestamp;
+    _exit_code;
+    _user_input;
+    _output;
     constructor(user_input, command, exit_code, output) {
         this._command = command;
         this._timestamp = Date.now();
@@ -96,8 +104,8 @@ export class ExitObject {
     }
 }
 export class TermCommands {
+    _list = [];
     constructor(commands) {
-        this._list = [];
         if (commands) {
             this.list = commands;
         }

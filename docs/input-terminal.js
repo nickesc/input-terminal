@@ -11,6 +11,13 @@ import { TermOptions } from "./options.js";
  * @class
  */
 export class Terminal {
+    input;
+    history;
+    commands;
+    options;
+    _listeners;
+    _started = false;
+    _lastExitCode = undefined;
     get lastExitCode() {
         return this._lastExitCode;
     }
@@ -18,8 +25,6 @@ export class Terminal {
      * @constructor
      */
     constructor(input, options = {}, commandHistory = [], commandList = []) {
-        this._started = false;
-        this._lastExitCode = undefined;
         this.input = input;
         this.history = new TermHistory(commandHistory);
         this.commands = new TermCommands(commandList);

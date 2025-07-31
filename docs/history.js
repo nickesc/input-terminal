@@ -1,5 +1,7 @@
 import { ExitObject } from "./commands.js";
 export class TermHistory {
+    _items;
+    _index;
     get items() {
         return this._items;
     }
