@@ -1,6 +1,4 @@
-import { Terminal } from '../src/input-terminal';
-import { Command } from '../src/commands';
-import { ExitObject } from '../src/commands';
+import { Terminal, Command, ExitObject } from '../src/input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 

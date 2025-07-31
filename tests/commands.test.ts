@@ -1,4 +1,4 @@
-import { Command, TermCommands } from '../src/commands';
+import { Command, TermCommands, ExitObject } from '../src/input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 function isCommand(target: any): boolean {

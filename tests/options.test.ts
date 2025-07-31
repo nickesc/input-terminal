@@ -1,4 +1,4 @@
-import { TermOptions } from '../src/options';
+import { TermOptions } from '../src/input-terminal';
 import { describe, it, expect } from 'vitest';
 
 function isOptions(target: any): boolean {
