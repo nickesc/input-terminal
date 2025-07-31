@@ -18,8 +18,6 @@ class ArgsOptions {
             Object.assign(this.options, {[key]: {value:value}});
         } else if (key){
             Object.assign(this.options, {[key]: {value:undefined}});
-        } else {
-            throw new Error("Unable to split string to option and key")
         }
     }
 
