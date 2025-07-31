@@ -46,12 +46,20 @@ export class ArgsOptions {
 }
 
 export class Command {
-    public key: string;
-    public action: (args: string[], options: {}, terminal: Terminal) => {};
+    private _key: string;
+    private _action: (args: string[], options: {}, terminal: Terminal) => {};
+
+    public get key(): string {
+        return this._key;
+    }
+
+    public get action(): (args: string[], options: {}, terminal: Terminal) => {} {
+        return this._action;
+    }
 
     constructor(key: string, action: (args: string[], options: {}, terminal: Terminal) => {}) {
-        this.key = key;
-        this.action = action;
+        this._key = key;
+        this._action = action;
     }
 
     public parse_input(user_input: string[]): ArgsOptions {
@@ -65,7 +73,7 @@ export class Command {
         const parsed_input: ArgsOptions = this.parse_input(user_input);
 
         try {
-            return_value = this.action(parsed_input.args, parsed_input.options, term);
+            return_value = this._action(parsed_input.args, parsed_input.options, term);
             exit_code = 0;
 
         } catch (error) {
