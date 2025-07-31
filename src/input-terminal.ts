@@ -121,8 +121,9 @@ export class Terminal {
         } else if (user_input[0] == "") {
             exitObject = new ExitObject(user_input, undefined, 0, output);
         } else {
-            console.error(`Command ${user_input[0]} not found`);
-            exitObject = new ExitObject(user_input, undefined, 1, output);
+            const errText: string = `Command ${user_input[0]} not found`;
+            console.error(errText);
+            exitObject = new ExitObject(user_input, undefined, 1, {error: errText});
         }
         //console.log(exitObject);
 
