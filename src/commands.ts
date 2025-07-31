@@ -1,12 +1,20 @@
 import { Terminal } from './input-terminal.ts';
 
 export class ArgsOptions {
-    public user_input: string[];
-    public options = {};
-    public args: string[] = [];
+    private _user_input: string[];
+    private _options = {};
+    private _args: string[] = [];
+
+    public get options(): object {
+        return this._options;
+    }
+
+    public get args(): string[] {
+        return this._args;
+    }
 
     constructor(user_input: string[]) {
-        this.user_input = user_input;
+        this._user_input = user_input;
         this.init();
     }
 
@@ -15,23 +23,23 @@ export class ArgsOptions {
         const value: string = string.split("=").slice(1).join("=");
 
         if (key && value){
-            Object.assign(this.options, {[key]: {value:value}});
+            Object.assign(this._options, {[key]: {value:value}});
         } else if (key){
-            Object.assign(this.options, {[key]: {value:undefined}});
+            Object.assign(this._options, {[key]: {value:undefined}});
         } else {
             console.error(`Unable to parse option: ${string}`);
         }
     }
 
     private init(): void {
-        for (let i = 1; i < this.user_input.length; i++) {
-            const item: string = this.user_input[i]!;
+        for (let i = 1; i < this._user_input.length; i++) {
+            const item: string = this._user_input[i]!;
             if (item.startsWith("--")){
                 this.string2opt(item.slice(2));
             } else if (item.startsWith("-")){
                 this.string2opt(item.slice(1));
             } else {
-                this.args.push(item);
+                this._args.push(item);
             }
         }
     }
