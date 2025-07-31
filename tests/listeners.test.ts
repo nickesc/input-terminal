@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 import { Terminal, ExitObject } from '../src/input-terminal';
+import { Command } from '../src/commands';
 
 describe('TermListeners Tests', () => {
     let terminal: Terminal;
@@ -104,5 +105,64 @@ describe('TermListeners Tests', () => {
         const event = new dom.window.Event('selectionchange');
         input.dispatchEvent(event);
         expect(input.selectionStart).toBe((`${terminal.options.preprompt}${terminal.options.prompt}`).length);
+    });
+
+    it('should handle autocomplete key with single prediction', () => {
+        terminal.commands.add(new Command('testcmd', (args, options, terminal) => {return true;}));
+        terminal.update_input('test');
+        const event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('testcmd');
+    });
+    it('should handle autocomplete key with multiple predictions', () => {
+        terminal.commands.add(new Command('test1', (args, options, terminal) => {return true;}));
+        terminal.commands.add(new Command('test2', (args, options, terminal) => {return true;}));
+        terminal.commands.add(new Command('test3', (args, options, terminal) => {return true;}));
+        terminal.update_input('test');
+
+        let event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('test1');
+
+        event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('test2');
+
+        event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('test3');
+
+        event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('test1');
+    });
+    it('should handle autocomplete key with no predictions', () => {
+        terminal.update_input('xyz');
+        const event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('xyz');
+    });
+    it('should handle autocomplete key with empty input', () => {
+        terminal.update_input('');
+        const event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('');
+    });
+    it('should reset autocomplete predictions when typing other keys', () => {
+        terminal.commands.add(new Command('test1', (args, options, terminal) => {return true;}));
+        terminal.commands.add(new Command('test2', (args, options, terminal) => {return true;}));
+        terminal.update_input('test');
+
+        let event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('test1');
+
+        terminal.update_input('test1a');
+        event = new dom.window.KeyboardEvent('keydown', { key: 'a' });
+        input.dispatchEvent(event);
+
+        event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
+        input.dispatchEvent(event);
+        expect(terminal.get_input_value()).toBe('test1a');
     });
 });
