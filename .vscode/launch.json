@@ -1,8 +1,21 @@
 {
   "version": "0.2.0",
   "configurations": [
+
     {
-      "name": "Test Page (Served/Chrome)",
+      "name": "Test",
+      "command": "npm test",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "name": "Test (Watch)",
+      "command": "npm run test:watch",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "name": "Test (Browser)",
       "request": "launch",
       "type": "chrome",
       "url": "http://localhost:8080",
@@ -13,18 +26,6 @@
         "action": "debugWithChrome"
       },
       "preLaunchTask": "serve-docs"
-    },
-    {
-      "command": "npm test",
-      "name": "npm test",
-      "request": "launch",
-      "type": "node-terminal"
-    },
-    {
-      "command": "npm run test:watch",
-      "name": "vitest",
-      "request": "launch",
-      "type": "node-terminal"
     }
   ]
 }
