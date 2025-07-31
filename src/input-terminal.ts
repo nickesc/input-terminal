@@ -1,4 +1,4 @@
-import { TermCommands, Command, ExitObject } from './commands.ts';
+import { TermCommands, Command, ExitObject, ArgsOptions } from './commands.ts';
 import { TermHistory } from './history.ts';
 import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
@@ -138,4 +138,4 @@ export class Terminal {
 
 }
 
-export {Command, ExitObject, TermCommands, TermHistory, TermOptions }
+export {Command, ArgsOptions, ExitObject, TermCommands, TermHistory, TermOptions }

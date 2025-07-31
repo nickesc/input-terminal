@@ -1,6 +1,6 @@
 import { Terminal } from './input-terminal.ts';
 
-class ArgsOptions {
+export class ArgsOptions {
     public user_input: string[];
     public options = {};
     public args: string[] = [];
