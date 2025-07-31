@@ -18,7 +18,7 @@ describe('TermOptions Tests', () => {
         expect(options.previousKey).toEqual("ArrowUp");
         expect(options.nextKey).toEqual("ArrowDown");
         expect(options.returnKey).toEqual("Enter");
-        expect(options.tabKey).toEqual("Tab");
+        expect(options.autocompleteKey).toEqual("Tab");
         expect(options.modKey).toEqual("Ctrl");
         expect(options.preprompt).toEqual("");
         expect(options.prompt).toEqual("> ");
@@ -30,7 +30,7 @@ describe('TermOptions Tests', () => {
             previousKey: "Up",
             nextKey: "Down",
             returnKey: "Return",
-            tabKey: "Tabulator",
+            autocompleteKey: "Tabulator",
             modKey: "Ctrl",
             prompt: "prompt",
             preprompt: "preprompt"
@@ -39,7 +39,7 @@ describe('TermOptions Tests', () => {
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
         expect(options.returnKey).toEqual(customOptions.returnKey);
-        expect(options.tabKey).toEqual(customOptions.tabKey);
+        expect(options.autocompleteKey).toEqual(customOptions.autocompleteKey);
         expect(options.modKey).toEqual(customOptions.modKey);
         expect(options.preprompt).toEqual("preprompt");
         expect(options.prompt).toEqual("prompt");
@@ -54,7 +54,7 @@ describe('TermOptions Tests', () => {
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
         expect(options.returnKey).toEqual("Enter"); // Default
-        expect(options.tabKey).toEqual("Tab"); // Default
+        expect(options.autocompleteKey).toEqual("Tab"); // Default
     });
 
 });
