@@ -44,6 +44,10 @@ describe('Terminal Tests', () => {
     it('should construct with correct input',  () => {
         expect(term.input).toBe(input);
     });
+    it('should get the correct input value',  () => {
+        term.update_input("test");
+        expect(term.get_input_value()).toBe("test");
+    });
 
     // PREDICTION TESTS
     it('should return a prediction as a string', () => {

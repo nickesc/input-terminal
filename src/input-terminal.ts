@@ -54,6 +54,10 @@ export class Terminal {
         this.input.value = this.options.preprompt + this.options.prompt + (user_input || "");
     }
 
+    public get_input_value(): string {
+        return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
+    }
+
     public get_prediction(text?: string): string {
         let prediction: string = ""
         return prediction;
