@@ -38,15 +38,22 @@ export class Terminal {
             this._started = true;
         }
     }
-    isStarted() {
+    is_started() {
         return this._started;
     }
     update_input(user_input) {
         this.input.value = this.options.preprompt + this.options.prompt + (user_input || "");
     }
-    get_prediction(text) {
-        let prediction = "";
-        return prediction;
+    get_input_value() {
+        return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
+    }
+    get_predictions(text) {
+        let predictions = [];
+        if (text) {
+            const partial_matches = this.commands.get_key_list().filter(key => key.startsWith(text));
+            predictions = partial_matches;
+        }
+        return predictions;
     }
     getInputArray(input) {
         if (input.trim().length === 0) {

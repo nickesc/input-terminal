@@ -118,6 +118,9 @@ export class TermCommands {
             this.add(command);
         }
     }
+    get_key_list() {
+        return this._list.map(command => command.key);
+    }
     find(commandKey) {
         if (!commandKey) {
             return undefined;

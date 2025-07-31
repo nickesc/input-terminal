@@ -2,7 +2,7 @@ export class TermOptions {
     previousKey = "ArrowUp";
     nextKey = "ArrowDown";
     returnKey = "Enter";
-    tabKey = "Tab";
+    autocompleteKey = "Tab";
     modKey = "Ctrl";
     startFocused = false;
     prompt = "> ";

@@ -14,6 +14,9 @@ terminal.commands.add(new Command("help", (args, options, terminal) => {
 terminal.commands.add(new Command("echo", (args, options, terminal) => {
     output.innerText = `${args.join(" ")}`
 }))
+terminal.commands.add(new Command("echo2", (args, options, terminal) => {
+    output.innerText = `${args.join(" ")}`
+}))
 terminal.commands.add(new Command("result", (args, options, terminal) => {
     output.innerText = `${terminal.lastExitCode}`
 }))

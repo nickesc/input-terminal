@@ -1,9 +1,15 @@
 export class TermListeners {
     _terminal;
+    _prediction_index = 0;
+    _autocomplete_predictions = undefined;
     constructor(terminal) {
         this._terminal = terminal;
     }
     _handle_keyboard_event(event) {
+        let autocomplete_triggered = false;
+        if (this._autocomplete_predictions === undefined) {
+            this._autocomplete_predictions = this._terminal.get_predictions(this._terminal.get_input_value());
+        }
         switch (event.key) {
             case this._terminal.options.previousKey:
                 event.preventDefault();
@@ -19,6 +25,13 @@ export class TermListeners {
                     this._terminal.update_input();
                 }
                 break;
+            case this._terminal.options.autocompleteKey:
+                event.preventDefault();
+                if (this._autocomplete_predictions && this._autocomplete_predictions.length > 0) {
+                    this._terminal.update_input(this._autocomplete_predictions[this._prediction_index]);
+                    autocomplete_triggered = true;
+                }
+                break;
             case this._terminal.options.returnKey:
                 event.preventDefault();
                 const promptLen = this._terminal.options.preprompt.length + this._terminal.options.prompt.length;
@@ -32,6 +45,18 @@ export class TermListeners {
                     event.preventDefault();
                 }
                 break;
+        }
+        if (autocomplete_triggered) {
+            if (this._prediction_index < this._autocomplete_predictions.length - 1) {
+                this._prediction_index++;
+            }
+            else {
+                this._prediction_index = 0;
+            }
+        }
+        else {
+            this._prediction_index = 0;
+            this._autocomplete_predictions = undefined;
         }
     }
     _handle_selection_event(event) {
