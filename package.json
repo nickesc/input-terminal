@@ -21,6 +21,7 @@
   },
   "scripts": {
     "test": "vitest run --reporter=verbose",
+    "test:watch": "vitest --reporter=verbose",
     "coverage": "vitest run --coverage",
     "docs": "npm run build:site && jsdoc2md --files build/input-terminal.js > docs/documentation.md && npm run capsule",
     "capsule": "[ -e  docs/capsule.png ] && rm docs/capsule.png; svg2png docs/icon.svg --output=docs/capsule.png --width=2048 --height=1024",
