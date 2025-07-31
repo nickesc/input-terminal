@@ -50,8 +50,13 @@ describe('Terminal Tests', () => {
     });
 
     // PREDICTION TESTS
-    it('should return a prediction as a string', () => {
-        expect(typeof term.get_prediction("test")).toBe("string");
+    it('should return an empty array if no prediction is found', () => {
+        expect(term.get_predictions("test")).toEqual([]);
+    });
+    it('should return the correct predictions', () => {
+        term.commands.add(new Command("test1", (args, options, terminal) => {return true;}));
+        term.commands.add(new Command("test2", (args, options, terminal) => {return true;}));
+        expect(term.get_predictions("test")).toEqual(["test1", "test2"]);
     });
 
     // INPUT ARRAY PARSE TESTS

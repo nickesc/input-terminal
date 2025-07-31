@@ -58,9 +58,13 @@ export class Terminal {
         return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
     }
 
-    public get_prediction(text?: string): string {
-        let prediction: string = ""
-        return prediction;
+    public get_predictions(text?: string): string[] {
+        let predictions: string[] = []
+        if (text) {
+            const partial_matches: string[] = this.commands.get_key_list().filter(key => key.startsWith(text));
+            predictions = partial_matches;
+        }
+        return predictions;
     }
 
     public getInputArray(input: string): string[] {
