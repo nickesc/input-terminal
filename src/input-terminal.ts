@@ -63,6 +63,8 @@ export class Terminal {
         if (text) {
             const partial_matches: string[] = this.commands.get_key_list().filter(key => key.startsWith(text));
             predictions = partial_matches;
+        } else {
+            predictions = this.commands.get_key_list();
         }
         return predictions;
     }
