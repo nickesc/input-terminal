@@ -121,11 +121,9 @@ export class Terminal {
         const user_input: string[] = this.get_input_array(input);
         const command: Command | undefined = this.commands.find(user_input[0]);
         const output: object = {}
-        //const exitCode: number = 0;
 
         let exitObject: ExitObject;
         if (command) {
-            //exitObject = new ExitObject(user_input, command, exitCode, output);
             exitObject = command.run(user_input, this);
         } else if (user_input[0] == "") {
             exitObject = new ExitObject(user_input, undefined, 0, output);
@@ -134,17 +132,13 @@ export class Terminal {
             console.error(errText);
             exitObject = new ExitObject(user_input, undefined, 1, {error: errText});
         }
-        //console.log(exitObject);
 
-        //const exitObject = new ExitObject(user_input, command, exitCode, output);
         this._lastExitCode = exitObject.exit_code;
         this.history.push(exitObject);
         this.history.reset_index();
 
         return exitObject
     }
-
-
 }
 
 export {Command, ArgsOptions, ExitObject, TermCommands, TermHistory, TermOptions }
