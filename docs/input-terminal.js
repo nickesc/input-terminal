@@ -3,12 +3,24 @@ import { TermHistory } from "./history.js";
 import { TermListeners } from "./listeners.js";
 import { TermOptions } from "./options.js";
 /**
- * @fileoverview description
+ * @fileoverview Allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
  *
  * @module input-terminal
  */
 /**
- * @class
+ * Allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
+ *
+ * @example
+ * ```typescript
+ * import { Terminal, Command } from "input-terminal";
+ * const input = document.getElementById("terminal") as HTMLInputElement;
+ * const terminal = new Terminal(input, { prompt: ">> " });
+ * terminal.commands.add(new Command("echo", (args, options, terminal) => {
+ *     console.log(args);
+ *     return {};
+ * }));
+ * terminal.init();
+ * ```
  */
 export class Terminal {
     input;
@@ -17,12 +29,14 @@ export class Terminal {
     options;
     _listeners;
     _started = false;
+    get started() { return this._started; }
     _lastExitCode = undefined;
-    get lastExitCode() {
-        return this._lastExitCode;
-    }
+    get lastExitCode() { return this._lastExitCode; }
     /**
-     * @constructor
+     * @param {HTMLInputElement} input - input element to turn into a terminal
+     * @param {object} options - terminal configuration
+     * @param {ExitObject[]} commandHistory - history of commands that have been executed
+     * @param {Command[]} commandList - list of commands that can be executed by the user
      */
     constructor(input, options = {}, commandHistory = [], commandList = []) {
         this.input = input;
@@ -31,6 +45,10 @@ export class Terminal {
         this.options = new TermOptions(options);
         this._listeners = new TermListeners(this);
     }
+    /**
+     * Initializes the terminal. Attaches input listeners and updates the input.
+     * @returns {void}
+     */
     init() {
         if (!this._started) {
             this._listeners.attach_input_listeners();
@@ -38,31 +56,50 @@ export class Terminal {
             this._started = true;
         }
     }
-    is_started() {
-        return this._started;
-    }
+    /**
+     * Updates the terminal's user input value.
+     * @param {string} [user_input] - the value to update the input with; clears the input if no value is provided
+     * @returns {void}
+     */
     update_input(user_input) {
         this.input.value = this.options.preprompt + this.options.prompt + (user_input || "");
     }
+    /**
+     * Gets the terminal's user input.
+     * @returns {string} The string in the input, not including the preprompt and prompt
+     */
     get_input_value() {
         return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
     }
+    /**
+     * Gets the command predictions based on the user's input.
+     * @param {string} [text] - The text to get predictions for; if no text is provided, all commands are returned
+     * @returns {string[]} The predictions for the terminal's user input
+     */
     get_predictions(text) {
         let predictions = [];
         if (text) {
-            const partial_matches = this.commands.get_key_list().filter(key => key.startsWith(text));
+            const partial_matches = this.commands.get_command_keys().filter(key => key.startsWith(text));
             predictions = partial_matches;
+        }
+        else {
+            predictions = this.commands.get_command_keys();
         }
         return predictions;
     }
-    getInputArray(input) {
-        if (input.trim().length === 0) {
-            return [""];
-        }
+    /**
+     * Converts the user's input into an array for command execution.
+     * @param {string} input - The string to convert into an array
+     * @returns {string[]} The array created from the input
+     */
+    get_input_array(input) {
         function clean_buffer(toClean) {
             toClean = toClean.trim();
             toClean = toClean.replace(/\\/g, "");
             return toClean;
+        }
+        if (input.trim().length === 0) {
+            return [""];
         }
         const quotes = ['"', "'", "`"];
         let currQuote = null;
@@ -100,14 +137,17 @@ export class Terminal {
         }
         return result;
     }
+    /**
+     * Executes a command based on the user's input.
+     * @param {string} input - The command to execute
+     * @returns {ExitObject} The ExitObject returned by the execution
+     */
     execute_command(input) {
-        const user_input = this.getInputArray(input);
+        const user_input = this.get_input_array(input);
         const command = this.commands.find(user_input[0]);
         const output = {};
-        //const exitCode: number = 0;
         let exitObject;
         if (command) {
-            //exitObject = new ExitObject(user_input, command, exitCode, output);
             exitObject = command.run(user_input, this);
         }
         else if (user_input[0] == "") {
@@ -118,8 +158,6 @@ export class Terminal {
             console.error(errText);
             exitObject = new ExitObject(user_input, undefined, 1, { error: errText });
         }
-        //console.log(exitObject);
-        //const exitObject = new ExitObject(user_input, command, exitCode, output);
         this._lastExitCode = exitObject.exit_code;
         this.history.push(exitObject);
         this.history.reset_index();

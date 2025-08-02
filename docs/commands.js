@@ -1,14 +1,16 @@
 import { Terminal } from "./input-terminal.js";
+/**
+ * Manages and stores the arguments and options for a command.
+ */
 export class ArgsOptions {
     _user_input;
-    _options = {};
     _args = [];
-    get options() {
-        return this._options;
-    }
-    get args() {
-        return this._args;
-    }
+    get args() { return this._args; }
+    _options = {};
+    get options() { return this._options; }
+    /**
+     * @param {string[]} user_input - the input array to parse
+     */
     constructor(user_input) {
         this._user_input = user_input;
         this.init();
@@ -41,22 +43,36 @@ export class ArgsOptions {
         }
     }
 }
+/**
+ * An executable command that can be added to a terminal's command list.
+ */
 export class Command {
     _key;
+    get key() { return this._key; }
     _action;
-    get key() {
-        return this._key;
-    }
-    get action() {
-        return this._action;
-    }
+    get action() { return this._action; }
+    /**
+     * @param {string} key - the key used to identify the command
+     * @param {(args: string[], options: {}, terminal: Terminal) => {}} action - the function to execute when the command is run
+     */
     constructor(key, action) {
         this._key = key;
         this._action = action;
     }
+    /**
+     * Parses an input array into an `ArgsOptions` object.
+     * @param {string[]} user_input - the input array to parse
+     * @returns {ArgsOptions} the parsed input
+     */
     parse_input(user_input) {
         return new ArgsOptions(user_input);
     }
+    /**
+     * Runs the command with the given input.
+     * @param {string[]} user_input - the input array to parse
+     * @param {Terminal} term - the terminal to run the command in
+     * @returns {ExitObject} the `ExitObject` the command returns
+     */
     run(user_input, term) {
         let return_value;
         let exit_code;
@@ -74,12 +90,26 @@ export class Command {
         return exit_reply;
     }
 }
+/**
+ * An object that is returned when a command is executed.
+ */
 export class ExitObject {
     _command;
+    get command() { return this._command; }
     _timestamp;
+    get timestamp() { return this._timestamp; }
     _exit_code;
+    get exit_code() { return this._exit_code; }
     _user_input;
+    get user_input() { return this._user_input; }
     _output;
+    get output() { return this._output; }
+    /**
+     * @param {string[]} user_input - the input array that was used to execute the command
+     * @param {Command | undefined} command - the command that was executed; `undefined` if the command is not found
+     * @param {number} exit_code - the exit code of the command
+     * @param {object} output - the output of the command
+     */
     constructor(user_input, command, exit_code, output) {
         this._command = command;
         this._timestamp = Date.now();
@@ -87,53 +117,59 @@ export class ExitObject {
         this._user_input = user_input;
         this._output = output;
     }
-    get command() {
-        return this._command;
-    }
-    get timestamp() {
-        return this._timestamp;
-    }
-    get exit_code() {
-        return this._exit_code;
-    }
-    get user_input() {
-        return this._user_input;
-    }
-    get output() {
-        return this._output;
-    }
 }
+/**
+ * Manages a list of commands that can be executed by a terminal.
+ */
 export class TermCommands {
     _list = [];
+    get list() { return this._list; }
+    set list(commands) { for (let command of commands) {
+        this.add(command);
+    } }
+    /**
+     * @param {Command[]} [commands] - an optional list of commands to initialize the terminal with
+     */
     constructor(commands) {
         if (commands) {
             this.list = commands;
         }
     }
-    get list() {
-        return this._list;
-    }
-    set list(commands) {
-        for (let command of commands) {
-            this.add(command);
-        }
-    }
-    get_key_list() {
+    /**
+     * Retrieves a list of keys for all commands in the terminal.
+     * @returns {string[]} a list of the keys of all commands in the terminal
+     */
+    get_command_keys() {
         return this._list.map(command => command.key);
     }
-    find(commandKey) {
-        if (!commandKey) {
+    /**
+     * Finds a command by its key.
+     * @param {string} [command_key] - the key of the command to find
+     * @returns {Command | undefined} the command with the given key; `undefined` if the command is not found or if no key is provided
+     */
+    find(command_key) {
+        if (!command_key) {
             return undefined;
         }
         ;
-        return this.list.find(command => command.key === commandKey);
+        return this.list.find(command => command.key === command_key);
     }
+    /**
+     * Adds a command to the terminal's command list.
+     * @param {Command} command - the command to add
+     * @returns {number} the new length of the command list
+     */
     add(command) {
         if (!this._list.includes(command)) {
             this._list.push(command);
         }
         return this._list.length;
     }
+    /**
+     * Removes a command from the terminal's command list.
+     * @param {Command} command - the command to remove
+     * @returns {Command | undefined} the removed command; `undefined` if the command is not found
+     */
     remove(command) {
         if (this._list.includes(command)) {
             this._list.splice(this._list.indexOf(command), 1);
