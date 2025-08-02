@@ -153,10 +153,11 @@ export class TermCommands{
 
     /**
      * Finds a command by its key.
-     * @param {string} command_key - the key of the command to find
-     * @returns {Command | undefined} the command with the given key; `undefined` if the command is not found
+     * @param {string} [command_key] - the key of the command to find
+     * @returns {Command | undefined} the command with the given key; `undefined` if the command is not found or if no key is provided
      */
-    public find(command_key: string): Command | undefined {
+    public find(command_key?: string): Command | undefined {
+        if (!command_key){return undefined;};
         return this.list.find(command => command.key === command_key);
     }
 
