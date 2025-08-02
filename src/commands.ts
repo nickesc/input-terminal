@@ -59,7 +59,7 @@ export class Command {
 
     /**
      * @param {string} key - the key used to identify the command
-     * @param {(args: string[], options: {}, terminal: Terminal) => {}} action - the function to execute when the command is run
+     * @param {function} action - the function to execute when the command is run
      */
     constructor(key: string, action: (args: string[], options: {}, terminal: Terminal) => {}) {
         this._key = key;
