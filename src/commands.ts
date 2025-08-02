@@ -114,6 +114,8 @@ export class TermCommands{
     }
 
     public get_key_list(): string[] {
+    public command_keys(): string[] {
+    public get_command_keys(): string[] {
         return this._list.map(command => command.key);
     }
 

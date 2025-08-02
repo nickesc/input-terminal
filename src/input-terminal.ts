@@ -57,10 +57,10 @@ export class Terminal {
     public get_predictions(text?: string): string[] {
         let predictions: string[] = []
         if (text) {
-            const partial_matches: string[] = this.commands.get_key_list().filter(key => key.startsWith(text));
+            const partial_matches: string[] = this.commands.get_command_keys().filter(key => key.startsWith(text));
             predictions = partial_matches;
         } else {
-            predictions = this.commands.get_key_list();
+            predictions = this.commands.get_command_keys();
         }
         return predictions;
     }

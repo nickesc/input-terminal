@@ -58,7 +58,7 @@ describe('TermCommands Tests', () => {
     });
     it('should get the correct key list', () => {
         const commands: TermCommands = new TermCommands(test_commands);
-        expect(commands.get_key_list()).toEqual(["test1", "test2", "test3"]);
+        expect(commands.get_command_keys()).toEqual(["test1", "test2", "test3"]);
     });
 
 
