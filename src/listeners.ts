@@ -1,5 +1,9 @@
 import type { Terminal } from './input-terminal';
 
+/**
+ * Handles keyboard and selection events for the terminal.
+ * @param {Terminal} terminal - the terminal to attach listeners to
+ */
 export class TermListeners {
     private _terminal: Terminal
     private _prediction_index: number = 0;
@@ -82,6 +86,12 @@ export class TermListeners {
         }
     }
 
+    /**
+     * Attaches listeners to the terminal's input element.
+     * @param {string} [previousKey="ArrowUp"] - the key used to select the previous command; defaults to `ArrowUp`
+     * @param {string} [nextKey="ArrowDown"] - the key used to select the next command; defaults to `ArrowDown`
+     * @returns {void}
+     */
     public attach_input_listeners(previousKey: string = "ArrowUp", nextKey: string = "ArrowDown"): void {
         this._terminal.input.addEventListener("keydown", (event: KeyboardEvent) => {
             this._handle_keyboard_event(event)

@@ -4,13 +4,28 @@ import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
 
 /**
- * @fileoverview description
+ * @fileoverview Allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
  *
  * @module input-terminal
  */
 
 /**
- * @class
+ * Allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
+ * @param {HTMLInputElement} input - input element to turn into a terminal
+ * @param {object} options - terminal configuration
+ * @param {ExitObject[]} commandHistory - history of commands that have been executed
+ * @param {Command[]} commandList - list of commands that can be executed by the user
+ * @example
+ * ```typescript
+ * import { Terminal, Command } from "input-terminal";
+ * const input = document.getElementById("terminal") as HTMLInputElement;
+ * const terminal = new Terminal(input, { prompt: ">> " });
+ * terminal.commands.add(new Command("echo", (args, options, terminal) => {
+ *     console.log(args);
+ *     return {};
+ * }));
+ * terminal.init();
+ * ```
  */
 export class Terminal {
 
@@ -27,9 +42,6 @@ export class Terminal {
     private _lastExitCode: number | undefined = undefined;
     public get lastExitCode(): number | undefined { return this._lastExitCode; }
 
-    /**
-     * @constructor
-     */
     constructor(input: HTMLInputElement, options: object = {}, commandHistory: ExitObject[] = [], commandList: Command[] = []) {
         this.input = input;
         this.history = new TermHistory(commandHistory);
@@ -38,6 +50,10 @@ export class Terminal {
         this._listeners = new TermListeners(this);
     }
 
+    /**
+     * Initializes the terminal. Attaches input listeners and updates the input.
+     * @returns {void}
+     */
     public init(): void {
         if (!this._started){
             this._listeners.attach_input_listeners();
@@ -46,14 +62,28 @@ export class Terminal {
         }
     }
 
+    /**
+     * Updates the terminal's user input value.
+     * @param {string} [user_input] - the value to update the input with; clears the input if no value is provided
+     * @returns {void}
+     */
     public update_input(user_input?: string): void {
         this.input.value = this.options.preprompt + this.options.prompt + (user_input || "");
     }
 
+    /**
+     * Gets the terminal's user input.
+     * @returns {string} The string in the input, not including the preprompt and prompt
+     */
     public get_input_value(): string {
         return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
     }
 
+    /**
+     * Gets the command predictions based on the user's input.
+     * @param {string} [text] - The text to get predictions for; if no text is provided, all commands are returned
+     * @returns {string[]} The predictions for the terminal's user input
+     */
     public get_predictions(text?: string): string[] {
         let predictions: string[] = []
         if (text) {
@@ -65,6 +95,11 @@ export class Terminal {
         return predictions;
     }
 
+    /**
+     * Converts the user's input into an array for command execution.
+     * @param {string} input - The string to convert into an array
+     * @returns {string[]} The array created from the input
+     */
     public get_input_array(input: string): string[] {
 
         function clean_buffer(toClean: string){
@@ -113,6 +148,11 @@ export class Terminal {
         return result;
     }
 
+    /**
+     * Executes a command based on the user's input.
+     * @param {string} input - The command to execute
+     * @returns {ExitObject} The ExitObject returned by the execution
+     */
     public execute_command(input: string): ExitObject {
         const user_input: string[] = this.get_input_array(input);
         const command: Command | undefined = this.commands.find(user_input[0]);

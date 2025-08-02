@@ -1,5 +1,9 @@
 import { Terminal } from './input-terminal.ts';
 
+/**
+ * Manages and stores the arguments and options for a command.
+ * @param {string[]} user_input - the input array to parse
+ */
 export class ArgsOptions {
     private _user_input: string[];
 
@@ -41,6 +45,11 @@ export class ArgsOptions {
     }
 }
 
+/**
+ * An executable command that can be added to a terminal's command list.
+ * @param {string} key - the key used to identify the command
+ * @param {function} action - the function to execute when the command is run
+ */
 export class Command {
     private _key: string;
     public get key(): string { return this._key; }
@@ -53,10 +62,21 @@ export class Command {
         this._action = action;
     }
 
+    /**
+     * Parses an input array into an `ArgsOptions` object.
+     * @param {string[]} user_input - the input array to parse
+     * @returns {ArgsOptions} the parsed input
+     */
     public parse_input(user_input: string[]): ArgsOptions {
         return new ArgsOptions(user_input);
     }
 
+    /**
+     * Runs the command with the given input.
+     * @param {string[]} user_input - the input array to parse
+     * @param {Terminal} term - the terminal to run the command in
+     * @returns {ExitObject} the `ExitObject` the command returns
+     */
     public run(user_input: string[], term: Terminal): ExitObject {
         let return_value: object;
         let exit_code: number;
@@ -77,6 +97,13 @@ export class Command {
     }
 }
 
+/**
+ * An object that is returned when a command is executed.
+ * @param {string[]} user_input - the input array that was used to execute the command
+ * @param {Command | undefined} command - the command that was executed; `undefined` if the command is not found
+ * @param {number} exit_code - the exit code of the command
+ * @param {object} output - the output of the command
+ */
 export class ExitObject{
     private _command: Command | undefined;
     public get command(): Command | undefined { return this._command; }
@@ -102,6 +129,10 @@ export class ExitObject{
     }
 }
 
+/**
+ * Manages a list of commands that can be executed by a terminal.
+ * @param {Command[]} [commands] - an optional list of commands to initialize the terminal with
+ */
 export class TermCommands{
     private _list: Command[] = [];
     public get list(): Command[] { return this._list; }
@@ -112,16 +143,28 @@ export class TermCommands{
             this.list = commands;
         }
     }
-
+    /**
+     * Retrieves a list of keys for all commands in the terminal.
+     * @returns {string[]} a list of the keys of all commands in the terminal
+     */
     public get_command_keys(): string[] {
         return this._list.map(command => command.key);
     }
 
-
+    /**
+     * Finds a command by its key.
+     * @param {string} command_key - the key of the command to find
+     * @returns {Command | undefined} the command with the given key; `undefined` if the command is not found
+     */
     public find(command_key: string): Command | undefined {
         return this.list.find(command => command.key === command_key);
     }
 
+    /**
+     * Adds a command to the terminal's command list.
+     * @param {Command} command - the command to add
+     * @returns {number} the new length of the command list
+     */
     public add(command: Command): number {
         if (!this._list.includes(command)){
             this._list.push(command);
@@ -129,6 +172,11 @@ export class TermCommands{
         return this._list.length;
     }
 
+    /**
+     * Removes a command from the terminal's command list.
+     * @param {Command} command - the command to remove
+     * @returns {Command | undefined} the removed command; `undefined` if the command is not found
+     */
     public remove(command: Command): Command | undefined {
         if (this._list.includes(command)){
             this._list.splice(this._list.indexOf(command), 1);

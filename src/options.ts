@@ -1,3 +1,7 @@
+/**
+ * Manages the terminal's configuration.
+ * @param {object} [options] - an optional configuration to initialize the terminal with
+ */
 export class TermOptions {
     public previousKey: string = "ArrowUp";
     public nextKey: string = "ArrowDown";
