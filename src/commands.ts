@@ -113,15 +113,13 @@ export class TermCommands{
         }
     }
 
-    public get_key_list(): string[] {
-    public command_keys(): string[] {
     public get_command_keys(): string[] {
         return this._list.map(command => command.key);
     }
 
-    public find(commandKey?: string): Command | undefined {
-        if (!commandKey){return undefined;};
-        return this.list.find(command => command.key === commandKey);
+
+    public find(command_key: string): Command | undefined {
+        return this.list.find(command => command.key === command_key);
     }
 
     public add(command: Command): number {
