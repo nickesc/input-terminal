@@ -61,16 +61,16 @@ describe('Terminal Tests', () => {
 
     // INPUT ARRAY PARSE TESTS
     it('should correctly parse quoted values', () => {
-        expect(term.getInputArray('command "quote" "multi word quote" \'single quote\' `backtick` unquote')).toEqual(["command", "quote", "multi word quote", "single quote", "backtick", "unquote"]);
+        expect(term.get_input_array('command "quote" "multi word quote" \'single quote\' `backtick` unquote')).toEqual(["command", "quote", "multi word quote", "single quote", "backtick", "unquote"]);
     });
     it('should correctly parse quoted values with nested quotes', () => {
-        expect(term.getInputArray('command "quote `nested quote`"')).toEqual(["command", "quote `nested quote`"]);
+        expect(term.get_input_array('command "quote `nested quote`"')).toEqual(["command", "quote `nested quote`"]);
     });
     it('should correctly parse prepended backslashes to not end or start strings', () => {
-        expect(term.getInputArray('command `quote\\`` \\`quote unstarted\\`')).toEqual(["command", "quote`", "`quote", "unstarted`"]);
+        expect(term.get_input_array('command `quote\\`` \\`quote unstarted\\`')).toEqual(["command", "quote`", "`quote", "unstarted`"]);
     });
     it('should recognize empty quoted strings as input values', () => {
-        expect(term.getInputArray('command ""')).toEqual(["command", ""]);
+        expect(term.get_input_array('command ""')).toEqual(["command", ""]);
     });
     it('should parse options and arguments correctly', () => {
         term.commands.add(new Command("test", (args, options, terminal) => {

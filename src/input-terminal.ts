@@ -69,16 +69,16 @@ export class Terminal {
         return predictions;
     }
 
-    public getInputArray(input: string): string[] {
-
-        if (input.trim().length === 0) {
-            return [""];
-        }
+    public get_input_array(input: string): string[] {
 
         function clean_buffer(toClean: string){
             toClean = toClean.trim()
             toClean = toClean.replace(/\\/g, "")
             return toClean
+        }
+
+        if (input.trim().length === 0) {
+            return [""];
         }
 
         const quotes: string[] = ['"', "'", "`"];
@@ -118,7 +118,7 @@ export class Terminal {
     }
 
     public execute_command(input: string): ExitObject {
-        const user_input: string[] = this.getInputArray(input);
+        const user_input: string[] = this.get_input_array(input);
         const command: Command | undefined = this.commands.find(user_input[0]);
         const output: object = {}
         //const exitCode: number = 0;
