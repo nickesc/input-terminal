@@ -2,16 +2,12 @@ import { Terminal } from './input-terminal.ts';
 
 export class ArgsOptions {
     private _user_input: string[];
-    private _options = {};
+
     private _args: string[] = [];
+    public get args(): string[] { return this._args; }
 
-    public get options(): object {
-        return this._options;
-    }
-
-    public get args(): string[] {
-        return this._args;
-    }
+    private _options = {};
+    public get options(): object { return this._options; }
 
     constructor(user_input: string[]) {
         this._user_input = user_input;
@@ -47,15 +43,10 @@ export class ArgsOptions {
 
 export class Command {
     private _key: string;
+    public get key(): string { return this._key; }
+
     private _action: (args: string[], options: {}, terminal: Terminal) => {};
-
-    public get key(): string {
-        return this._key;
-    }
-
-    public get action(): (args: string[], options: {}, terminal: Terminal) => {} {
-        return this._action;
-    }
+    public get action(): (args: string[], options: {}, terminal: Terminal) => {} { return this._action; }
 
     constructor(key: string, action: (args: string[], options: {}, terminal: Terminal) => {}) {
         this._key = key;
@@ -88,10 +79,19 @@ export class Command {
 
 export class ExitObject{
     private _command: Command | undefined;
+    public get command(): Command | undefined { return this._command; }
+
     private _timestamp: number;
+    public get timestamp(): number { return this._timestamp; }
+
     private _exit_code: number;
+    public get exit_code(): number { return this._exit_code; }
+
     private _user_input: string[];
+    public get user_input(): string[] { return this._user_input; }
+
     private _output: any;
+    public get output(): object { return this._output; }
 
     constructor(user_input: string[], command: Command | undefined, exit_code: number, output: any) {
         this._command = command;
@@ -100,44 +100,16 @@ export class ExitObject{
         this._user_input = user_input;
         this._output = output;
     }
-
-    public get command(): Command | undefined {
-        return this._command;
-    }
-
-    public get timestamp(): number {
-        return this._timestamp;
-    }
-
-    public get exit_code(): number {
-        return this._exit_code;
-    }
-
-    public get user_input(): string[] {
-        return this._user_input;
-    }
-
-    public get output(): object {
-        return this._output;
-    }
 }
 
 export class TermCommands{
     private _list: Command[] = [];
+    public get list(): Command[] { return this._list; }
+    public set list(commands: Command[]) { for (let command of commands){ this.add(command); } }
 
     constructor(commands?: Command[]) {
         if (commands){
             this.list = commands;
-        }
-    }
-
-    public get list(): Command[] {
-        return this._list;
-    }
-
-    public set list(commands: Command[]) {
-        for (let command of commands){
-            this.add(command);
         }
     }
 

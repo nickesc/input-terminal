@@ -1,19 +1,11 @@
 import { ExitObject } from './commands.ts';
 
 export class TermHistory {
-
-    private _items: ExitObject[];
     private _index: number | undefined;
 
-    public get items(): ExitObject[] {
-        return this._items;
-    }
-
-    public set items(command_list: ExitObject[]) {
-        this._items = command_list;
-    }
-
-
+    private _items: ExitObject[];
+    public get items(): ExitObject[] { return this._items; }
+    public set items(command_list: ExitObject[]) { this._items = command_list; }
 
     constructor(history: ExitObject[] = []) {
         this._items = history;
