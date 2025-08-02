@@ -2,13 +2,15 @@ import type { Terminal } from './input-terminal';
 
 /**
  * Handles keyboard and selection events for the terminal.
- * @param {Terminal} terminal - the terminal to attach listeners to
  */
 export class TermListeners {
     private _terminal: Terminal
     private _prediction_index: number = 0;
     private _autocomplete_predictions: string[] | undefined = undefined;
 
+    /**
+     * @param {Terminal} terminal - the terminal to attach listeners to
+     */
     constructor(terminal: Terminal) {
         this._terminal = terminal;
     }

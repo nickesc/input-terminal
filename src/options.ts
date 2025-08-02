@@ -1,6 +1,5 @@
 /**
  * Manages the terminal's configuration.
- * @param {object} [options] - an optional configuration to initialize the terminal with
  */
 export class TermOptions {
     public previousKey: string = "ArrowUp";
@@ -12,6 +11,9 @@ export class TermOptions {
     public prompt: string = "> ";
     public preprompt: string = "";
 
+    /**
+     * @param {object} [options] - an optional configuration to initialize the terminal with
+     */
     constructor(options?: object) {
         Object.assign(this, options);
     }

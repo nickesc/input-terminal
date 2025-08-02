@@ -11,10 +11,7 @@ import { TermOptions } from './options.ts';
 
 /**
  * Allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
- * @param {HTMLInputElement} input - input element to turn into a terminal
- * @param {object} options - terminal configuration
- * @param {ExitObject[]} commandHistory - history of commands that have been executed
- * @param {Command[]} commandList - list of commands that can be executed by the user
+ *
  * @example
  * ```typescript
  * import { Terminal, Command } from "input-terminal";
@@ -42,6 +39,12 @@ export class Terminal {
     private _lastExitCode: number | undefined = undefined;
     public get lastExitCode(): number | undefined { return this._lastExitCode; }
 
+    /**
+     * @param {HTMLInputElement} input - input element to turn into a terminal
+     * @param {object} options - terminal configuration
+     * @param {ExitObject[]} commandHistory - history of commands that have been executed
+     * @param {Command[]} commandList - list of commands that can be executed by the user
+     */
     constructor(input: HTMLInputElement, options: object = {}, commandHistory: ExitObject[] = [], commandList: Command[] = []) {
         this.input = input;
         this.history = new TermHistory(commandHistory);
