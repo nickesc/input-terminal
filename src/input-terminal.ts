@@ -20,7 +20,9 @@ export class Terminal {
     public options: TermOptions;
 
     private _listeners: TermListeners;
+
     private _started: boolean = false;
+    public get started(): boolean { return this._started; }
 
     private _lastExitCode: number | undefined = undefined;
     public get lastExitCode(): number | undefined { return this._lastExitCode; }
@@ -42,10 +44,6 @@ export class Terminal {
             this.update_input();
             this._started = true
         }
-    }
-
-    public is_started(): boolean {
-        return this._started;
     }
 
     public update_input(user_input?: string): void {
