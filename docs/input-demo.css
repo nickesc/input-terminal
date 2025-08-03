@@ -70,12 +70,12 @@ pre#output {
     background-color: var(--color-background-navbar);
 }
 
-#terminal-wrapper, input#terminal {
+#terminal-wrapper, input#termd {
 
     box-sizing: border-box;
 }
 
-input#terminal {
+input#termd {
     border-radius: var(--border-rad-1);
     background-color: #000;
     color: #efefef;
@@ -90,7 +90,7 @@ input#terminal {
     width: calc(100% - 6px);
 }
 
-input#terminal:focus {
+input#termd:focus {
     outline: none;
 }
 
@@ -102,7 +102,7 @@ input#terminal:focus {
     transition: --gradient-deg .75s ease-out, --gradient-background .75s ease-out, --gradient-color-1 .75s ease-out, --gradient-color-2 .75s ease-out, --gradient-color-3 .75s ease-out;
 }
 
-#terminal-wrapper:has(input#terminal:focus) {
+#terminal-wrapper:has(input#termd:focus) {
     --gradient-deg: -30deg;
     --gradient-background: #535fe5;
     --gradient-color-1: #535fe5;

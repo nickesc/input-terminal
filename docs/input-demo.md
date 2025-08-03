@@ -6,7 +6,7 @@ title: Demo
 
 # Terminal Demo
 
-<div id="terminal-wrapper"><input id="terminal" type="text"></div>
+<div id="terminal-wrapper"><input id="termd" type="text"></div>
 <pre id="output">Output prints here...</pre>
 
 ### Test Commands

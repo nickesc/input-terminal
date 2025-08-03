@@ -1,7 +1,7 @@
 import { Terminal, ExitObject, Command } from './input-terminal/input-terminal.js';
 
 let output = document.getElementById("output");
-let terminal = new Terminal(document.getElementById("terminal"));
+let terminal = new Terminal(document.getElementById("termd"));
 terminal.init();
 
 const help_command = new Command("help", (args, options, terminal) => {
