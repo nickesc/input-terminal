@@ -15,5 +15,7 @@
     "Command Components"
   ],
   "favicon": "docs/icon.svg",
-  "githubPages": false
+  "githubPages": true,
+  "hostedBaseUrl": "https://nickesc.github.io/input-terminal",
+  "useHostedBaseUrlForAbsoluteLinks": true
 }
