@@ -9,6 +9,7 @@
   "navigation": {
     "includeCategories": true
   },
+  "defaultCategory": "none",
   "categoryOrder": [
     "none",
     "Terminal Components",
@@ -17,5 +18,12 @@
   "favicon": "docs/icon.svg",
   "githubPages": true,
   "hostedBaseUrl": "https://nickesc.github.io/input-terminal",
-  "useHostedBaseUrlForAbsoluteLinks": true
+  "useHostedBaseUrlForAbsoluteLinks": true,
+  "navigationLinks": {
+    "GitHub": "https://github.com/nickesc/input-terminal",
+    "npm": "https://www.npmjs.com/package/input-terminal"
+  },
+  "searchCategoryBoosts": {
+    "none": 1.5
+  },
 }

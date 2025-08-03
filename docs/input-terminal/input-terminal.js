@@ -22,7 +22,6 @@ import { TermOptions } from "./options.js";
  * }));
  * terminal.init();
  * ```
- * @category none
  */
 export class Terminal {
     _listeners;

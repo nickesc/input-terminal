@@ -24,7 +24,6 @@ import { TermOptions } from './options.ts';
  * }));
  * terminal.init();
  * ```
- * @category none
  */
 export class Terminal {
     private _listeners: TermListeners;

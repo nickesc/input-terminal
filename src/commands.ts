@@ -58,7 +58,6 @@ export class ArgsOptions {
 
 /**
  * An executable command that can be added to a terminal's command list.
- * @category none
  */
 export class Command {
     private _key: string;
@@ -122,7 +121,6 @@ export class Command {
 
 /**
  * An object that is returned when a command is executed.
- * @category none
  */
 export class ExitObject{
     private _command: Command | undefined;
