@@ -6,6 +6,7 @@
     <a href="https://www.npmjs.com/package/input-terminal"><img alt="NPM: npmjs.com/package/input-terminal" src="https://img.shields.io/npm/v/input-terminal?style=for-the-badge&logo=npm&logoColor=white&label=npm&color=%23C12127&labelColor=%23505050"></a>
   </div>
   <br>
+  <img src="docs/icon.svg" width="128">
   <h3 align="center">
     <code>input-terminal</code>
   </h3>
@@ -13,7 +14,7 @@
     by <a href="https://nickesc.github.io">N. Escobar</a> / <a href="https://github.com/nickesc">nickesc</a>
   </h6>
   <h6 align="center">
-    <!-- tagline -->
+    Turn any <code>HTMLInputElement</code> into a terminal interface
   </h6>
 </h3>
 
@@ -21,7 +22,7 @@
 
 ## About `input-terminal`
 
-> // TODO
+`input-terminal` allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
 
 ## Install
 
@@ -31,20 +32,41 @@ Install `input-terminal` via NPM:
 npm i input-terminal
 ```
 
-Import the `input-terminal` class in your TypeScript or JavaScript file:
+Import the `Terminal` and `Command` classes in your TypeScript or JavaScript file:
 
 ```ts
-import { input-terminal } from "input-terminal";
+import { Terminal, Command } from "input-terminal";
 ```
 
 ## Basic Usage
 
-> TODO
+The example below demonstrates how to instantiate a new `Terminal`, create a new `Command`, and add it to the `Terminal`'s command list.
+
+```ts
+import { Terminal, Command } from "input-terminal";
+
+// Get the input element from your HTML
+const input = document.getElementById("terminal") as HTMLInputElement;
+
+// Create a new terminal instance
+const terminal = new Terminal(input);
+
+// Create and add a command
+const say = new Command("say", (args, options, terminal) => {
+    alert(args[1] ?? "nothing");
+});
+terminal.commands.add(say);
+
+// Initialize the terminal
+terminal.init();
+```
 
 ## Reference
 
-For full documentation of the module and its methods, please see the [Documentation](/docs/documentation.md) page.
+For full documentation of the module and its methods, please see the [Documentation](https://nickesc.github.io/input-terminal).
 
 ## License
 
 `input-terminal` is released under the **MIT** license. For more information, see the repository's [LICENSE](/LICENSE) file.
+
+<a href="https://github.com/nickesc/input-terminal/blob/main/LICENSE"><img class="badge-img" alt="GitHub License" src="https://img.shields.io/github/license/nickesc/input-terminal?style=for-the-badge&labelColor=%23333&color=%230070ff"></a>
