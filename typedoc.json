@@ -1,7 +1,8 @@
 {
   "projectDocuments": ["README.md", "docs/input-demo.md"],
   "plugin": ["typedoc-github-theme"],
-  "out": "docs/typedoc",
+  "out": "docs/",
+  "cleanOutputDir": false,
   "entryPoints": ["src/input-terminal.ts"],
   "customCss": "docs/input-demo.css",
   "sort": ["source-order"],
