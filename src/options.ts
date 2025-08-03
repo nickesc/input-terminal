@@ -1,14 +1,55 @@
 /**
  * Manages the terminal's configuration.
+ * @category Terminal Components
  */
 export class TermOptions {
+
+    /**
+     * The key used to select the previous command.
+     * @type {string}
+     */
     public previousKey: string = "ArrowUp";
+
+    /**
+     * The key used to select the next command.
+     * @type {string}
+     */
     public nextKey: string = "ArrowDown";
+
+    /**
+     * The key used to enter a command.
+     * @type {string}
+     */
     public returnKey: string = "Enter";
+
+    /**
+     * The key used to autocomplete a command.
+     * @type {string}
+     */
     public autocompleteKey: string = "Tab";
+
+    /**
+     * The modifier key.
+     * @type {string}
+     */
     public modKey: string = "Ctrl";
+
+    /**
+     * Whether the terminal should start focused.
+     * @type {boolean}
+     */
     public startFocused: boolean = false;
+
+    /**
+     * A line of text that is displayed at the beginning of the command line.
+     * @type {string}
+     */
     public prompt: string = "> ";
+
+    /**
+     * A line of text that is displayed before the prompt.
+     * @type {string}
+     */
     public preprompt: string = "";
 
     /**

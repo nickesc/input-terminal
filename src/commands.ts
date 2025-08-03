@@ -2,14 +2,23 @@ import { Terminal } from './input-terminal.ts';
 
 /**
  * Manages and stores the arguments and options for a command.
+ * @category Command Components
  */
 export class ArgsOptions {
     private _user_input: string[];
-
     private _args: string[] = [];
+    private _options = {};
+
+    /**
+     * The arguments for the command.
+     * @type {string[]}
+     */
     public get args(): string[] { return this._args; }
 
-    private _options = {};
+    /**
+     * The options for the command.
+     * @type {object}
+     */
     public get options(): object { return this._options; }
 
     /**
@@ -49,12 +58,22 @@ export class ArgsOptions {
 
 /**
  * An executable command that can be added to a terminal's command list.
+ * @category none
  */
 export class Command {
     private _key: string;
+    private _action: (args: string[], options: {}, terminal: Terminal) => {};
+
+    /**
+     * The key used to identify the command.
+     * @type {string}
+     */
     public get key(): string { return this._key; }
 
-    private _action: (args: string[], options: {}, terminal: Terminal) => {};
+    /**
+     * The function to execute when the command is run.
+     * @type {function}
+     */
     public get action(): (args: string[], options: {}, terminal: Terminal) => {} { return this._action; }
 
     /**
@@ -103,21 +122,43 @@ export class Command {
 
 /**
  * An object that is returned when a command is executed.
+ * @category none
  */
 export class ExitObject{
     private _command: Command | undefined;
+    private _timestamp: number;
+    private _exit_code: number;
+    private _user_input: string[];
+    private _output: any;
+
+    /**
+     * The command that was executed.
+     * @type {Command | undefined}
+     */
     public get command(): Command | undefined { return this._command; }
 
-    private _timestamp: number;
+    /**
+     * The timestamp of the execution.
+     * @type {number}
+     */
     public get timestamp(): number { return this._timestamp; }
 
-    private _exit_code: number;
+    /**
+     * The exit code of the execution.
+     * @type {number}
+     */
     public get exit_code(): number { return this._exit_code; }
 
-    private _user_input: string[];
+    /**
+     * The input that was used to execute the command.
+     * @type {string[]}
+     */
     public get user_input(): string[] { return this._user_input; }
 
-    private _output: any;
+    /**
+     * The output of the execution.
+     * @type {object}
+     */
     public get output(): object { return this._output; }
 
     /**
@@ -137,10 +178,20 @@ export class ExitObject{
 
 /**
  * Manages a list of commands that can be executed by a terminal.
+ * @category Terminal Components
  */
 export class TermCommands{
     private _list: Command[] = [];
+
+    /**
+     * The list of commands in the terminal.
+     * @type {Command[]}
+     */
     public get list(): Command[] { return this._list; }
+    /**
+     * The list of commands in the terminal.
+     * @type {Command[]}
+     */
     public set list(commands: Command[]) { for (let command of commands){ this.add(command); } }
 
     /**

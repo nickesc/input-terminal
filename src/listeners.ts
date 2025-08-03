@@ -2,6 +2,7 @@ import type { Terminal } from './input-terminal';
 
 /**
  * Handles keyboard and selection events for the terminal.
+ * @category Terminal Components
  */
 export class TermListeners {
     private _terminal: Terminal

@@ -4,9 +4,10 @@ import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
 
 /**
- * @fileoverview Allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
- *
+ * @license MIT
+ * @author nickesc
  * @module input-terminal
+ * @showGroups
  */
 
 /**
@@ -23,20 +24,47 @@ import { TermOptions } from './options.ts';
  * }));
  * terminal.init();
  * ```
+ * @category none
  */
 export class Terminal {
+    private _listeners: TermListeners;
+    private _started: boolean = false;
+    private _lastExitCode: number | undefined = undefined;
 
+    /**
+     * The input element that the terminal is attached to.
+     * @type {HTMLInputElement}
+     */
     public input: HTMLInputElement;
+
+    /**
+     * The history of commands that have been executed.
+     * @type {TermHistory}
+     */
     public history: TermHistory;
+
+    /**
+     * The commands that can be executed by the user.
+     * @type {TermCommands}
+     */
     public commands: TermCommands;
+
+    /**
+     * The options for the terminal.
+     * @type {TermOptions}
+     */
     public options: TermOptions;
 
-    private _listeners: TermListeners;
-
-    private _started: boolean = false;
+    /**
+     * Whether the terminal has been initialized.
+     * @type {boolean}
+     */
     public get started(): boolean { return this._started; }
 
-    private _lastExitCode: number | undefined = undefined;
+    /**
+     * The last exit code of the terminal.
+     * @type {number | undefined}
+     */
     public get lastExitCode(): number | undefined { return this._lastExitCode; }
 
     /**

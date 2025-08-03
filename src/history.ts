@@ -2,16 +2,27 @@ import { ExitObject } from './commands.ts';
 
 /**
  * Manages the terminal's history of commands.
+ * @category Terminal Components
  */
 export class TermHistory {
-    private _index: number | undefined;
 
+    private _index: number | undefined;
     private _items: ExitObject[];
+
+    /**
+     * The items in the history.
+     * @type {ExitObject[]}
+     */
     public get items(): ExitObject[] { return this._items; }
+
+    /**
+     * The items in the history.
+     * @type {ExitObject[]}
+     */
     public set items(command_list: ExitObject[]) { this._items = command_list; }
 
     /**
-     * @param {ExitObject[]} [history] - an optional history of commands to initialize the history with
+     * @param {ExitObject[]} [history] - an optional history of commands to initialize the terminal with
      */
     constructor(history: ExitObject[] = []) {
         this._items = history;
