@@ -1,0 +1,17 @@
+{
+  "projectDocuments": ["README.md", "docs/input-demo.md"],
+  "plugin": ["typedoc-github-theme"],
+  "out": "docs/typedoc",
+  "entryPoints": ["src/input-terminal.ts"],
+  "customCss": "docs/input-demo.css",
+  "sort": ["source-order"],
+  "navigation": {
+    "includeCategories": true
+  },
+  "categoryOrder": [
+    "none",
+    "Terminal Components",
+    "Command Components"
+  ],
+  "favicon": "docs/icon.svg"
+}
