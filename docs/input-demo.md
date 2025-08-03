@@ -17,4 +17,4 @@ title: Demo
 
 Type the above commands into the terminal to execute them. Their output will be displayed in the output section.
 
-<script src="/docs/script.js" type="module"></script>
+<script src="../script.js" type="module"></script>
