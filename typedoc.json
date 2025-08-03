@@ -14,5 +14,6 @@
     "Terminal Components",
     "Command Components"
   ],
-  "favicon": "docs/icon.svg"
+  "favicon": "docs/icon.svg",
+  "githubPages": false
 }
