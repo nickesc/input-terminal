@@ -1,0 +1,111 @@
+@import url('/docs/fonts.css');
+
+:root {
+    --border-rad-1: 5px;
+    --border-rad-2: calc(var(--border-rad-1) * 1.4);
+
+
+    --dark-color-background: #111111aa !important;
+    --dark-color-background-secondary: #222222aa !important;
+    --dark-color-background-navbar: #030303aa !important;
+    --dark-color-background-overlay: #33333366 !important;
+    --dark-color-accent: #77777799 !important;
+
+    --light-color-background: #ffffffAA !important;
+    --light-color-background-secondary: ##f6f8faaa !important;
+    --light-color-background-navbar: ##f6f8faaa !important;
+    --light-color-background-overlay: #c8d1da66 !important;
+    --light-color-accent: #d1d9e099 !important;
+}
+
+body {
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    backdrop-filter: blur(10px);
+}
+
+h1, h2, h3, h4, h5, h6, .title {
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+
+input, textarea, button, select, code, pre, kbd, samp {
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+
+@property --gradient-deg {
+  syntax: '<angle>';
+  initial-value: 30deg;
+  inherits: false;
+}
+
+
+@property --gradient-background {
+  syntax: '<color>';
+  initial-value: #6a6a6a;
+  inherits: false;
+}
+
+
+@property --gradient-color-1 {
+  syntax: '<color>';
+  initial-value: #6a6a6a;
+  inherits: false;
+}
+
+@property --gradient-color-2 {
+  syntax: '<color>';
+  initial-value: #8F8F8F;
+  inherits: false;
+}
+
+@property --gradient-color-3 {
+  syntax: '<color>';
+  initial-value: #b6b6b6;
+  inherits: false;
+}
+
+pre#output {
+    padding: 10px;
+    min-height: 1em;
+    line-height: 1em;
+    background-color: var(--color-background-navbar);
+}
+
+#terminal-wrapper, input#terminal {
+
+    box-sizing: border-box;
+}
+
+input#terminal {
+    border-radius: var(--border-rad-1);
+    background-color: #000;
+    color: #efefef;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 16px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 3px;
+    border: none;
+    width: calc(100% - 6px);
+}
+
+input#terminal:focus {
+    outline: none;
+}
+
+#terminal-wrapper{
+    border-radius: var(--border-rad-2);
+    width: 100%;
+    background: var(--gradient-background);
+    background: linear-gradient(var(--gradient-deg), var(--gradient-color-1) 0%, var(--gradient-color-2) 50%, var(--gradient-color-3) 100%);
+    transition: --gradient-deg .75s ease-out, --gradient-background .75s ease-out, --gradient-color-1 .75s ease-out, --gradient-color-2 .75s ease-out, --gradient-color-3 .75s ease-out;
+}
+
+#terminal-wrapper:has(input#terminal:focus) {
+    --gradient-deg: -30deg;
+    --gradient-background: #535fe5;
+    --gradient-color-1: #535fe5;
+    --gradient-color-2: #45ddfc;
+    --gradient-color-3: #1dfda0;
+}

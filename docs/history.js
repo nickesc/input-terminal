@@ -1,14 +1,23 @@
 import { ExitObject } from "./commands.js";
 /**
  * Manages the terminal's history of commands.
+ * @category Terminal Components
  */
 export class TermHistory {
     _index;
     _items;
+    /**
+     * The items in the history.
+     * @type {ExitObject[]}
+     */
     get items() { return this._items; }
+    /**
+     * The items in the history.
+     * @type {ExitObject[]}
+     */
     set items(command_list) { this._items = command_list; }
     /**
-     * @param {ExitObject[]} [history] - an optional history of commands to initialize the history with
+     * @param {ExitObject[]} [history] - an optional history of commands to initialize the terminal with
      */
     constructor(history = []) {
         this._items = history;

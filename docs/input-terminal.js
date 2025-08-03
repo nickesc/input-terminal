@@ -3,9 +3,10 @@ import { TermHistory } from "./history.js";
 import { TermListeners } from "./listeners.js";
 import { TermOptions } from "./options.js";
 /**
- * @fileoverview Allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
- *
+ * @license MIT
+ * @author nickesc
  * @module input-terminal
+ * @showGroups
  */
 /**
  * Allows you to turn any `HTMLInputElement` into a terminal interface. Define custom commands that can be executed by users, track command history, autocomplete commands, and more.
@@ -21,16 +22,41 @@ import { TermOptions } from "./options.js";
  * }));
  * terminal.init();
  * ```
+ * @category none
  */
 export class Terminal {
-    input;
-    history;
-    commands;
-    options;
     _listeners;
     _started = false;
-    get started() { return this._started; }
     _lastExitCode = undefined;
+    /**
+     * The input element that the terminal is attached to.
+     * @type {HTMLInputElement}
+     */
+    input;
+    /**
+     * The history of commands that have been executed.
+     * @type {TermHistory}
+     */
+    history;
+    /**
+     * The commands that can be executed by the user.
+     * @type {TermCommands}
+     */
+    commands;
+    /**
+     * The options for the terminal.
+     * @type {TermOptions}
+     */
+    options;
+    /**
+     * Whether the terminal has been initialized.
+     * @type {boolean}
+     */
+    get started() { return this._started; }
+    /**
+     * The last exit code of the terminal.
+     * @type {number | undefined}
+     */
     get lastExitCode() { return this._lastExitCode; }
     /**
      * @param {HTMLInputElement} input - input element to turn into a terminal

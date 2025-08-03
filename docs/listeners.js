@@ -1,5 +1,6 @@
 /**
  * Handles keyboard and selection events for the terminal.
+ * @category Terminal Components
  */
 export class TermListeners {
     _terminal;
