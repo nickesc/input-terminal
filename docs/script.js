@@ -1,4 +1,4 @@
-import { Terminal, ExitObject, Command } from './input-terminal.js';
+import { Terminal, ExitObject, Command } from './input-terminal/input-terminal.js';
 
 let output = document.getElementById("output");
 let terminal = new Terminal(document.getElementById("terminal"));

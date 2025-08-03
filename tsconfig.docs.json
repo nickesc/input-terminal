@@ -2,7 +2,7 @@
   "extends": "./tsconfig",
   "compilerOptions": {
     /* Base Options: */
-    "outDir": "docs",
+    "outDir": "docs/input-terminal",
     "declaration": false
   }
 }
