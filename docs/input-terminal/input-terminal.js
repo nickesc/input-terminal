@@ -185,15 +185,15 @@ export class Terminal extends EventTarget {
         const command = this.bin.find(user_input[0]);
         let exitObject;
         if (command) {
-            exitObject = command.run(user_input, this);
+            exitObject = command.run(user_input, input, this);
         }
         else if (user_input[0] === "") {
-            exitObject = this.bin.empty_command.run(user_input, this);
+            exitObject = this.bin.empty_command.run(user_input, input, this);
         }
         else {
             const errText = `Command ${user_input[0]} not found`;
             console.error(errText);
-            exitObject = new ExitObject(user_input, undefined, 1, { error: errText });
+            exitObject = new ExitObject(user_input, input, undefined, 1, { error: errText });
         }
         this._lastExitCode = exitObject.exit_code;
         this.history.push(exitObject);

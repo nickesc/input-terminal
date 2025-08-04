@@ -90,7 +90,7 @@ export class Command {
      * @param {Terminal} term - the terminal to run the command in
      * @returns {ExitObject} the `ExitObject` the command returns
      */
-    run(user_input, term) {
+    run(user_input, raw_input, term) {
         let return_value;
         let exit_code;
         const parsed_input = this.parse_input(user_input);
@@ -103,7 +103,7 @@ export class Command {
             console.error(error);
             exit_code = 1;
         }
-        const exit_reply = new ExitObject(user_input, this, exit_code, return_value);
+        const exit_reply = new ExitObject(user_input, raw_input, this, exit_code, return_value);
         return exit_reply;
     }
 }
@@ -115,6 +115,7 @@ export class ExitObject {
     _timestamp;
     _exit_code;
     _user_input;
+    _raw_input;
     _output;
     /**
      * Get the command that was executed.
@@ -137,6 +138,11 @@ export class ExitObject {
      */
     get user_input() { return this._user_input; }
     /**
+     * Get the raw input that was entered to execute the command.
+     * @type {string}
+     */
+    get raw_input() { return this._raw_input; }
+    /**
      * Get the output of the execution.
      * @type {object}
      */
@@ -147,11 +153,12 @@ export class ExitObject {
      * @param {number} exit_code - the exit code of the command
      * @param {object} output - the output of the command
      */
-    constructor(user_input, command, exit_code, output) {
+    constructor(user_input, raw_input, command, exit_code, output) {
         this._command = command;
         this._timestamp = Date.now();
         this._exit_code = exit_code;
         this._user_input = user_input;
+        this._raw_input = raw_input;
         this._output = output;
     }
 }
