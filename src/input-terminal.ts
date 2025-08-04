@@ -65,6 +65,12 @@ export class Terminal extends EventTarget {
     public options: TermOptions;
 
     /**
+     * Get the listeners for the terminal.
+     * @type {TermListeners}
+     */
+    public get listeners(): TermListeners { return this._listeners; }
+
+    /**
      * Get whether the terminal has been initialized.
      * @type {boolean}
      */
@@ -225,4 +231,4 @@ export class Terminal extends EventTarget {
     }
 }
 
-export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, built_ins }
+export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, built_ins }
