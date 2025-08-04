@@ -1,4 +1,4 @@
-import { Terminal, ExitObject, Command } from './input-terminal/input-terminal.js';
+import { Terminal, ExitObject, Command, built_ins } from './input-terminal/input-terminal.js';
 
 let output = document.getElementById("output");
 let terminal = new Terminal(document.getElementById("termd"));
@@ -37,7 +37,20 @@ const empty = new Command("", (args, options, terminal) => {
 
 terminal.bin.empty_command = empty;
 
-terminal.addEventListener("executed", (e) => {
+const manObject = new ExitObject(["man", "echo"], "man echo", built_ins.man, 0, {})
+
+const resultObject = new ExitObject(["result"], "result", built_ins.result, 0, {exit: terminal.get_last_exit_object()})
+
+const returnObject = new ExitObject(["return"], "return", built_ins.return, 0, {args: ["test"], options: {}})
+
+const echoObject = new ExitObject(["echo this is a test"], "echo this is a test", built_ins.echo, 0, {output: "this is a test"})
+
+terminal.history.push(manObject)
+terminal.history.push(resultObject)
+terminal.history.push(returnObject)
+terminal.history.push(echoObject)
+
+terminal.addEventListener("inputTerminalExecuted", (e) => {
     if (e.detail.exit_code === 0){
         if (["string", "number", "boolean"].includes(typeof e.detail.output)){
             output.innerText = e.detail.output;
@@ -49,9 +62,6 @@ terminal.addEventListener("executed", (e) => {
     }
 });
 
-/* terminal.history.push(new ExitObject(["help"], help_command, 0, {}))
-terminal.history.push(new ExitObject(["result"], result_command, 0, {}))
-terminal.history.push(new ExitObject(["return"], return_command, 0, {}))
-terminal.history.push(new ExitObject(["echo this is a test"], echo_command, 0, {}))
- */
+
+
 
