@@ -282,7 +282,7 @@ input#termd:focus {
     font-family: 'IBM Plex Sans', sans-serif !important;
 }
 
-@media (max-width: 769px) {
+@media (pointer:coarse) {
     .button-icon-container {
         width: 2.5em;
         height: 1.5em;
