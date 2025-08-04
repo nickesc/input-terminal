@@ -19,11 +19,12 @@ title: Demo
 </div>
 <pre id="output">Output prints here...</pre>
 
-### Test Commands
+### Built-in Commands
 - `echo`
-- `help`
+- `man`
 - `result`
 - `return`
+- `alert`
 
 Type the above commands into the terminal to execute them. Their output will be displayed in the output section.
 
