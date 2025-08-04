@@ -1,7 +1,8 @@
-import { TermCommands, Command, ExitObject, ArgsOptions } from './commands.ts';
+import { Command, ExitObject, ArgsOptions } from './commands.ts';
 import { TermHistory } from './history.ts';
 import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
+import { TermBin } from './bin.ts';
 
 /**
  * @license MIT
@@ -18,7 +19,7 @@ import { TermOptions } from './options.ts';
  * import { Terminal, Command } from "input-terminal";
  * const input = document.getElementById("terminal") as HTMLInputElement;
  * const terminal = new Terminal(input, { prompt: ">> " });
- * terminal.commands.add(new Command("echo", (args, options, terminal) => {
+ * terminal.bin.add(new Command("echo", (args, options, terminal) => {
  *     console.log(args);
  *     return {};
  * }));
@@ -44,9 +45,9 @@ export class Terminal {
 
     /**
      * The commands that can be executed by the user.
-     * @type {TermCommands}
+     * @type {TermBin}
      */
-    public commands: TermCommands;
+    public bin: TermBin;
 
     /**
      * The options for the terminal.
@@ -75,7 +76,7 @@ export class Terminal {
     constructor(input: HTMLInputElement, options: object = {}, commandHistory: ExitObject[] = [], commandList: Command[] = []) {
         this.input = input;
         this.history = new TermHistory(commandHistory);
-        this.commands = new TermCommands(commandList);
+        this.bin = new TermBin(commandList);
         this.options = new TermOptions(options);
         this._listeners = new TermListeners(this);
     }
@@ -117,10 +118,10 @@ export class Terminal {
     public get_predictions(text?: string): string[] {
         let predictions: string[] = []
         if (text) {
-            const partial_matches: string[] = this.commands.get_command_keys().filter(key => key.startsWith(text));
+            const partial_matches: string[] = this.bin.get_command_keys().filter(key => key.startsWith(text));
             predictions = partial_matches;
         } else {
-            predictions = this.commands.get_command_keys();
+            predictions = this.bin.get_command_keys();
         }
         return predictions;
     }
@@ -185,14 +186,14 @@ export class Terminal {
      */
     public execute_command(input: string): ExitObject {
         const user_input: string[] = this.get_input_array(input.trim());
-        const command: Command | undefined = this.commands.find(user_input[0]);
+        const command: Command | undefined = this.bin.find(user_input[0]);
         const output: object = {}
 
         let exitObject: ExitObject;
         if (command) {
             exitObject = command.run(user_input, this);
         } else if (user_input[0] === "") {
-            exitObject = this.commands.empty_command.run(user_input, this);
+            exitObject = this.bin.empty_command.run(user_input, this);
         } else {
             const errText: string = `Command ${user_input[0]} not found`;
             console.error(errText);
@@ -207,4 +208,4 @@ export class Terminal {
     }
 }
 
-export {Command, ArgsOptions, ExitObject, TermCommands, TermHistory, TermOptions }
+export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions }

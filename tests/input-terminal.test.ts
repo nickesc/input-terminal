@@ -53,8 +53,8 @@ describe('Terminal Tests', () => {
         expect(term.get_predictions("test")).toEqual([]);
     });
     it('should return the correct predictions', () => {
-        term.commands.add(new Command("test1", (args, options, terminal) => {return true;}));
-        term.commands.add(new Command("test2", (args, options, terminal) => {return true;}));
+        term.bin.add(new Command("test1", (args, options, terminal) => {return true;}));
+        term.bin.add(new Command("test2", (args, options, terminal) => {return true;}));
         expect(term.get_predictions("test")).toEqual(["test1", "test2"]);
     });
 
@@ -72,13 +72,13 @@ describe('Terminal Tests', () => {
         expect(term.get_input_array('command ""')).toEqual(["command", ""]);
     });
     it('should parse options and arguments correctly', () => {
-        term.commands.add(new Command("test", (args, options, terminal) => {
+        term.bin.add(new Command("test", (args, options, terminal) => {
             return [args,options]
         }))
         expect(term.execute_command("test arg1 arg2 -o --option -value=x=10").output).toEqual([["arg1","arg2"],{o:{value:undefined},option:{value:undefined},value:{value:"x=10"}}]);
     });
     it('should parse option values correctly', () => {
-        term.commands.add(new Command("test", (args, options, terminal) => {
+        term.bin.add(new Command("test", (args, options, terminal) => {
             return [args,options]
         }))
         expect(term.execute_command("test --val1=20 --val2='spaced value' -val3=x=10").output).toEqual([[],{val1:{value:"20"},val2:{value:"spaced value"},val3:{value:"x=10"}}]);
@@ -87,13 +87,13 @@ describe('Terminal Tests', () => {
 
     // COMMAND EXECUTION TESTS
     it('should return an ExitObject after execution', () => {
-        term.commands.add(new Command("test", (args, options, terminal) => {
+        term.bin.add(new Command("test", (args, options, terminal) => {
             return true
         }))
         expect(isExitObject(term.execute_command("command"))).toBe(true);
     });
     it('should successfully execute a known command', () => {
-        term.commands.add(new Command("test", (args, options, terminal) => {
+        term.bin.add(new Command("test", (args, options, terminal) => {
             return true
         }))
         expect(term.execute_command("test").exit_code).toEqual(0);
@@ -110,7 +110,7 @@ describe('Terminal Tests', () => {
         const command = new Command("test", (args, options, terminal) => {
             return true
         })
-        term.commands.add(command)
+        term.bin.add(command)
         expect(term.execute_command("test")).toEqual(new ExitObject(["test"], command, 0, true));
     });
     it('should get undefined as the last exit code on initialization', () => {
@@ -122,7 +122,7 @@ describe('Terminal Tests', () => {
     });
 
     it('should pass terminal correctly', () => {
-        term.commands.add(new Command("test", (args, options, terminal) => {
+        term.bin.add(new Command("test", (args, options, terminal) => {
             return terminal;
         }))
         expect(term.execute_command("test").output).toBe(term);

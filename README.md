@@ -55,7 +55,7 @@ const terminal = new Terminal(input);
 const say = new Command("say", (args, options, terminal) => {
     alert(args[1] ?? "nothing");
 });
-terminal.commands.add(say);
+terminal.bin.add(say);
 
 // Initialize the terminal
 terminal.init();

@@ -108,16 +108,16 @@ describe('TermListeners Tests', () => {
     });
 
     it('should handle autocomplete key with single prediction', () => {
-        terminal.commands.add(new Command('testcmd', (args, options, terminal) => {return true;}));
+        terminal.bin.add(new Command('testcmd', (args, options, terminal) => {return true;}));
         terminal.update_input('test');
         const event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
         input.dispatchEvent(event);
         expect(terminal.get_input_value()).toBe('testcmd');
     });
     it('should handle autocomplete key with multiple predictions', () => {
-        terminal.commands.add(new Command('test1', (args, options, terminal) => {return true;}));
-        terminal.commands.add(new Command('test2', (args, options, terminal) => {return true;}));
-        terminal.commands.add(new Command('test3', (args, options, terminal) => {return true;}));
+        terminal.bin.add(new Command('test1', (args, options, terminal) => {return true;}));
+        terminal.bin.add(new Command('test2', (args, options, terminal) => {return true;}));
+        terminal.bin.add(new Command('test3', (args, options, terminal) => {return true;}));
         terminal.update_input('test');
 
         let event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
@@ -149,8 +149,8 @@ describe('TermListeners Tests', () => {
         expect(terminal.get_input_value()).toBe('');
     });
     it('should reset autocomplete predictions when typing other keys', () => {
-        terminal.commands.add(new Command('test1', (args, options, terminal) => {return true;}));
-        terminal.commands.add(new Command('test2', (args, options, terminal) => {return true;}));
+        terminal.bin.add(new Command('test1', (args, options, terminal) => {return true;}));
+        terminal.bin.add(new Command('test2', (args, options, terminal) => {return true;}));
         terminal.update_input('test');
 
         let event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
