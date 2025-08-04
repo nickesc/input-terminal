@@ -11,6 +11,30 @@ export declare class TermListeners {
      * @param {Terminal} terminal - the terminal to attach listeners to
      */
     constructor(terminal: Terminal);
+    /**
+     * Update input and move history to the previous command.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
+    previous_listener_action(event: Event): void;
+    /**
+     * Update input and move history to the next command.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
+    next_listener_action(event: Event): void;
+    /**
+     * Attempt to autocomplete the current input in the terminal.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
+    autocomplete_listener_action(event: Event): void;
+    /**
+     * Execute with the current terminal input.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
+    return_listener_action(event: Event): void;
     private _handle_keyboard_event;
     private _handle_selection_event;
     /**

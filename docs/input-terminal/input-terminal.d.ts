@@ -1,5 +1,6 @@
 import { Command, ExitObject, ArgsOptions } from './commands.ts';
 import { TermHistory } from './history.ts';
+import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
 import { TermBin, built_ins } from './bin.ts';
 /**
@@ -53,6 +54,11 @@ export declare class Terminal extends EventTarget {
      */
     options: TermOptions;
     /**
+     * Get the listeners for the terminal.
+     * @type {TermListeners}
+     */
+    get listeners(): TermListeners;
+    /**
      * Get whether the terminal has been initialized.
      * @type {boolean}
      */
@@ -104,4 +110,4 @@ export declare class Terminal extends EventTarget {
      */
     execute_command(input: string): ExitObject;
 }
-export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, built_ins };
+export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, built_ins };

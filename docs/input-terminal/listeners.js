@@ -12,46 +12,44 @@ export class TermListeners {
     constructor(terminal) {
         this._terminal = terminal;
     }
-    _handle_keyboard_event(event) {
+    /**
+     * Update input and move history to the previous command.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
+    previous_listener_action(event) {
+        event.preventDefault();
+        this._terminal.update_input(this._terminal.history.previous()?.raw_input);
+    }
+    /**
+     * Update input and move history to the next command.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
+    next_listener_action(event) {
+        event.preventDefault();
+        const next = this._terminal.history.next();
+        if (next !== undefined) {
+            this._terminal.update_input(next.raw_input);
+        }
+        else {
+            this._terminal.update_input();
+        }
+    }
+    /**
+     * Attempt to autocomplete the current input in the terminal.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
+    autocomplete_listener_action(event) {
         let autocomplete_triggered = false;
         if (this._autocomplete_predictions === undefined) {
             this._autocomplete_predictions = this._terminal.get_predictions(this._terminal.get_input_value());
         }
-        switch (event.key) {
-            case this._terminal.options.previousKey:
-                event.preventDefault();
-                this._terminal.update_input(this._terminal.history.previous()?.raw_input);
-                break;
-            case this._terminal.options.nextKey:
-                event.preventDefault();
-                const next = this._terminal.history.next();
-                if (next !== undefined) {
-                    this._terminal.update_input(next.raw_input);
-                }
-                else {
-                    this._terminal.update_input();
-                }
-                break;
-            case this._terminal.options.autocompleteKey:
-                event.preventDefault();
-                if (this._autocomplete_predictions && this._autocomplete_predictions.length > 0) {
-                    this._terminal.update_input(this._autocomplete_predictions[this._prediction_index]);
-                    autocomplete_triggered = true;
-                }
-                break;
-            case this._terminal.options.returnKey:
-                event.preventDefault();
-                const promptLen = this._terminal.options.preprompt.length + this._terminal.options.prompt.length;
-                this._terminal.execute_command(this._terminal.input.value.slice(promptLen));
-                this._terminal.update_input();
-                break;
-            case "Backspace":
-            case "Delete":
-            case "ArrowLeft":
-                if (this._terminal.input.selectionStart !== null && this._terminal.input.selectionStart <= (this._terminal.options.preprompt + this._terminal.options.prompt).length) {
-                    event.preventDefault();
-                }
-                break;
+        event.preventDefault();
+        if (this._autocomplete_predictions && this._autocomplete_predictions.length > 0) {
+            this._terminal.update_input(this._autocomplete_predictions[this._prediction_index]);
+            autocomplete_triggered = true;
         }
         if (autocomplete_triggered) {
             if (this._prediction_index < this._autocomplete_predictions.length - 1) {
@@ -64,6 +62,43 @@ export class TermListeners {
         else {
             this._prediction_index = 0;
             this._autocomplete_predictions = undefined;
+        }
+    }
+    /**
+     * Execute with the current terminal input.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
+    return_listener_action(event) {
+        event.preventDefault();
+        const promptLen = this._terminal.options.preprompt.length + this._terminal.options.prompt.length;
+        this._terminal.execute_command(this._terminal.input.value.slice(promptLen));
+        this._terminal.update_input();
+    }
+    _handle_keyboard_event(event) {
+        switch (event.key) {
+            case this._terminal.options.previousKey:
+                this.previous_listener_action(event);
+                break;
+            case this._terminal.options.nextKey:
+                this.next_listener_action(event);
+                break;
+            case this._terminal.options.autocompleteKey:
+                this.autocomplete_listener_action(event);
+                break;
+            case this._terminal.options.returnKey:
+                this.return_listener_action(event);
+                break;
+            case "Backspace":
+            case "Delete":
+            case "ArrowLeft":
+                if (this._terminal.input.selectionStart !== null && this._terminal.input.selectionStart <= (this._terminal.options.preprompt + this._terminal.options.prompt).length) {
+                    event.preventDefault();
+                }
+            default:
+                this._prediction_index = 0;
+                this._autocomplete_predictions = undefined;
+                break;
         }
     }
     _handle_selection_event(event) {
