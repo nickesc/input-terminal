@@ -17,10 +17,10 @@ describe('TermListeners Tests', () => {
     });
 
     it('should handle previous key', () => {
-        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        terminal.history.push(new ExitObject(['test', "quoted text"], 'test "quoted text"', undefined, 0, 'test'));
         const event = new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' });
         input.dispatchEvent(event);
-        expect(terminal.get_input_value()).toBe("test");
+        expect(terminal.get_input_value()).toBe('test "quoted text"');
     });
 
     it('should handle next key', () => {

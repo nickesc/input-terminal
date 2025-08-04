@@ -24,13 +24,13 @@ export class TermListeners {
         switch (event.key) {
             case this._terminal.options.previousKey:
                 event.preventDefault();
-                this._terminal.update_input(this._terminal.history.previous()?.user_input.join(" "))
+                this._terminal.update_input(this._terminal.history.previous()?.raw_input)
                 break;
             case this._terminal.options.nextKey:
                 event.preventDefault();
                 const next = this._terminal.history.next()
                 if (next !== undefined) {
-                    this._terminal.update_input(next.user_input.join(" "))
+                    this._terminal.update_input(next.raw_input)
                 } else {
                     this._terminal.update_input();
                 }
