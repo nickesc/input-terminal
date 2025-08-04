@@ -111,7 +111,7 @@ describe('Terminal Tests', () => {
             return true
         })
         term.bin.add(command)
-        expect(term.execute_command("test")).toEqual(new ExitObject(["test"], command, 0, true));
+        expect(term.execute_command("test")).toEqual(new ExitObject(["test"], "test", command, 0, true));
     });
     it('should get undefined as the last exit code on initialization', () => {
         expect(term.lastExitCode).toEqual(undefined);

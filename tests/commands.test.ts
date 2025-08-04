@@ -60,10 +60,11 @@ describe('Command Tests', () => {
         const term = new Terminal(input);
         const command: Command = new Command("test", () => {return {}});
         const user_input: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
-        const exit_object = command.run(user_input, term);
+        const exit_object = command.run(user_input, user_input.join(" "), term);
         expect(exit_object.output).toEqual({});
         expect(exit_object.exit_code).toEqual(0);
         expect(exit_object.user_input).toEqual(user_input);
+        expect(exit_object.raw_input).toEqual(user_input.join(" "));
         expect(exit_object.command).toEqual(command);
     });
     it('should return an error when the command throws an error',  () => {
@@ -73,10 +74,11 @@ describe('Command Tests', () => {
         const term = new Terminal(input);
         const command: Command = new Command("test", () => {throw new Error("test error");});
         const user_input: string[] = ["test"];
-        const exit_object = command.run(user_input, term);
+        const exit_object = command.run(user_input, user_input.join(" "), term);
         expect(exit_object.output).toEqual({error: new Error("test error")});
         expect(exit_object.exit_code).toEqual(1);
         expect(exit_object.user_input).toEqual(user_input);
+        expect(exit_object.raw_input).toEqual(user_input.join(" "));
         expect(exit_object.command).toEqual(command);
     });
 });
@@ -88,15 +90,16 @@ describe('ExitObject Tests', () => {
     });
     // EXIT OBJECT TESTS
     it('should construct an exit object',  () => {
-        const exit_object: ExitObject = new ExitObject([], test_command, 0, {});
+        const exit_object: ExitObject = new ExitObject([], "", test_command, 0, {});
         expect(isExitObject(exit_object)).toBe(true);
     });
     it('should construct with the correct property values',  () => {
-        const exit_object: ExitObject = new ExitObject([], test_command, 0, {});
+        const exit_object: ExitObject = new ExitObject([], "", test_command, 0, {});
         expect(exit_object.command).toEqual(test_command);
         expect(exit_object.timestamp).toBeDefined();
         expect(exit_object.exit_code).toEqual(0);
         expect(exit_object.user_input).toEqual([]);
+        expect(exit_object.raw_input).toEqual("");
         expect(exit_object.output).toEqual({});
     });
 });
