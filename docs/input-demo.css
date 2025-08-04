@@ -4,7 +4,6 @@
     --border-rad-1: 5px;
     --border-rad-2: calc(var(--border-rad-1) * 1.4);
 
-
     --dark-color-background: #111111aa !important;
     --dark-color-background-secondary: #222222aa !important;
     --dark-color-background-navbar: #030303aa !important;
@@ -17,21 +16,38 @@
     --light-color-background-overlay: #c8d1da66 !important;
     --light-color-accent: #d1d9e099 !important;
 
+    --accent-1: #535fe5;
+    --accent-1-transparent: #535fe5AA;
+    --accent-2: #45ddfc;
+    --accent-2-transparent: #45ddfcAA;
+    --accent-3: #1dfda0;
+    --accent-3-transparent: #1dfda0AA;
+
     --terminal-background: #000000D0;
+    --terminal-background-hover: #000000C0;
     --output-background: #000000DD;
+    --terminal-text: #efefef;
+    --output-text: #d0d0d0;
+
+
 }
 
-body {
-    font-family: 'IBM Plex Sans', sans-serif !important;
-    backdrop-filter: blur(10px);
+:root[data-theme='dark'] {
+    --button-hover-gradient-1: #000000D0;
+    --button-hover-gradient-2: #080808D0;
+    --button-hover-gradient-3: #101010D0;
+
+    --button-color: #505050;
+    --button-active-color: #d0d0d0;
 }
 
-h1, h2, h3, h4, h5, h6, .title {
-    font-family: 'IBM Plex Mono', monospace !important;
-}
+:root[data-theme='light'] {
+    --button-hover-gradient-1: #00000022;
+    --button-hover-gradient-2: #08080822;
+    --button-hover-gradient-3: #10101022;
 
-input, textarea, button, select, code, pre, kbd, samp {
-    font-family: 'IBM Plex Mono', monospace !important;
+    --button-color: #a4a4a4;
+    --button-active-color: #707070;
 }
 
 @property --gradient-deg {
@@ -66,11 +82,50 @@ input, textarea, button, select, code, pre, kbd, samp {
   inherits: false;
 }
 
+@property --button-background {
+  syntax: '<color>';
+  initial-value: #00000000;
+  inherits: false;
+}
+
+
+@property --button-color-1 {
+  syntax: '<color>';
+  initial-value: #00000000;
+  inherits: false;
+}
+
+@property --button-color-2 {
+  syntax: '<color>';
+  initial-value: #00000000;
+  inherits: false;
+}
+
+@property --button-color-3 {
+  syntax: '<color>';
+  initial-value: #00000000;
+  inherits: false;
+}
+
+body {
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    backdrop-filter: blur(10px);
+}
+
+h1, h2, h3, h4, h5, h6, .title {
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+
+input, textarea, button, select, code, pre, kbd, samp {
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+
 pre#output {
     padding: 10px;
     min-height: 1em;
     line-height: 1em;
     background-color: var(--output-background);
+    color: var(--output-text);
 }
 
 #terminal-wrapper, input#termd {
@@ -81,7 +136,8 @@ pre#output {
 input#termd {
     border-radius: var(--border-rad-1);
     background-color: var(--terminal-background);
-    color: #efefef;
+    border-top: var(--terminal-background) 3px solid;
+    color: var(--terminal-text);
     padding: 10px;
     font-family: monospace;
     font-size: 16px;
@@ -91,10 +147,16 @@ input#termd {
     margin: 3px;
     border: none;
     width: calc(100% - 6px);
+    transition: background-color .125s ease-out;
+}
+
+input#termd:hover {
+    background-color: var(--terminal-background-hover);
 }
 
 input#termd:focus {
     outline: none;
+    background-color: var(--terminal-background);
 }
 
 #terminal-wrapper{
@@ -103,12 +165,87 @@ input#termd:focus {
     background: var(--gradient-background);
     background: linear-gradient(var(--gradient-deg), var(--gradient-color-1) 0%, var(--gradient-color-2) 50%, var(--gradient-color-3) 100%);
     transition: --gradient-deg 1s cubic-bezier(.15,1.24,1,.92), --gradient-background .75s ease-out, --gradient-color-1 .75s ease-out, --gradient-color-2 .5s ease-out, --gradient-color-3 .25s ease-out;
+    margin-bottom: 8px;
 }
 
 #terminal-wrapper:has(input#termd:focus) {
     --gradient-deg: -30deg;
-    --gradient-background: #535fe5;
-    --gradient-color-1: #535fe5;
-    --gradient-color-2: #45ddfc;
-    --gradient-color-3: #1dfda0;
+    --gradient-background: var(--accent-1);
+    --gradient-color-1: var(--accent-1);
+    --gradient-color-2: var(--accent-2);
+    --gradient-color-3: var(--accent-3);
+}
+
+#action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.button-icon-container {
+    width: 1em;
+    height: 1em;
+}
+
+.action-button {
+    outline: var(--button-color) 1px solid;
+    outline-offset: -0.5px;
+    border: none;
+    color: var(--button-color);
+    background: var(--button-background);
+    background: linear-gradient(var(--gradient-deg), var(--button-color-1) 0%, var(--button-color-2) 50%, var(--button-color-3) 100%);
+    transition: --gradient-deg .5s cubic-bezier(.15,1.24,1,.92), --button-background .375s ease-out, --button-color-1 .375s ease-out, --button-color-2 .25s ease-out, --button-color-3 .125s ease-out, color .3s ease-out;
+    border-radius: 0;
+    padding: 3px 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-button:hover {
+    background-color: unset;
+    --button-background: var(--button-hover-gradient-1);
+    --button-color-1: var(--button-hover-gradient-1);
+    --button-color-2: var(--button-hover-gradient-2);
+    --button-color-3: var(--button-hover-gradient-3);
+}
+
+.action-button:active {
+    --gradient-deg: -30deg;
+    --button-background: var(--accent-1-transparent);
+    --button-color-1: var(--accent-1-transparent);
+    --button-color-2: var(--accent-2-transparent);
+    --button-color-3: var(--accent-3-transparent);
+    color: var(--button-active-color);
+}
+
+.left-end-button {
+    border-top-left-radius: var(--border-rad-1);
+    border-bottom-left-radius: var(--border-rad-1);
+}
+
+.right-end-button {
+    border-top-right-radius: var(--border-rad-1);
+    border-bottom-right-radius: var(--border-rad-1);
+}
+
+#terminal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+#action-slug {
+    font-size: .6em;
+    color: var(--button-color);
+    margin-right: 10px;
+    opacity: 0;
+    transition: opacity .3s ease-out;
+    font-style: italic;
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+
+#action-slug.action-slug-active {
+    opacity: .75;
 }
