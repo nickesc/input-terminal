@@ -70,11 +70,25 @@ describe('TermCommands Tests', () => {
         expect(commands.list).toEqual([test_command]);
 
     });
-    it('should not add a duplicate command to the list',  () => {
+    it('should throw an error when adding the same command object', () => {
         const commands: TermCommands = new TermCommands([test_command]);
-        const starting_length: number = commands.list.length;
-        expect(commands.add(test_command)).toEqual(starting_length);
+        expect(() => commands.add(test_command)).toThrow('Command with key "test0" already exists');
         expect(commands.list).toEqual([test_command]);
+    });
+    it('should throw an error when adding a command with an existing key', () => {
+        const commands: TermCommands = new TermCommands([test_command]);
+        const duplicateKeyCommand = new Command("test0", () => ({ different: "action" }));
+        expect(() => commands.add(duplicateKeyCommand)).toThrow('Command with key "test0" already exists');
+        expect(commands.list).toEqual([test_command]);
+    });
+    it('should throw an error when setting a list with duplicate keys', () => {
+        const commands: TermCommands = new TermCommands();
+        const duplicateCommands = [
+            new Command("test1", () => ({ action: "first" })),
+            new Command("test1", () => ({ action: "second" }))
+        ];
+        expect(() => commands.list = duplicateCommands).toThrow('Command with key "test1" already exists');
+        expect(commands.list).toEqual([duplicateCommands[0]]);
     });
 
 
