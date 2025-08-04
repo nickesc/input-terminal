@@ -91,6 +91,57 @@ describe('TermCommands Tests', () => {
         expect(commands.list).toEqual(test_commands);
         expect(removed_command).toEqual(undefined);
     });
+
+
+    // EMPTY COMMAND TESTS
+    it('should have a default empty command', () => {
+        const commands: TermCommands = new TermCommands();
+        expect(isCommand(commands.empty_command)).toBe(true);
+    });
+    it('should get the empty command', () => {
+        const commands: TermCommands = new TermCommands();
+        const empty_cmd = commands.empty_command;
+        expect(empty_cmd.key).toEqual("");
+    });
+    it('should set the empty command', () => {
+        const commands: TermCommands = new TermCommands();
+        const custom_empty = new Command("custom_empty", () => ({ custom: "output" }));
+        commands.empty_command = custom_empty;
+        expect(commands.empty_command).toEqual(custom_empty);
+    });
+    it('should run the empty command with empty input', () => {
+        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        const document = dom.window.document;
+        const input = document.getElementById('terminal-input') as HTMLInputElement;
+        const term = new Terminal(input);
+        const empty_input: string = "";
+        const exit_object = term.execute_command(empty_input);
+        expect(exit_object.command).toEqual(term.commands.empty_command);
+    });
+    it('should run a custom empty command with custom output', () => {
+        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        const document = dom.window.document;
+        const input = document.getElementById('terminal-input') as HTMLInputElement;
+        const term = new Terminal(input);
+        const empty_input: string = ""
+        const custom_empty = new Command("custom_empty", () => ({ message: "No command provided" }));
+        term.commands.empty_command = custom_empty;
+        const exit_object = term.execute_command(empty_input);
+        expect(exit_object.command).toEqual(term.commands.empty_command);
+    });
+    it('should handle empty command errors gracefully', () => {
+        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        const document = dom.window.document;
+        const input = document.getElementById('terminal-input') as HTMLInputElement;
+        const term = new Terminal(input);
+        const error_empty = new Command("error_empty", () => { throw new Error("Empty command error"); });
+        term.commands.empty_command = error_empty;
+        const empty_input: string = ""
+        const exit_object = term.execute_command(empty_input);
+        expect(exit_object.output).toEqual({ error: new Error("Empty command error") });
+        expect(exit_object.exit_code).toEqual(1);
+        expect(exit_object.command).toEqual(error_empty);
+    });
 });
 
 describe('Command Tests', () => {

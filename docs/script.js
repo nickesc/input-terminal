@@ -15,7 +15,13 @@ const result_command = new Command("result", (args, options, terminal) => {
 });
 
 const return_command = new Command("return", (args, options, terminal) => {
+    output.innerText = ""
     return {args: args, options: options};
+});
+
+const empty = new Command("", (args, options, terminal) => {
+    output.innerText = ""
+    return {};
 });
 
 const echo_command = new Command("echo", (args, options, terminal) => {
@@ -27,6 +33,7 @@ terminal.commands.add(help_command);
 terminal.commands.add(result_command);
 terminal.commands.add(return_command);
 terminal.commands.add(echo_command);
+terminal.commands.empty_command = empty;
 
 terminal.history.push(new ExitObject(["help"], help_command, 0, {}))
 terminal.history.push(new ExitObject(["result"], result_command, 0, {}))

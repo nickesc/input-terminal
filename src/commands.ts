@@ -180,6 +180,7 @@ export class ExitObject{
  */
 export class TermCommands{
     private _list: Command[] = [];
+    private _empty_command: Command = new Command("", (args, options, terminal) => { return {}; });
 
     /**
      * The list of commands in the terminal.
@@ -191,6 +192,18 @@ export class TermCommands{
      * @type {Command[]}
      */
     public set list(commands: Command[]) { for (let command of commands){ this.add(command); } }
+
+    /**
+     * Get the command that is executed when empty input is provided.
+     * @type {Command}
+     */
+    public get empty_command(): Command { return this._empty_command; }
+
+    /**
+     * Set the command that is executed when empty input is provided.
+     * @type {Command}
+     */
+    public set empty_command(command: Command) { this._empty_command = command; }
 
     /**
      * @param {Command[]} [commands] - an optional list of commands to initialize the terminal with
