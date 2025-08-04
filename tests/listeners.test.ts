@@ -146,7 +146,7 @@ describe('TermListeners Tests', () => {
         terminal.update_input('');
         const event = new dom.window.KeyboardEvent('keydown', { key: 'Tab' });
         input.dispatchEvent(event);
-        expect(terminal.get_input_value()).toBe('');
+        expect(terminal.get_input_value()).toBe(terminal.bin.list[0]?.key || "");
     });
     it('should reset autocomplete predictions when typing other keys', () => {
         terminal.bin.add(new Command('test1', (args, options, terminal) => {return true;}));

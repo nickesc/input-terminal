@@ -1,4 +1,11 @@
 import { Command } from "./commands.ts";
+import { echo } from "./built-ins/echo.ts";
+import { alert } from "./built-ins/alert.ts";
+import { result } from "./built-ins/result.ts";
+import { man } from "./built-ins/man.ts";
+import { return_ } from "./built-ins/return.ts";
+
+export const built_ins: Command[] = [echo, alert, result, man, return_];
 
 /**
  * Manages a list of commands that can be executed by a terminal.

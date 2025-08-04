@@ -2,7 +2,7 @@ import { Command, ExitObject, ArgsOptions } from './commands.ts';
 import { TermHistory } from './history.ts';
 import { TermListeners } from './listeners.ts';
 import { TermOptions } from './options.ts';
-import { TermBin } from './bin.ts';
+import { TermBin, built_ins } from './bin.ts';
 
 /**
  * @license MIT
@@ -87,6 +87,9 @@ export class Terminal {
      */
     public init(): void {
         if (!this._started){
+            if (this.options.installBuiltIns){
+                this.bin.list = [...this.bin.list, ...built_ins];
+            }
             this._listeners.attach_input_listeners();
             this.update_input();
             this._started = true

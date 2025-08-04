@@ -15,106 +15,105 @@ function tCommand(key: string): Command {
     return new Command(key, () => {return {}});
 }
 
-let test_commands: Command[];
+let test_bin: Command[];
 let test_command: Command;
 
 describe('TermBin Tests', () => {
     beforeEach(() => {
         test_command = tCommand("test0");
-        test_commands = [tCommand("test1"), tCommand("test2"), tCommand("test3")];
+        test_bin = [tCommand("test1"), tCommand("test2"), tCommand("test3")];
     });
 
     // CONSTRUCTION TEST
     it('should construct a TermBin object',  () => {
-        const commands: TermBin = new TermBin();
-        expect(isTermBin(commands)).toBe(true);
+        const bin: TermBin = new TermBin();
+        expect(isTermBin(bin)).toBe(true);
     });
 
 
-    // COMMANDS LIST TESTS
-    it('should have empty commands list by default', () => {
-        const commands: TermBin = new TermBin();
-        expect(commands.list).toEqual([]);
+    // BIN LIST TESTS
+    it('should have empty bin by default', () => {
+        const bin: TermBin = new TermBin();
+        expect(bin.list).toEqual([]);
     });
-    it('should construct with custom commands list',  () => {
-        const commands: TermBin = new TermBin(test_commands);
-        expect(commands.list).toEqual(test_commands);
+    it('should construct with custom bin list',  () => {
+        const bin: TermBin = new TermBin(test_bin);
+        expect(bin.list).toEqual(test_bin);
     });
-    it('should set the commands list', () => {
-        const commands: TermBin = new TermBin();
-        commands.list = test_commands;
-        expect(commands.list).toEqual(test_commands);
+    it('should set the bin list', () => {
+        const bin: TermBin = new TermBin();
+        bin.list = test_bin;
+        expect(bin.list).toEqual(test_bin);
     });
     it('should get the correct list', () => {
-        const commands: TermBin = new TermBin(test_commands);
-        expect(commands.list).toEqual(test_commands);
+        const bin: TermBin = new TermBin(test_bin);
+        expect(bin.list).toEqual(test_bin);
     });
     it('should get the correct key list', () => {
-        const commands: TermBin = new TermBin(test_commands);
-        expect(commands.get_command_keys()).toEqual(["test1", "test2", "test3"]);
+        const bin: TermBin = new TermBin(test_bin);
+        expect(bin.get_command_keys()).toEqual(["test1", "test2", "test3"]);
     });
 
 
     // ADD COMMAND TESTS
     it('should add a command to the list',  () => {
-        const commands: TermBin = new TermBin();
-        const starting_length: number = commands.list.length;
-        expect(commands.add(test_command)).toEqual(starting_length + 1);
-        expect(commands.list).toEqual([test_command]);
-
+        const bin: TermBin = new TermBin();
+        const starting_length: number = bin.list.length;
+        expect(bin.add(test_command)).toEqual(starting_length + 1);
+        expect(bin.list).toEqual([test_command]);
     });
     it('should throw an error when adding the same command object', () => {
-        const commands: TermBin = new TermBin([test_command]);
-        expect(() => commands.add(test_command)).toThrow('Command with key "test0" already exists');
-        expect(commands.list).toEqual([test_command]);
+        const bin: TermBin = new TermBin([test_command]);
+        expect(() => bin.add(test_command)).toThrow('Command with key "test0" already exists');
+        expect(bin.list).toEqual([test_command]);
     });
     it('should throw an error when adding a command with an existing key', () => {
-        const commands: TermBin = new TermBin([test_command]);
+        const bin: TermBin = new TermBin([test_command]);
         const duplicateKeyCommand = new Command("test0", () => ({ different: "action" }));
-        expect(() => commands.add(duplicateKeyCommand)).toThrow('Command with key "test0" already exists');
-        expect(commands.list).toEqual([test_command]);
+        expect(() => bin.add(duplicateKeyCommand)).toThrow('Command with key "test0" already exists');
+        expect(bin.list).toEqual([test_command]);
     });
     it('should throw an error when setting a list with duplicate keys', () => {
-        const commands: TermBin = new TermBin();
-        const duplicateCommands = [
+        const bin: TermBin = new TermBin();
+        const duplicatebin = [
             new Command("test1", () => ({ action: "first" })),
             new Command("test1", () => ({ action: "second" }))
         ];
-        expect(() => commands.list = duplicateCommands).toThrow('Command with key "test1" already exists');
-        expect(commands.list).toEqual([duplicateCommands[0]]);
+        expect(() => bin.list = duplicatebin).toThrow('Command with key "test1" already exists');
+        expect(bin.list).toEqual([duplicatebin[0]]);
     });
 
 
     // REMOVE COMMAND TESTS
     it('should remove a command from the list',  () => {
-        const commands: TermBin = new TermBin(test_commands);
-        const removed_command: Command | undefined = commands.remove(test_commands[0]);
-        expect(commands.list).toEqual([test_commands[1], test_commands[2]]);
-        expect(removed_command).toEqual(test_commands[0]);
+        const bin: TermBin = new TermBin(test_bin);
+        const removed_command: Command | undefined = bin.remove(test_bin[0]);
+        expect(bin.list).toEqual([test_bin[1], test_bin[2]]);
+        expect(removed_command).toEqual(test_bin[0]);
     });
     it('should not remove a command that does not exist',  () => {
-        const commands: TermBin = new TermBin(test_commands);
-        const removed_command: Command | undefined = commands.remove(test_command);
-        expect(commands.list).toEqual(test_commands);
+        const bin: TermBin = new TermBin(test_bin);
+        const removed_command: Command | undefined = bin.remove(test_command);
+        expect(bin.list).toEqual(test_bin);
         expect(removed_command).toEqual(undefined);
     });
 
 
     // EMPTY COMMAND TESTS
     it('should have a default empty command', () => {
-        const commands: TermBin = new TermBin();
-        expect(isCommand(commands.empty_command)).toBe(true);
+        const bin: TermBin = new TermBin();
+        expect(isCommand(bin.empty_command)).toBe(true);
     });
     it('should get the empty command', () => {
-        const commands: TermBin = new TermBin();
-        const empty_cmd = commands.empty_command;
+        const bin: TermBin = new TermBin();
+        const empty_cmd = bin.empty_command;
         expect(empty_cmd.key).toEqual("");
     });
     it('should set the empty command', () => {
-        const commands: TermBin = new TermBin();
+        const bin: TermBin = new TermBin();
         const custom_empty = new Command("custom_empty", () => ({ custom: "output" }));
-        commands.empty_command = custom_empty;
-        expect(commands.empty_command).toEqual(custom_empty);
+        bin.empty_command = custom_empty;
+        expect(bin.empty_command).toEqual(custom_empty);
     });
     it('should run the empty command with empty input', () => {
         const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
