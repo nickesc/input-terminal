@@ -27,4 +27,4 @@ title: Demo
 
 Type the above commands into the terminal to execute them. Their output will be displayed in the output section.
 
-<script src="../script.js" type="module"></script>
+<script src="../input-demo.js" type="module"></script>
