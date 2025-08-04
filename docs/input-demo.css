@@ -140,7 +140,7 @@ h1, h2, h3, h4, h5, h6, .title {
     font-family: 'IBM Plex Mono', monospace !important;
 }
 
-input, textarea, button, select, code, pre, kbd, samp {
+input, textarea, button, code, pre, kbd, samp {
     font-family: 'IBM Plex Mono', monospace !important;
 }
 
@@ -272,4 +272,12 @@ input#termd:focus {
 
 #action-slug.action-slug-active {
     opacity: .75;
+}
+
+.tsd-navigation > .tsd-accordion,  .tsd-accordion-details{
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+
+.tsd-filter-item, #tsd-theme, .tsd-accordion >.tsd-accordion-summary {
+    font-family: 'IBM Plex Sans', sans-serif !important;
 }
