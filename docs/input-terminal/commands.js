@@ -8,12 +8,12 @@ export class ArgsOptions {
     _args = [];
     _options = {};
     /**
-     * The arguments for the command.
+     * Get the arguments for the command.
      * @type {string[]}
      */
     get args() { return this._args; }
     /**
-     * The options for the command.
+     * Get the options for the command.
      * @type {object}
      */
     get options() { return this._options; }
@@ -59,12 +59,12 @@ export class Command {
     _key;
     _action;
     /**
-     * The key used to identify the command.
+     * Get the key used to identify the command.
      * @type {string}
      */
     get key() { return this._key; }
     /**
-     * The function to execute when the command is run.
+     * Get the function to execute when the command is run.
      * @type {function}
      */
     get action() { return this._action; }
@@ -117,27 +117,27 @@ export class ExitObject {
     _user_input;
     _output;
     /**
-     * The command that was executed.
+     * Get the command that was executed.
      * @type {Command | undefined}
      */
     get command() { return this._command; }
     /**
-     * The timestamp of the execution.
+     * Get the timestamp of the execution.
      * @type {number}
      */
     get timestamp() { return this._timestamp; }
     /**
-     * The exit code of the execution.
+     * Get the exit code of the execution.
      * @type {number}
      */
     get exit_code() { return this._exit_code; }
     /**
-     * The input that was used to execute the command.
+     * Get the input that was used to execute the command.
      * @type {string[]}
      */
     get user_input() { return this._user_input; }
     /**
-     * The output of the execution.
+     * Get the output of the execution.
      * @type {object}
      */
     get output() { return this._output; }
@@ -161,18 +161,29 @@ export class ExitObject {
  */
 export class TermCommands {
     _list = [];
+    _empty_command = new Command("", (args, options, terminal) => { return {}; });
     /**
-     * The list of commands in the terminal.
+     * Get the list of commands in the terminal.
      * @type {Command[]}
      */
     get list() { return this._list; }
     /**
-     * The list of commands in the terminal.
+     * Set the list of commands in the terminal.
      * @type {Command[]}
      */
     set list(commands) { for (let command of commands) {
         this.add(command);
     } }
+    /**
+     * Get the command that is executed when empty input is provided.
+     * @type {Command}
+     */
+    get empty_command() { return this._empty_command; }
+    /**
+     * Set the command that is executed when empty input is provided.
+     * @type {Command}
+     */
+    set empty_command(command) { this._empty_command = command; }
     /**
      * @param {Command[]} [commands] - an optional list of commands to initialize the terminal with
      */

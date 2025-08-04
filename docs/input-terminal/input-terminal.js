@@ -48,12 +48,12 @@ export class Terminal {
      */
     options;
     /**
-     * Whether the terminal has been initialized.
+     * Get whether the terminal has been initialized.
      * @type {boolean}
      */
     get started() { return this._started; }
     /**
-     * The last exit code of the terminal.
+     * Get the last exit code of the terminal.
      * @type {number | undefined}
      */
     get lastExitCode() { return this._lastExitCode; }
@@ -168,15 +168,15 @@ export class Terminal {
      * @returns {ExitObject} The ExitObject returned by the execution
      */
     execute_command(input) {
-        const user_input = this.get_input_array(input);
+        const user_input = this.get_input_array(input.trim());
         const command = this.commands.find(user_input[0]);
         const output = {};
         let exitObject;
         if (command) {
             exitObject = command.run(user_input, this);
         }
-        else if (user_input[0] == "") {
-            exitObject = new ExitObject(user_input, undefined, 0, output);
+        else if (user_input[0] === "") {
+            exitObject = this.commands.empty_command.run(user_input, this);
         }
         else {
             const errText = `Command ${user_input[0]} not found`;

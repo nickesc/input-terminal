@@ -7,12 +7,12 @@ export class TermHistory {
     _index;
     _items;
     /**
-     * The items in the history.
+     * Get the items in the history.
      * @type {ExitObject[]}
      */
     get items() { return this._items; }
     /**
-     * The items in the history.
+     * Set the items in the history.
      * @type {ExitObject[]}
      */
     set items(command_list) { this._items = command_list; }
