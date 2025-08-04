@@ -16,11 +16,21 @@ export class TermListeners {
         this._terminal = terminal;
     }
 
+    /**
+     * Update input and move history to the previous command.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
     public previous_listener_action(event: Event): void {
         event.preventDefault();
         this._terminal.update_input(this._terminal.history.previous()?.raw_input)
     }
 
+    /**
+     * Update input and move history to the next command.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
     public next_listener_action(event: Event): void {
         event.preventDefault();
         const next = this._terminal.history.next()
@@ -31,6 +41,11 @@ export class TermListeners {
         }
     }
 
+    /**
+     * Attempt to autocomplete the current input in the terminal.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
     public autocomplete_listener_action(event: Event): void {
         let autocomplete_triggered: boolean = false;
         if (this._autocomplete_predictions === undefined) {
@@ -55,6 +70,11 @@ export class TermListeners {
         }
     }
 
+    /**
+     * Execute with the current terminal input.
+     * @param {Event} event - the event that triggered the action
+     * @returns {void}
+     */
     public return_listener_action(event: Event): void {
         event.preventDefault();
         const promptLen: number = this._terminal.options.preprompt.length + this._terminal.options.prompt.length;
