@@ -106,12 +106,29 @@ describe('Terminal Tests', () => {
         expect(term.execute_command(" ").exit_code).toEqual(0);
         expect(term.execute_command("  ").exit_code).toEqual(0);
     });
-    it('should return the correct exit object', () => {
+    it('should return the correct exit object', async () => {
         const command = new Command("test", (args, options, terminal) => {
             return true
         })
         term.bin.add(command)
-        expect(term.execute_command("test")).toEqual(new ExitObject(["test"], "test", command, 0, true));
+
+        const executed = term.execute_command("test")
+        const test_exit = new ExitObject(["test"], "test", command, 0, true)
+        try {
+            expect(executed).toEqual(test_exit);
+        } catch (error) {
+            if (executed.timestamp !== test_exit.timestamp) {
+                console.warn("Timestamp mismatch")
+                expect(executed.exit_code).toEqual(test_exit.exit_code);
+                expect(executed.output).toEqual(test_exit.output);
+                expect(executed.timestamp).toBeDefined();
+                expect(executed.command).toEqual(test_exit.command);
+                expect(executed.user_input).toEqual(test_exit.user_input);
+                expect(executed.raw_input).toEqual(test_exit.raw_input);
+            } else {
+                expect(executed).toEqual(test_exit);
+            }
+        }
     });
     it('should get undefined as the last exit code on initialization', () => {
         expect(term.get_last_exit_object()).toEqual(undefined);

@@ -6,7 +6,7 @@ function isHistory(target: any): boolean {
 }
 
 function tExitObject(text: string): ExitObject {
-    return new ExitObject([text], undefined, 0, {});
+    return new ExitObject([text], text, undefined, 0, {});
 }
 
 let test_commands: ExitObject[];
