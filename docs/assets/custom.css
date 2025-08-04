@@ -207,7 +207,7 @@ input#termd:focus {
 }
 
 .button-icon-container {
-    width: 1em;
+    width: 1.5em;
     height: 1em;
 }
 
@@ -280,4 +280,11 @@ input#termd:focus {
 
 .tsd-filter-item, #tsd-theme, .tsd-accordion >.tsd-accordion-summary {
     font-family: 'IBM Plex Sans', sans-serif !important;
+}
+
+@media (max-width: 769px) {
+    .button-icon-container {
+        width: 2.5em;
+        height: 1.5em;
+    }
 }
