@@ -16,6 +16,9 @@
     --light-color-background-navbar: ##f6f8faaa !important;
     --light-color-background-overlay: #c8d1da66 !important;
     --light-color-accent: #d1d9e099 !important;
+
+    --terminal-background: #000000D0;
+    --output-background: #000000DD;
 }
 
 body {
@@ -59,7 +62,7 @@ input, textarea, button, select, code, pre, kbd, samp {
 
 @property --gradient-color-3 {
   syntax: '<color>';
-  initial-value: #b6b6b6;
+  initial-value: #a4a4a4;
   inherits: false;
 }
 
@@ -67,7 +70,7 @@ pre#output {
     padding: 10px;
     min-height: 1em;
     line-height: 1em;
-    background-color: var(--color-background-navbar);
+    background-color: var(--output-background);
 }
 
 #terminal-wrapper, input#termd {
@@ -77,7 +80,7 @@ pre#output {
 
 input#termd {
     border-radius: var(--border-rad-1);
-    background-color: #000;
+    background-color: var(--terminal-background);
     color: #efefef;
     padding: 10px;
     font-family: monospace;
@@ -99,7 +102,7 @@ input#termd:focus {
     width: 100%;
     background: var(--gradient-background);
     background: linear-gradient(var(--gradient-deg), var(--gradient-color-1) 0%, var(--gradient-color-2) 50%, var(--gradient-color-3) 100%);
-    transition: --gradient-deg .75s ease-out, --gradient-background .75s ease-out, --gradient-color-1 .75s ease-out, --gradient-color-2 .75s ease-out, --gradient-color-3 .75s ease-out;
+    transition: --gradient-deg 1s cubic-bezier(.15,1.24,1,.92), --gradient-background .75s ease-out, --gradient-color-1 .75s ease-out, --gradient-color-2 .5s ease-out, --gradient-color-3 .25s ease-out;
 }
 
 #terminal-wrapper:has(input#termd:focus) {
