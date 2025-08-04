@@ -191,6 +191,7 @@ export class TermCommands{
     /**
      * Set the list of commands in the terminal.
      * @type {Command[]}
+     * @throws {Error} if any command in the list has a key that already exists
      */
     public set list(commands: Command[]) { for (let command of commands){ this.add(command); } }
 
@@ -236,11 +237,13 @@ export class TermCommands{
      * Adds a command to the terminal's command list.
      * @param {Command} command - the command to add
      * @returns {number} the new length of the command list
+     * @throws an error if a command with the same key already exists
      */
     public add(command: Command): number {
-        if (!this._list.includes(command)){
-            this._list.push(command);
+        if (this.find(command.key)) {
+            throw new Error(`Command with key "${command.key}" already exists`);
         }
+        this._list.push(command);
         return this._list.length;
     }
 
