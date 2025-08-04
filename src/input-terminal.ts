@@ -31,7 +31,7 @@ export class Terminal extends EventTarget {
     private _started: boolean = false;
 
     #emit_executed_event(exitObject: ExitObject): void {
-        this.dispatchEvent(new CustomEvent("executed", {detail: exitObject}));
+        this.dispatchEvent(new CustomEvent("inputTerminalExecuted", {detail: exitObject}));
     }
 
     /**
