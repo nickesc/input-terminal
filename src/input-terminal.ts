@@ -55,13 +55,13 @@ export class Terminal {
     public options: TermOptions;
 
     /**
-     * Whether the terminal has been initialized.
+     * Get whether the terminal has been initialized.
      * @type {boolean}
      */
     public get started(): boolean { return this._started; }
 
     /**
-     * The last exit code of the terminal.
+     * Get the last exit code of the terminal.
      * @type {number | undefined}
      */
     public get lastExitCode(): number | undefined { return this._lastExitCode; }
@@ -184,15 +184,15 @@ export class Terminal {
      * @returns {ExitObject} The ExitObject returned by the execution
      */
     public execute_command(input: string): ExitObject {
-        const user_input: string[] = this.get_input_array(input);
+        const user_input: string[] = this.get_input_array(input.trim());
         const command: Command | undefined = this.commands.find(user_input[0]);
         const output: object = {}
 
         let exitObject: ExitObject;
         if (command) {
             exitObject = command.run(user_input, this);
-        } else if (user_input[0] == "") {
-            exitObject = new ExitObject(user_input, undefined, 0, output);
+        } else if (user_input[0] === "") {
+            exitObject = this.commands.empty_command.run(user_input, this);
         } else {
             const errText: string = `Command ${user_input[0]} not found`;
             console.error(errText);

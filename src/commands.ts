@@ -10,13 +10,13 @@ export class ArgsOptions {
     private _options = {};
 
     /**
-     * The arguments for the command.
+     * Get the arguments for the command.
      * @type {string[]}
      */
     public get args(): string[] { return this._args; }
 
     /**
-     * The options for the command.
+     * Get the options for the command.
      * @type {object}
      */
     public get options(): object { return this._options; }
@@ -64,13 +64,13 @@ export class Command {
     private _action: (args: string[], options: {}, terminal: Terminal) => {};
 
     /**
-     * The key used to identify the command.
+     * Get the key used to identify the command.
      * @type {string}
      */
     public get key(): string { return this._key; }
 
     /**
-     * The function to execute when the command is run.
+     * Get the function to execute when the command is run.
      * @type {function}
      */
     public get action(): (args: string[], options: {}, terminal: Terminal) => {} { return this._action; }
@@ -130,31 +130,31 @@ export class ExitObject{
     private _output: any;
 
     /**
-     * The command that was executed.
+     * Get the command that was executed.
      * @type {Command | undefined}
      */
     public get command(): Command | undefined { return this._command; }
 
     /**
-     * The timestamp of the execution.
+     * Get the timestamp of the execution.
      * @type {number}
      */
     public get timestamp(): number { return this._timestamp; }
 
     /**
-     * The exit code of the execution.
+     * Get the exit code of the execution.
      * @type {number}
      */
     public get exit_code(): number { return this._exit_code; }
 
     /**
-     * The input that was used to execute the command.
+     * Get the input that was used to execute the command.
      * @type {string[]}
      */
     public get user_input(): string[] { return this._user_input; }
 
     /**
-     * The output of the execution.
+     * Get the output of the execution.
      * @type {object}
      */
     public get output(): object { return this._output; }
@@ -183,12 +183,13 @@ export class TermCommands{
     private _empty_command: Command = new Command("", (args, options, terminal) => { return {}; });
 
     /**
-     * The list of commands in the terminal.
+     * Get the list of commands in the terminal.
      * @type {Command[]}
      */
     public get list(): Command[] { return this._list; }
+
     /**
-     * The list of commands in the terminal.
+     * Set the list of commands in the terminal.
      * @type {Command[]}
      */
     public set list(commands: Command[]) { for (let command of commands){ this.add(command); } }

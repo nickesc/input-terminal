@@ -10,13 +10,13 @@ export class TermHistory {
     private _items: ExitObject[];
 
     /**
-     * The items in the history.
+     * Get the items in the history.
      * @type {ExitObject[]}
      */
     public get items(): ExitObject[] { return this._items; }
 
     /**
-     * The items in the history.
+     * Set the items in the history.
      * @type {ExitObject[]}
      */
     public set items(command_list: ExitObject[]) { this._items = command_list; }
