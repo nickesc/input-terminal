@@ -5,6 +5,6 @@ import { Command } from "../commands.ts";
  * @type {Command}
  */
 export const result: Command = new Command("result", (args, options, terminal) => {
-    return {exitCode: terminal.lastExitCode};
+    return {exit: terminal.get_last_exit_object()};
 });
 

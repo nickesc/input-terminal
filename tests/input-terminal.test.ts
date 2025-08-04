@@ -114,11 +114,11 @@ describe('Terminal Tests', () => {
         expect(term.execute_command("test")).toEqual(new ExitObject(["test"], "test", command, 0, true));
     });
     it('should get undefined as the last exit code on initialization', () => {
-        expect(term.lastExitCode).toEqual(undefined);
+        expect(term.get_last_exit_object()).toEqual(undefined);
     });
     it('should get the correct last exit code', () => {
-        term.execute_command("test")
-        expect(term.lastExitCode).toEqual(1);
+        const exit = term.execute_command("test")
+        expect(term.get_last_exit_object()).toEqual(exit);
     });
 
     it('should pass terminal correctly', () => {
