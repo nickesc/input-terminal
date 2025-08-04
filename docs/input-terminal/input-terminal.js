@@ -1,7 +1,8 @@
-import { TermCommands, Command, ExitObject, ArgsOptions } from "./commands.js";
+import { Command, ExitObject, ArgsOptions } from "./commands.js";
 import { TermHistory } from "./history.js";
 import { TermListeners } from "./listeners.js";
 import { TermOptions } from "./options.js";
+import { TermBin, built_ins } from "./bin.js";
 /**
  * @license MIT
  * @author nickesc
@@ -16,22 +17,30 @@ import { TermOptions } from "./options.js";
  * import { Terminal, Command } from "input-terminal";
  * const input = document.getElementById("terminal") as HTMLInputElement;
  * const terminal = new Terminal(input, { prompt: ">> " });
- * terminal.commands.add(new Command("echo", (args, options, terminal) => {
+ * terminal.bin.add(new Command("echo", (args, options, terminal) => {
  *     console.log(args);
  *     return {};
  * }));
  * terminal.init();
  * ```
  */
-export class Terminal {
+export class Terminal extends EventTarget {
     _listeners;
     _started = false;
     _lastExitCode = undefined;
+    #emit_executed_event(exitObject) {
+        this.dispatchEvent(new CustomEvent("executed", { detail: exitObject }));
+    }
     /**
      * The input element that the terminal is attached to.
      * @type {HTMLInputElement}
      */
     input;
+    /**
+     * The element that the terminal should output text to.
+     * @type {HTMLElement}
+     */
+    output = undefined;
     /**
      * The history of commands that have been executed.
      * @type {TermHistory}
@@ -39,9 +48,9 @@ export class Terminal {
     history;
     /**
      * The commands that can be executed by the user.
-     * @type {TermCommands}
+     * @type {TermBin}
      */
-    commands;
+    bin;
     /**
      * The options for the terminal.
      * @type {TermOptions}
@@ -64,9 +73,10 @@ export class Terminal {
      * @param {Command[]} commandList - list of commands that can be executed by the user
      */
     constructor(input, options = {}, commandHistory = [], commandList = []) {
+        super();
         this.input = input;
         this.history = new TermHistory(commandHistory);
-        this.commands = new TermCommands(commandList);
+        this.bin = new TermBin(commandList);
         this.options = new TermOptions(options);
         this._listeners = new TermListeners(this);
     }
@@ -76,6 +86,9 @@ export class Terminal {
      */
     init() {
         if (!this._started) {
+            if (this.options.installBuiltIns) {
+                this.bin.list = [...this.bin.list, ...built_ins];
+            }
             this._listeners.attach_input_listeners();
             this.update_input();
             this._started = true;
@@ -104,11 +117,11 @@ export class Terminal {
     get_predictions(text) {
         let predictions = [];
         if (text) {
-            const partial_matches = this.commands.get_command_keys().filter(key => key.startsWith(text));
+            const partial_matches = this.bin.get_command_keys().filter(key => key.startsWith(text));
             predictions = partial_matches;
         }
         else {
-            predictions = this.commands.get_command_keys();
+            predictions = this.bin.get_command_keys();
         }
         return predictions;
     }
@@ -169,14 +182,13 @@ export class Terminal {
      */
     execute_command(input) {
         const user_input = this.get_input_array(input.trim());
-        const command = this.commands.find(user_input[0]);
-        const output = {};
+        const command = this.bin.find(user_input[0]);
         let exitObject;
         if (command) {
             exitObject = command.run(user_input, this);
         }
         else if (user_input[0] === "") {
-            exitObject = this.commands.empty_command.run(user_input, this);
+            exitObject = this.bin.empty_command.run(user_input, this);
         }
         else {
             const errText = `Command ${user_input[0]} not found`;
@@ -186,7 +198,8 @@ export class Terminal {
         this._lastExitCode = exitObject.exit_code;
         this.history.push(exitObject);
         this.history.reset_index();
+        this.#emit_executed_event(exitObject);
         return exitObject;
     }
 }
-export { Command, ArgsOptions, ExitObject, TermCommands, TermHistory, TermOptions };
+export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions };

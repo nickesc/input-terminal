@@ -29,10 +29,10 @@ export class TermOptions {
      */
     modKey = "Ctrl";
     /**
-     * Whether the terminal should start focused.
+     * Whether the terminal should install built-in commands.
      * @type {boolean}
      */
-    startFocused = false;
+    installBuiltIns = true;
     /**
      * A line of text that is displayed at the beginning of the command line.
      * @type {string}

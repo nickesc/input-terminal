@@ -26,16 +26,26 @@ import { TermBin, built_ins } from './bin.ts';
  * terminal.init();
  * ```
  */
-export class Terminal {
+export class Terminal extends EventTarget {
     private _listeners: TermListeners;
     private _started: boolean = false;
     private _lastExitCode: number | undefined = undefined;
+
+    #emit_executed_event(exitObject: ExitObject): void {
+        this.dispatchEvent(new CustomEvent("executed", {detail: exitObject}));
+    }
 
     /**
      * The input element that the terminal is attached to.
      * @type {HTMLInputElement}
      */
     public input: HTMLInputElement;
+
+    /**
+     * The element that the terminal should output text to.
+     * @type {HTMLElement}
+     */
+    public output: HTMLElement | undefined = undefined;
 
     /**
      * The history of commands that have been executed.
@@ -74,6 +84,7 @@ export class Terminal {
      * @param {Command[]} commandList - list of commands that can be executed by the user
      */
     constructor(input: HTMLInputElement, options: object = {}, commandHistory: ExitObject[] = [], commandList: Command[] = []) {
+        super();
         this.input = input;
         this.history = new TermHistory(commandHistory);
         this.bin = new TermBin(commandList);
@@ -190,7 +201,6 @@ export class Terminal {
     public execute_command(input: string): ExitObject {
         const user_input: string[] = this.get_input_array(input.trim());
         const command: Command | undefined = this.bin.find(user_input[0]);
-        const output: object = {}
 
         let exitObject: ExitObject;
         if (command) {
@@ -206,6 +216,8 @@ export class Terminal {
         this._lastExitCode = exitObject.exit_code;
         this.history.push(exitObject);
         this.history.reset_index();
+
+        this.#emit_executed_event(exitObject);
 
         return exitObject
     }
