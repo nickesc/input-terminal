@@ -27,9 +27,8 @@ import { TermBin, built_ins } from "./bin.js";
 export class Terminal extends EventTarget {
     _listeners;
     _started = false;
-    _lastExitCode = undefined;
     #emit_executed_event(exitObject) {
-        this.dispatchEvent(new CustomEvent("executed", { detail: exitObject }));
+        this.dispatchEvent(new CustomEvent("inputTerminalExecuted", { detail: exitObject }));
     }
     /**
      * The input element that the terminal is attached to.
@@ -61,11 +60,6 @@ export class Terminal extends EventTarget {
      * @type {boolean}
      */
     get started() { return this._started; }
-    /**
-     * Get the last exit code of the terminal.
-     * @type {number | undefined}
-     */
-    get lastExitCode() { return this._lastExitCode; }
     /**
      * @param {HTMLInputElement} input - input element to turn into a terminal
      * @param {object} options - terminal configuration
@@ -176,6 +170,13 @@ export class Terminal extends EventTarget {
         return result;
     }
     /**
+     * Get the last exit object of the terminal.
+     * @type {ExitObject | undefined}
+     */
+    get_last_exit_object() {
+        return this.history.items[0];
+    }
+    /**
      * Executes a command based on the user's input.
      * @param {string} input - The command to execute
      * @returns {ExitObject} The ExitObject returned by the execution
@@ -195,11 +196,10 @@ export class Terminal extends EventTarget {
             console.error(errText);
             exitObject = new ExitObject(user_input, input, undefined, 1, { error: errText });
         }
-        this._lastExitCode = exitObject.exit_code;
         this.history.push(exitObject);
         this.history.reset_index();
         this.#emit_executed_event(exitObject);
         return exitObject;
     }
 }
-export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions };
+export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, built_ins };

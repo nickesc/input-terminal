@@ -4,6 +4,19 @@ import { alert } from "./built-ins/alert.js";
 import { result } from "./built-ins/result.js";
 import { man } from "./built-ins/man.js";
 import { return_ } from "./built-ins/return.js";
+/**
+ * A list of built-in commands that can be executed by a terminal.
+ *
+ * ## Commands
+ * - `echo`
+ * - `alert`
+ * - `result`
+ * - `man`
+ * - `return`
+ *
+ * @type {Command[]}
+ * @category Terminal Components
+ */
 export const built_ins = [echo, alert, result, man, return_];
 /**
  * Manages the list of commands that can be executed by a terminal.
