@@ -32,22 +32,46 @@
 
 }
 
-:root[data-theme='dark'] {
-    --button-hover-gradient-1: #000000D0;
-    --button-hover-gradient-2: #080808D0;
-    --button-hover-gradient-3: #101010D0;
+@media (prefers-color-scheme: light) {
+    :root {
+        --button-hover-gradient-1: #00000022;
+        --button-hover-gradient-2: #08080822;
+        --button-hover-gradient-3: #10101022;
 
-    --button-color: #505050;
-    --button-active-color: #d0d0d0;
+        --button-color: #a4a4a4;
+        --button-active-color: #707070;
+    }
+
+    :root[data-theme='dark'] {
+        --button-hover-gradient-1: #000000D0;
+        --button-hover-gradient-2: #080808D0;
+        --button-hover-gradient-3: #101010D0;
+
+        --button-color: #505050;
+        --button-active-color: #d0d0d0;
+    }
 }
 
-:root[data-theme='light'] {
-    --button-hover-gradient-1: #00000022;
-    --button-hover-gradient-2: #08080822;
-    --button-hover-gradient-3: #10101022;
+@media (prefers-color-scheme: dark) {
 
-    --button-color: #a4a4a4;
-    --button-active-color: #707070;
+    :root {
+        --button-hover-gradient-1: #000000D0;
+        --button-hover-gradient-2: #080808D0;
+        --button-hover-gradient-3: #101010D0;
+
+        --button-color: #505050;
+        --button-active-color: #d0d0d0;
+    }
+
+    :root[data-theme='light'] {
+        --button-hover-gradient-1: #00000022;
+        --button-hover-gradient-2: #08080822;
+        --button-hover-gradient-3: #10101022;
+
+        --button-color: #a4a4a4;
+        --button-active-color: #707070;
+    }
+
 }
 
 @property --gradient-deg {
@@ -116,7 +140,7 @@ h1, h2, h3, h4, h5, h6, .title {
     font-family: 'IBM Plex Mono', monospace !important;
 }
 
-input, textarea, button, select, code, pre, kbd, samp {
+input, textarea, button, code, pre, kbd, samp {
     font-family: 'IBM Plex Mono', monospace !important;
 }
 
@@ -248,4 +272,12 @@ input#termd:focus {
 
 #action-slug.action-slug-active {
     opacity: .75;
+}
+
+.tsd-navigation > .tsd-accordion,  .tsd-accordion-details{
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+
+.tsd-filter-item, #tsd-theme, .tsd-accordion >.tsd-accordion-summary {
+    font-family: 'IBM Plex Sans', sans-serif !important;
 }
