@@ -30,13 +30,13 @@ export class TermBin{
     private _empty_command: Command = new Command("", (args, options, terminal) => { return {}; });
 
     /**
-     * Get the list of commands in the terminal.
+     * Get the list of commands in the terminal's bin.
      * @type {Command[]}
      */
     public get list(): Command[] { return this._list; }
 
     /**
-     * Set the list of commands in the terminal.
+     * Set the list of commands in the terminal's bin.
      * @type {Command[]}
      * @throws {Error} if any command in the list has a key that already exists
      */
@@ -67,15 +67,15 @@ export class TermBin{
     }
 
     /**
-     * Retrieves a list of keys for all commands in the terminal.
-     * @returns {string[]} a list of the keys of all commands in the terminal
+     * Retrieves a list of keys for all commands in the terminal's bin.
+     * @returns {string[]} a list of the keys of all commands in the terminal's bin
      */
     public get_command_keys(): string[] {
         return this._list.map(command => command.key);
     }
 
     /**
-     * Finds a command by its key.
+     * Finds a command by its key in the terminal's bin.
      * @param {string} [command_key] - the key of the command to find
      * @returns {Command | undefined} the command with the given key; `undefined` if the command is not found or if no key is provided
      */
