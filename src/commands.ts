@@ -7,7 +7,7 @@ import { Terminal } from './input-terminal.ts';
 export class ArgsOptions {
     private _user_input: string[];
     private _args: string[] = [];
-    private _options = {};
+    private _options: Record<string, any> = {};
 
     /**
      * Get the arguments for the command.
@@ -17,9 +17,9 @@ export class ArgsOptions {
 
     /**
      * Get the options for the command.
-     * @type {object}
+     * @type {Record<string, any>}
      */
-    public get options(): object { return this._options; }
+    public get options(): Record<string, any> { return this._options; }
 
     /**
      * @param {string[]} user_input - the input array to parse
@@ -61,7 +61,8 @@ export class ArgsOptions {
  */
 export class Command {
     private _key: string;
-    private _action: (args: string[], options: {}, terminal: Terminal) => {};
+    private _action: (args: string[], options: Record<string, any>, terminal: Terminal) => {};
+    private _manual: string | undefined = undefined;
 
     /**
      * Get the key used to identify the command.
@@ -73,13 +74,31 @@ export class Command {
      * Get the function to execute when the command is run.
      * @type {function}
      */
-    public get action(): (args: string[], options: {}, terminal: Terminal) => {} { return this._action; }
+    public get action(): (args: string[], options: Record<string, any>, terminal: Terminal) => {} { return this._action; }
+
+    /**
+     * Get the manual for the command.
+     * @type {string}
+     */
+    public get manual(): string | undefined { return this._manual; }
+
+    /**
+     * Set the manual for the command.
+     * @param {string} manual - the manual for the command
+     */
+    public set manual(manual: string) {
+        if (this._manual === undefined){
+            this._manual = manual;
+        } else {
+            throw new Error("Manual cannot be reassigned after it has been set");
+        }
+    }
 
     /**
      * @param {string} key - the key used to identify the command
      * @param {function} action - the function to execute when the command is run
      */
-    constructor(key: string, action: (args: string[], options: {}, terminal: Terminal) => {}) {
+    constructor(key: string, action: (args: string[], options: Record<string, any>, terminal: Terminal) => {}) {
         this._key = key;
         this._action = action;
     }
