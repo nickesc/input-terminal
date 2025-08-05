@@ -26,10 +26,9 @@
     --terminal-background: #000000D0;
     --terminal-background-hover: #000000C0;
     --output-background: #000000DD;
+    --output-status-background: #0d0d0dDD;
     --terminal-text: #efefef;
     --output-text: #d0d0d0;
-
-
 }
 
 @media (prefers-color-scheme: light) {
@@ -181,18 +180,46 @@ li > code {
     line-height: 2em;
 }
 
+#output-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#output-status, #output-bar {
+    display: flex;
+    flex-direction: row
+}
+
 pre#output {
-    padding: 10px;
+    padding: 10px 10px 10px 10px;
     min-height: 1em;
-    line-height: 1em;
+    line-height: normal;
     background-color: var(--output-background);
     color: var(--output-text);
-    overflow-x: scroll;
+    overflow-x: auto;
     text-wrap: nowrap;
+    margin-bottom: 0;
+    border-radius: 5px 5px 0 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) transparent;
+}
+
+#output-bar {
+    background-color: var(--output-status-background);
+    color: #606060;
+    border-radius: 0 0 5px 5px;
+    font-size: .8em;
+    padding: 5px 8px 7px 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: normal;
+    justify-content: space-between;
+}
+
+#output-status {
+    column-gap: 1em;
 }
 
 #terminal-wrapper, input#termd {
-
     box-sizing: border-box;
 }
 
