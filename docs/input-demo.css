@@ -131,6 +131,10 @@
   inherits: false;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'IBM Plex Sans', sans-serif !important;
     backdrop-filter: blur(10px);
@@ -144,12 +148,17 @@ input, textarea, button, code, pre, kbd, samp {
     font-family: 'IBM Plex Mono', monospace !important;
 }
 
+li > code {
+    line-height: 2em;
+}
+
 pre#output {
     padding: 10px;
     min-height: 1em;
     line-height: 1em;
     background-color: var(--output-background);
     color: var(--output-text);
+    overflow-x: scroll;
 }
 
 #terminal-wrapper, input#termd {
@@ -160,7 +169,6 @@ pre#output {
 input#termd {
     border-radius: var(--border-rad-1);
     background-color: var(--terminal-background);
-    border-top: var(--terminal-background) 3px solid;
     color: var(--terminal-text);
     padding: 10px;
     font-family: monospace;
@@ -274,11 +282,11 @@ input#termd:focus {
     opacity: .75;
 }
 
-.tsd-navigation > .tsd-accordion,  .tsd-accordion-details{
+.tsd-navigation > .tsd-accordion,  .tsd-navigation .tsd-accordion-details{
     font-family: 'IBM Plex Mono', monospace !important;
 }
 
-.tsd-filter-item, #tsd-theme, .tsd-accordion >.tsd-accordion-summary {
+.tsd-filter-item, #tsd-theme, .tsd-accordion > .tsd-accordion-summary {
     font-family: 'IBM Plex Sans', sans-serif !important;
 }
 

@@ -10,17 +10,9 @@ const returnButton = document.getElementById("return");
 const actionSlug = document.getElementById("action-slug");
 
 const empty = new Command("", (args, options, terminal) => {
-    output.innerText = ""
+    output.innerText = "";
     return {};
 });
-
-const manObject = new ExitObject(["man", "echo"], "man echo", built_ins.man, 0, {})
-
-const resultObject = new ExitObject(["result"], "result", built_ins.result, 0, {exit: terminal.get_last_exit_object()})
-
-const returnObject = new ExitObject(["return"], "return", built_ins.return, 0, {args: ["test"], options: {}})
-
-const echoObject = new ExitObject(["echo this is a test"], "echo this is a test", built_ins.echo, 0, {output: "this is a test"})
 
 let slugTimeout = null;
 let slugTransitionTimeout = null;
@@ -56,10 +48,14 @@ function updateActionSlug(action){
 
 terminal.bin.empty_command = empty;
 
-terminal.history.push(manObject)
-terminal.history.push(resultObject)
-terminal.history.push(returnObject)
-terminal.history.push(echoObject)
+const history_list = [
+    new ExitObject(["man", "echo"], "man echo", built_ins.man, 0, {}),
+    new ExitObject(["result"], "result", built_ins.result, 0, {exit: terminal.get_last_exit_object()}),
+    new ExitObject(["return"], "return", built_ins.return, 0, {args: ["test"], options: {}}),
+    new ExitObject(["echo this is a test"], "echo this is a test", built_ins.echo, 0, {output: "this is a test"})
+]
+
+terminal.history.push(history_list)
 
 terminal.addEventListener("inputTerminalExecuted", (e) => {
     if (e.detail.exit_code === 0){
@@ -80,17 +76,17 @@ autocompleteButton.addEventListener("click", () => {
 
 nextButton.addEventListener("click", () => {
     terminal.listeners.next_listener_action(new Event("keydown"));
-    updateActionSlug("next");
+    updateActionSlug("next command");
 });
 
 previousButton.addEventListener("click", () => {
     terminal.listeners.previous_listener_action(new Event("keydown"));
-    updateActionSlug("previous");
+    updateActionSlug("previous command");
 });
 
 returnButton.addEventListener("click", () => {
     terminal.listeners.return_listener_action(new Event("keydown"));
-    updateActionSlug("return");
+    updateActionSlug("execute command");
 });
 
 terminal.init();

@@ -19,7 +19,9 @@ title: Demo
 </div>
 <pre id="output">Output prints here...</pre>
 
-### Built-in Commands
+<br>
+
+## Built-in Commands
 - `echo`
 - `man`
 - `result`
@@ -27,5 +29,18 @@ title: Demo
 - `alert`
 
 Type the above commands into the terminal to execute them. Their output will be displayed in the output section.
+
+<br>
+
+## Controls
+Controls can be input with a keyboard, or using the buttons below the terminal interface.
+
+Key | Action
+-|-
+<kbd>Tab</kbd> | Autocomplete
+<kbd>ArrowUp</kbd> | Previous Command
+<kbd>ArrowDown</kbd> | Next Command
+<kbd>Enter</kbd> | Execute Command
+
 
 <script src="../input-demo.js" type="module"></script>

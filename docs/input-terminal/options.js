@@ -44,6 +44,16 @@ export class TermOptions {
      */
     preprompt = "";
     /**
+     * Whether the terminal should add a command with empty input to history.
+     * @type {boolean}
+     */
+    addEmptyCommandToHistory = false;
+    /**
+     * Whether the terminal should add a command with duplicate input (same as the last command's input) to history.
+     * @type {boolean}
+     */
+    showDuplicateCommands = false;
+    /**
      * @param {object} [options] - an optional configuration to initialize the terminal with
      */
     constructor(options) {

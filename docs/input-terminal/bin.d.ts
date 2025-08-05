@@ -21,12 +21,12 @@ export declare class TermBin {
     private _list;
     private _empty_command;
     /**
-     * Get the list of commands in the terminal.
+     * Get the list of commands in the terminal's bin.
      * @type {Command[]}
      */
     get list(): Command[];
     /**
-     * Set the list of commands in the terminal.
+     * Set the list of commands in the terminal's bin.
      * @type {Command[]}
      * @throws {Error} if any command in the list has a key that already exists
      */
@@ -46,23 +46,23 @@ export declare class TermBin {
      */
     constructor(commands?: Command[]);
     /**
-     * Retrieves a list of keys for all commands in the terminal.
-     * @returns {string[]} a list of the keys of all commands in the terminal
+     * Retrieves a list of keys for all commands in the terminal's bin.
+     * @returns {string[]} a list of the keys of all commands in the terminal's bin
      */
     get_command_keys(): string[];
     /**
-     * Finds a command by its key.
+     * Finds a command by its key in the terminal's bin.
      * @param {string} [command_key] - the key of the command to find
      * @returns {Command | undefined} the command with the given key; `undefined` if the command is not found or if no key is provided
      */
     find(command_key?: string): Command | undefined;
     /**
-     * Adds a command to the terminal's command list.
-     * @param {Command} command - the command to add
+     * Adds a command (or list of commands) to the terminal's bin.
+     * @param {Command | Command[]} commands - the command (or list of commands) to add to the terminal's bin
      * @returns {number} the new length of the command list
      * @throws an error if a command with the same key already exists
      */
-    add(command: Command): number;
+    add(commands: Command | Command[]): number;
     /**
      * Removes a command from the terminal's command list.
      * @param {Command} command - the command to remove

@@ -19,7 +19,17 @@ export class TermListeners {
      */
     previous_listener_action(event) {
         event.preventDefault();
-        this._terminal.update_input(this._terminal.history.previous()?.raw_input);
+        const previous = this._terminal.history.previous();
+        const new_input = previous?.raw_input;
+        if (!this._terminal.options.showDuplicateCommands && new_input !== undefined) {
+            if (new_input === this._terminal.get_input_value()) {
+                this.previous_listener_action(new Event(""));
+                return;
+            }
+        }
+        if (previous !== null) {
+            this._terminal.update_input(new_input);
+        }
     }
     /**
      * Update input and move history to the next command.
@@ -29,6 +39,13 @@ export class TermListeners {
     next_listener_action(event) {
         event.preventDefault();
         const next = this._terminal.history.next();
+        const new_input = next?.raw_input;
+        if (!this._terminal.options.showDuplicateCommands) {
+            if (new_input === this._terminal.get_input_value()) {
+                this.next_listener_action(new Event(""));
+                return;
+            }
+        }
         if (next !== undefined) {
             this._terminal.update_input(next.raw_input);
         }
@@ -76,6 +93,7 @@ export class TermListeners {
         this._terminal.update_input();
     }
     _handle_keyboard_event(event) {
+        let deleteChunk = false;
         switch (event.key) {
             case this._terminal.options.previousKey:
                 this.previous_listener_action(event);
@@ -91,8 +109,11 @@ export class TermListeners {
                 break;
             case "Backspace":
             case "Delete":
+                if (this._terminal.input.selectionStart !== this._terminal.input.selectionEnd) {
+                    deleteChunk = true;
+                }
             case "ArrowLeft":
-                if (this._terminal.input.selectionStart !== null && this._terminal.input.selectionStart <= (this._terminal.options.preprompt + this._terminal.options.prompt).length) {
+                if (this._terminal.input.selectionStart !== null && this._terminal.input.selectionStart <= (`${this._terminal.options.preprompt}${this._terminal.options.prompt}`).length && !deleteChunk) {
                     event.preventDefault();
                 }
             default:
