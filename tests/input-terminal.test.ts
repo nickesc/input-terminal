@@ -38,6 +38,9 @@ describe('Terminal Tests', () => {
     it('should not be started if not initialized',  () => {
         expect(term.started).toBe(false);
     });
+    it('should initialize with a listener manager',  () => {
+        expect(term.listeners).toBeDefined();
+    });
 
     // INPUT TESTS
     it('should construct with correct input',  () => {
