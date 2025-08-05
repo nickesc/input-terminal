@@ -112,7 +112,7 @@ describe('TermHistory Tests', () => {
         expect(history.previous()).toBe(test_commands[2]);
         expect(history.previous()).toBe(test_commands[1]);
         expect(history.previous()).toBe(test_commands[0]);
-        expect(history.previous()).toBe(test_commands[0]);
+        expect(history.previous()).toBe(null);
     });
     it('should return undefined on previous history call with no command history',  () => {
         const history: TermHistory = new TermHistory();
