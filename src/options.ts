@@ -62,7 +62,7 @@ export class TermOptions {
      * Whether the terminal should add a command with duplicate input (same as the last command's input) to history.
      * @type {boolean}
      */
-    public addDuplicateCommandToHistory: boolean = false;
+    public showDuplicateCommands: boolean = false;
 
     /**
      * @param {object} [options] - an optional configuration to initialize the terminal with
