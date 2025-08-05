@@ -14,7 +14,7 @@ export class ArgsOptions {
     get args() { return this._args; }
     /**
      * Get the options for the command.
-     * @type {object}
+     * @type {Record<string, any>}
      */
     get options() { return this._options; }
     /**
@@ -58,6 +58,7 @@ export class ArgsOptions {
 export class Command {
     _key;
     _action;
+    _manual = undefined;
     /**
      * Get the key used to identify the command.
      * @type {string}
@@ -68,6 +69,23 @@ export class Command {
      * @type {function}
      */
     get action() { return this._action; }
+    /**
+     * Get the manual for the command.
+     * @type {string}
+     */
+    get manual() { return this._manual; }
+    /**
+     * Set the manual for the command.
+     * @param {string} manual - the manual for the command
+     */
+    set manual(manual) {
+        if (this._manual === undefined) {
+            this._manual = manual;
+        }
+        else {
+            throw new Error("Manual cannot be reassigned after it has been set");
+        }
+    }
     /**
      * @param {string} key - the key used to identify the command
      * @param {function} action - the function to execute when the command is run

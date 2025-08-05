@@ -14,9 +14,9 @@ export declare class ArgsOptions {
     get args(): string[];
     /**
      * Get the options for the command.
-     * @type {object}
+     * @type {Record<string, any>}
      */
-    get options(): object;
+    get options(): Record<string, any>;
     /**
      * @param {string[]} user_input - the input array to parse
      */
@@ -30,6 +30,7 @@ export declare class ArgsOptions {
 export declare class Command {
     private _key;
     private _action;
+    private _manual;
     /**
      * Get the key used to identify the command.
      * @type {string}
@@ -39,12 +40,22 @@ export declare class Command {
      * Get the function to execute when the command is run.
      * @type {function}
      */
-    get action(): (args: string[], options: {}, terminal: Terminal) => {};
+    get action(): (args: string[], options: Record<string, any>, terminal: Terminal) => {};
+    /**
+     * Get the manual for the command.
+     * @type {string}
+     */
+    get manual(): string | undefined;
+    /**
+     * Set the manual for the command.
+     * @param {string} manual - the manual for the command
+     */
+    set manual(manual: string);
     /**
      * @param {string} key - the key used to identify the command
      * @param {function} action - the function to execute when the command is run
      */
-    constructor(key: string, action: (args: string[], options: {}, terminal: Terminal) => {});
+    constructor(key: string, action: (args: string[], options: Record<string, any>, terminal: Terminal) => {});
     /**
      * Parses an input array into an `ArgsOptions` object.
      * @param {string[]} user_input - the input array to parse
