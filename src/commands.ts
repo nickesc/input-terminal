@@ -7,7 +7,7 @@ import { Terminal } from './input-terminal.ts';
 export class ArgsOptions {
     private _user_input: string[];
     private _args: string[] = [];
-    private _options = {};
+    private _options: Record<string, any> = {};
 
     /**
      * Get the arguments for the command.
@@ -17,9 +17,9 @@ export class ArgsOptions {
 
     /**
      * Get the options for the command.
-     * @type {object}
+     * @type {Record<string, any>}
      */
-    public get options(): object { return this._options; }
+    public get options(): Record<string, any> { return this._options; }
 
     /**
      * @param {string[]} user_input - the input array to parse
@@ -61,7 +61,7 @@ export class ArgsOptions {
  */
 export class Command {
     private _key: string;
-    private _action: (args: string[], options: {}, terminal: Terminal) => {};
+    private _action: (args: string[], options: Record<string, any>, terminal: Terminal) => {};
     private _manual: string | undefined = undefined;
 
     /**
@@ -74,7 +74,7 @@ export class Command {
      * Get the function to execute when the command is run.
      * @type {function}
      */
-    public get action(): (args: string[], options: {}, terminal: Terminal) => {} { return this._action; }
+    public get action(): (args: string[], options: Record<string, any>, terminal: Terminal) => {} { return this._action; }
 
     /**
      * Get the manual for the command.
@@ -98,7 +98,7 @@ export class Command {
      * @param {string} key - the key used to identify the command
      * @param {function} action - the function to execute when the command is run
      */
-    constructor(key: string, action: (args: string[], options: {}, terminal: Terminal) => {}) {
+    constructor(key: string, action: (args: string[], options: Record<string, any>, terminal: Terminal) => {}) {
         this._key = key;
         this._action = action;
     }
