@@ -159,6 +159,7 @@ pre#output {
     background-color: var(--output-background);
     color: var(--output-text);
     overflow-x: scroll;
+    text-wrap: nowrap;
 }
 
 #terminal-wrapper, input#termd {
