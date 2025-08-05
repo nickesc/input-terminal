@@ -20,7 +20,7 @@
   "hostedBaseUrl": "https://nickesc.github.io/input-terminal",
   "useHostedBaseUrlForAbsoluteLinks": true,
   "navigationLinks": {
-    "GitHub": "https://github.com/nickesc/input-terminal",
+    "source": "https://github.com/nickesc/input-terminal",
     "npm": "https://www.npmjs.com/package/input-terminal"
   },
   "searchCategoryBoosts": {
