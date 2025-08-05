@@ -17,7 +17,17 @@ title: Demo
     <button class="action-button right-end-button" id="return" title="Execute Command"><div class="button-icon-container"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32" width="100%" height="100%" fill="currentColor"><defs><style>.st0 {fill: none;}</style></defs><path d="M10,13l-6,6,6,6,1.4-1.4-3.6-3.6h18.2c1.1,0,2-.9,2-2v-10s-2,0-2,0v10H7.8s3.6-3.6,3.6-3.6l-1.4-1.4Z"/><rect id="_Transparent_Rectangle_" class="st0" width="32" height="32" transform="translate(32 32) rotate(-180)"/> </svg></div></button>
   </div>
 </div>
-<pre id="output">Output prints here...</pre>
+
+<div id="output-container">
+  <pre id="output"></pre>
+  <div id="output-bar">
+    <div id="output-title">OUTPUT</div>
+    <div id="output-status">
+      <div id="output-command">———</div>
+      <div id="output-code">█</div>
+    </div>
+  </div>
+</div>
 
 <br>
 
