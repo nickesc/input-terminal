@@ -40,6 +40,8 @@
 
         --button-color: #a4a4a4;
         --button-active-color: #707070;
+
+        --shadow-color: 0deg 0% 69%;
     }
 
     :root[data-theme='dark'] {
@@ -49,6 +51,8 @@
 
         --button-color: #505050;
         --button-active-color: #d0d0d0;
+
+        --shadow-color: 0deg 0% 0%;
     }
 }
 
@@ -61,6 +65,8 @@
 
         --button-color: #505050;
         --button-active-color: #d0d0d0;
+
+        --shadow-color: 0deg 0% 0%;
     }
 
     :root[data-theme='light'] {
@@ -70,8 +76,31 @@
 
         --button-color: #a4a4a4;
         --button-active-color: #707070;
+
+        --shadow-color: 0deg 0% 69%;
     }
 
+}
+
+:root {
+    --shadow-elevation-low:
+        0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.28),
+        0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / 0.28),
+        0.9px 1.8px 2.3px -2.5px hsl(var(--shadow-color) / 0.28);
+    --shadow-elevation-medium:
+        0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.29),
+        0.8px 1.5px 1.9px -0.8px hsl(var(--shadow-color) / 0.29),
+        1.9px 3.8px 4.8px -1.7px hsl(var(--shadow-color) / 0.29),
+        4.6px 9.1px 11.5px -2.5px hsl(var(--shadow-color) / 0.29);
+    --shadow-elevation-high:
+        0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.27),
+        1.2px 2.5px 3.1px -0.4px hsl(var(--shadow-color) / 0.27),
+        2.3px 4.5px 5.7px -0.7px hsl(var(--shadow-color) / 0.27),
+        3.7px 7.4px 9.3px -1.1px hsl(var(--shadow-color) / 0.27),
+        5.9px 11.8px 14.8px -1.4px hsl(var(--shadow-color) / 0.27),
+        9.2px 18.4px 23.1px -1.8px hsl(var(--shadow-color) / 0.27),
+        13.9px 27.9px 35.1px -2.1px hsl(var(--shadow-color) / 0.27),
+        20.5px 41px 51.6px -2.5px hsl(var(--shadow-color) / 0.27);
 }
 
 @property --gradient-deg {
@@ -199,6 +228,7 @@ input#termd:focus {
     background: linear-gradient(var(--gradient-deg), var(--gradient-color-1) 0%, var(--gradient-color-2) 50%, var(--gradient-color-3) 100%);
     transition: --gradient-deg 1s cubic-bezier(.15,1.24,1,.92), --gradient-background .75s ease-out, --gradient-color-1 .75s ease-out, --gradient-color-2 .5s ease-out, --gradient-color-3 .25s ease-out;
     margin-bottom: 8px;
+    box-shadow: var(--shadow-elevation-medium);
 }
 
 #terminal-wrapper:has(input#termd:focus) {
