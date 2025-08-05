@@ -62,6 +62,7 @@ export class ArgsOptions {
 export class Command {
     private _key: string;
     private _action: (args: string[], options: {}, terminal: Terminal) => {};
+    private _manual: string | undefined = undefined;
 
     /**
      * Get the key used to identify the command.
@@ -74,6 +75,24 @@ export class Command {
      * @type {function}
      */
     public get action(): (args: string[], options: {}, terminal: Terminal) => {} { return this._action; }
+
+    /**
+     * Get the manual for the command.
+     * @type {string}
+     */
+    public get manual(): string | undefined { return this._manual; }
+
+    /**
+     * Set the manual for the command.
+     * @param {string} manual - the manual for the command
+     */
+    public set manual(manual: string) {
+        if (this._manual === undefined){
+            this._manual = manual;
+        } else {
+            throw new Error("Manual cannot be reassigned after it has been set");
+        }
+    }
 
     /**
      * @param {string} key - the key used to identify the command
