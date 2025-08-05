@@ -82,6 +82,12 @@ describe('TermBin Tests', () => {
         expect(() => bin.list = duplicatebin).toThrow('Command with key "test1" already exists');
         expect(bin.list).toEqual([duplicatebin[0]]);
     });
+    it('should add multiple commands to the list',  () => {
+        const bin: TermBin = new TermBin();
+        bin.add(test_command);
+        bin.add(test_bin);
+        expect(bin.list).toEqual([test_command, ...test_bin]);
+    });
 
 
     // REMOVE COMMAND TESTS

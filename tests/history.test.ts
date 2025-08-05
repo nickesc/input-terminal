@@ -62,6 +62,13 @@ describe('TermHistory Tests', () => {
         expect(history.current()).toBe(test_commands[1]);
         expect(history.previous()).toBe(test_commands[0]);
     });
+    it('should push multiple commands to history',  () => {
+        const history: TermHistory = new TermHistory();
+        const test_item: ExitObject = new ExitObject(["test"], "test", undefined, 0, {});
+        history.push(test_item);
+        history.push(test_commands);
+        expect(history.items).toEqual([...test_commands, test_item]);
+    });
 
 
     // POP HISTORY TESTS

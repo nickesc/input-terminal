@@ -65,6 +65,7 @@ export class TermBin{
             this.list = commands;
         }
     }
+
     /**
      * Retrieves a list of keys for all commands in the terminal.
      * @returns {string[]} a list of the keys of all commands in the terminal
@@ -84,16 +85,23 @@ export class TermBin{
     }
 
     /**
-     * Adds a command to the terminal's command list.
-     * @param {Command} command - the command to add
+     * Adds a command (or list of commands) to the terminal's bin.
+     * @param {Command | Command[]} commands - the command (or list of commands) to add to the terminal's bin
      * @returns {number} the new length of the command list
      * @throws an error if a command with the same key already exists
      */
-    public add(command: Command): number {
-        if (this.find(command.key)) {
-            throw new Error(`Command with key "${command.key}" already exists`);
+    public add(commands: Command | Command[]): number {
+        if (commands instanceof Command){
+            commands = [commands];
         }
-        this._list.push(command);
+
+        commands.map(command => {
+            if (this.find(command.key)) {
+                throw new Error(`Command with key "${command.key}" already exists`);
+            }
+            this._list.push(command);
+        });
+
         return this._list.length;
     }
 

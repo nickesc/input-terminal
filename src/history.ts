@@ -59,14 +59,18 @@ export class TermHistory {
     }
 
     /**
-     * Adds an item to the beginning of the terminal's history.
-     * @param {ExitObject} command - the item to add to the history
+     * Adds an item (or list of items) to the beginning of the terminal's history.
+     * @param {ExitObject | ExitObject[]} exitObjects - the item (or list of items) to add to the history
      * @returns {number} the new length of the history
      */
-    public push(command: ExitObject): number {
+    public push(exitObjects: ExitObject | ExitObject[]): number {
+        if (exitObjects instanceof ExitObject){
+            exitObjects = [exitObjects];
+        }
+
         if (this._index != undefined){this._index++;}
 
-        return this._items.unshift(command);
+        return this._items.unshift(...exitObjects);
     }
 
     /**
