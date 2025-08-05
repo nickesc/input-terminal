@@ -9,6 +9,9 @@ const previousButton = document.getElementById("previous");
 const returnButton = document.getElementById("return");
 const actionSlug = document.getElementById("action-slug");
 
+const outputCommand = document.getElementById("output-command");
+const outputCode = document.getElementById("output-code");
+
 const empty = new Command("", (args, options, terminal) => {
     output.innerText = "";
     return {};
@@ -64,8 +67,12 @@ terminal.addEventListener("inputTerminalExecuted", (e) => {
         } else {
             output.innerText = JSON.stringify(e.detail.output);
         }
+        outputCommand.innerText = e.detail.command.key;
+        outputCode.innerText = e.detail.exit_code;
     } else {
         output.innerText = e.detail.error;
+        outputCommand.innerText = "error";
+        outputCode.innerText = e.detail.exit_code;
     }
 });
 
