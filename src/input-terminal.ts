@@ -217,7 +217,9 @@ export class Terminal extends EventTarget {
             exitObject = command.run(user_input, input, this);
         } else if (user_input[0] === "") {
             exitObject = this.bin.empty_command.run(user_input, input, this);
-            addToHistory = false;
+            if (!this.options.addEmptyCommandToHistory){
+                addToHistory = false;
+            }
         } else {
             const errText: string = `Command ${user_input[0]} not found`;
             console.error(errText);
