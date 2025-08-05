@@ -96,7 +96,37 @@ returnButton.addEventListener("click", () => {
     updateActionSlug("execute command");
 });
 
-terminal.init();
 
+function changeTheme(themeString) {
+    let themeDropdown = document.getElementById("tsd-theme");
+    themeDropdown.value = themeString;
+    themeDropdown.dispatchEvent(new Event("change"));
+}
+
+const changeThemeCommand = new Command("theme", (args, options, terminal) => {
+
+
+    if (["light", "dark", "os"].includes(args[0])){
+        changeTheme(args[0]);
+        return `Theme changed to ${args[0]}`;
+    } else if (options.list || options.l){
+        return {themes: ["light", "dark", "os"]};
+    } else if (args.length === 0){
+        return `${document.getElementById("tsd-theme").value}`;
+    } else {
+        return `Invalid theme. Please use 'light', 'dark', or 'os'.`;
+    }
+});
+
+changeThemeCommand.manual = `theme ["light" | "dark" | "os"] [--list | -l]
+
+Gets or changes the theme of the website.
+
+If --list or -l is provided, it will list the available themes.`;
+
+terminal.bin.add(changeThemeCommand);
+
+
+terminal.init();
 
 
