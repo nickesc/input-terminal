@@ -177,7 +177,7 @@ describe("Custom Key Tests", () => {
         nextKey: "Down",
         returnKey: "Space",
         autocompleteKey: "Shift",
-        installBuiltIns: false
+        installBuiltins: false
     };
 
     let historyCommand = new ExitObject(['echo test'], 'echo test', undefined, 0, 'test')

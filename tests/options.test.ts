@@ -22,7 +22,7 @@ describe('TermOptions Tests', () => {
         expect(options.modKey).toEqual("Ctrl");
         expect(options.preprompt).toEqual("");
         expect(options.prompt).toEqual("> ");
-        expect(options.installBuiltIns).toEqual(true);
+        expect(options.installBuiltins).toEqual(true);
         expect(options.addEmptyCommandToHistory).toEqual(false);
         expect(options.showDuplicateCommands).toEqual(false)
 
@@ -37,7 +37,7 @@ describe('TermOptions Tests', () => {
             modKey: "Ctrl",
             prompt: "prompt",
             preprompt: "preprompt",
-            installBuiltIns: false,
+            installBuiltins: false,
             addEmptyCommandToHistory: true,
             showDuplicateCommands: true
         };
@@ -49,7 +49,7 @@ describe('TermOptions Tests', () => {
         expect(options.modKey).toEqual(customOptions.modKey);
         expect(options.preprompt).toEqual(customOptions.preprompt);
         expect(options.prompt).toEqual(customOptions.prompt);
-        expect(options.installBuiltIns).toEqual(customOptions.installBuiltIns);
+        expect(options.installBuiltins).toEqual(customOptions.installBuiltins);
         expect(options.addEmptyCommandToHistory).toEqual(customOptions.addEmptyCommandToHistory);
         expect(options.showDuplicateCommands).toEqual(customOptions.showDuplicateCommands)
     });
