@@ -1,4 +1,4 @@
-import { Terminal, Command, ExitObject } from '../src/input-terminal';
+import { Terminal, Command, ExitObject, built_ins } from '../src/input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 
@@ -102,7 +102,21 @@ describe('Terminal Tests', () => {
         expect(term.execute_command("test").raw_input).toEqual("test");
     });
 
-
+    // INSTALL BUILT-INS TESTS
+    it("should have the correct number of installed built-ins", () => {
+        term.init()
+        expect(term.bin.list.length).toEqual(built_ins.length);
+    });
+    it("should install built-ins if set to true in options", () => {
+        term.options.installBuiltins = true;
+        term.init()
+        expect(term.bin.list.length).toEqual(built_ins.length);
+    });
+    it("should not install built-ins if set to false in options", () => {
+        term.options.installBuiltins = false;
+        term.init()
+        expect(term.bin.list.length).toEqual(0);
+    });
 
     // COMMAND EXECUTION TESTS
     it('should return an ExitObject after execution', () => {
