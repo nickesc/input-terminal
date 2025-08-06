@@ -7,6 +7,10 @@ import { Command } from "../commands.ts";
  * @type {Command}
  */
 const man: Command = new Command("man", (args, options, terminal) => {
+    if (args.length === 0) {
+        return `man: Error: No command provided.\n\n${man.manual}`;
+    }
+
     const target_command: Command | undefined = terminal.bin.find(args[0]);
     if (target_command){
         return target_command.manual || target_command.key;
