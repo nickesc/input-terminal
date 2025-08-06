@@ -87,6 +87,22 @@ describe('Terminal Tests', () => {
         expect(term.execute_command("test --val1=20 --val2='spaced value' -val3=x=10").output).toEqual([[],{val1:{value:"20"},val2:{value:"spaced value"},val3:{value:"x=10"}}]);
     });
 
+    // PROMPT TESTS
+    it("should change the prompt", () => {
+        term.options.prompt = ">> ";
+        expect(term.options.prompt).toEqual(">> ");
+    });
+    it("should change the preprompt", () => {
+        term.options.preprompt = ">> ";
+        expect(term.options.preprompt).toEqual(">> ");
+    });
+    it("should still grab the correct raw input on exit with a custom prompt", () => {
+        term.options.prompt = ">> ";
+        term.options.preprompt = ">> ";
+        expect(term.execute_command("test").raw_input).toEqual("test");
+    });
+
+
 
     // COMMAND EXECUTION TESTS
     it('should return an ExitObject after execution', () => {
