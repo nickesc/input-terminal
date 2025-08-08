@@ -99,7 +99,7 @@ export class Terminal extends EventTarget {
      */
     public init(): void {
         if (!this._started){
-            if (this.options.installBuiltIns){
+            if (this.options.installBuiltins){
                 this.bin.list = [...this.bin.list, ...built_ins];
             }
             this._listeners.attach_input_listeners();

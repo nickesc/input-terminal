@@ -1,4 +1,4 @@
-import { Terminal, Command, ExitObject } from '../src/input-terminal';
+import { Terminal, Command, ExitObject, built_ins } from '../src/input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 
@@ -87,6 +87,36 @@ describe('Terminal Tests', () => {
         expect(term.execute_command("test --val1=20 --val2='spaced value' -val3=x=10").output).toEqual([[],{val1:{value:"20"},val2:{value:"spaced value"},val3:{value:"x=10"}}]);
     });
 
+    // PROMPT TESTS
+    it("should change the prompt", () => {
+        term.options.prompt = ">> ";
+        expect(term.options.prompt).toEqual(">> ");
+    });
+    it("should change the preprompt", () => {
+        term.options.preprompt = ">> ";
+        expect(term.options.preprompt).toEqual(">> ");
+    });
+    it("should still grab the correct raw input on exit with a custom prompt", () => {
+        term.options.prompt = ">> ";
+        term.options.preprompt = ">> ";
+        expect(term.execute_command("test").raw_input).toEqual("test");
+    });
+
+    // INSTALL BUILT-INS TESTS
+    it("should have the correct number of installed built-ins", () => {
+        term.init()
+        expect(term.bin.list.length).toEqual(built_ins.length);
+    });
+    it("should install built-ins if set to true in options", () => {
+        term.options.installBuiltins = true;
+        term.init()
+        expect(term.bin.list.length).toEqual(built_ins.length);
+    });
+    it("should not install built-ins if set to false in options", () => {
+        term.options.installBuiltins = false;
+        term.init()
+        expect(term.bin.list.length).toEqual(0);
+    });
 
     // COMMAND EXECUTION TESTS
     it('should return an ExitObject after execution', () => {

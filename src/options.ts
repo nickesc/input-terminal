@@ -38,7 +38,7 @@ export class TermOptions {
      * Whether the terminal should install built-in commands.
      * @type {boolean}
      */
-    public installBuiltIns: boolean = true;
+    public installBuiltins: boolean = true;
 
     /**
      * A line of text that is displayed at the beginning of the command line.

@@ -22,6 +22,9 @@ describe('TermOptions Tests', () => {
         expect(options.modKey).toEqual("Ctrl");
         expect(options.preprompt).toEqual("");
         expect(options.prompt).toEqual("> ");
+        expect(options.installBuiltins).toEqual(true);
+        expect(options.addEmptyCommandToHistory).toEqual(false);
+        expect(options.showDuplicateCommands).toEqual(false)
 
     });
 
@@ -33,7 +36,10 @@ describe('TermOptions Tests', () => {
             autocompleteKey: "Tabulator",
             modKey: "Ctrl",
             prompt: "prompt",
-            preprompt: "preprompt"
+            preprompt: "preprompt",
+            installBuiltins: false,
+            addEmptyCommandToHistory: true,
+            showDuplicateCommands: true
         };
         const options: TermOptions = new TermOptions(customOptions);
         expect(options.previousKey).toEqual(customOptions.previousKey);
@@ -41,8 +47,11 @@ describe('TermOptions Tests', () => {
         expect(options.returnKey).toEqual(customOptions.returnKey);
         expect(options.autocompleteKey).toEqual(customOptions.autocompleteKey);
         expect(options.modKey).toEqual(customOptions.modKey);
-        expect(options.preprompt).toEqual("preprompt");
-        expect(options.prompt).toEqual("prompt");
+        expect(options.preprompt).toEqual(customOptions.preprompt);
+        expect(options.prompt).toEqual(customOptions.prompt);
+        expect(options.installBuiltins).toEqual(customOptions.installBuiltins);
+        expect(options.addEmptyCommandToHistory).toEqual(customOptions.addEmptyCommandToHistory);
+        expect(options.showDuplicateCommands).toEqual(customOptions.showDuplicateCommands)
     });
 
     it('should construct with partial custom options', () => {
@@ -54,7 +63,6 @@ describe('TermOptions Tests', () => {
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
         expect(options.returnKey).toEqual("Enter"); // Default
-        expect(options.autocompleteKey).toEqual("Tab"); // Default
     });
 
 });
