@@ -39,9 +39,9 @@ Gets or changes the theme of the website.
 
 If --list or -l is provided, it will list the available themes.`;
 
-const history_list = [
+const historyList = [
     new ExitObject(["man", "echo"], "man echo", built_ins.man, 0, {}),
-    new ExitObject(["result"], "result", built_ins.result, 0, {exit: terminal.get_last_exit_object()}),
+    new ExitObject(["result"], "result", built_ins.result, 0, {exit: terminal.getLastExitObject()}),
     new ExitObject(["return"], "return", built_ins.return, 0, {args: ["test"], options: {}}),
     new ExitObject(["echo this is a test"], "echo this is a test", built_ins.echo, 0, {output: "this is a test"})
 ]
@@ -82,44 +82,44 @@ function changeTheme(themeString) {
 }
 
 terminal.addEventListener("inputTerminalExecuted", (e) => {
-    if (e.detail.exit_code === 0){
+    if (e.detail.exitCode === 0){
         if (["string", "number", "boolean"].includes(typeof e.detail.output)){
             output.innerText = e.detail.output;
         } else {
             output.innerText = JSON.stringify(e.detail.output);
         }
         outputCommand.innerText = e.detail.command.key;
-        outputCode.innerText = e.detail.exit_code;
+        outputCode.innerText = e.detail.exitCode;
     } else {
         output.innerText = e.detail.error;
         outputCommand.innerText = "error";
-        outputCode.innerText = e.detail.exit_code;
+        outputCode.innerText = e.detail.exitCode;
     }
 });
 
 autocompleteButton.addEventListener("click", () => {
-    terminal.listeners.autocomplete_listener_action(new Event("keydown"));
+    terminal.listeners.autocompleteListenerAction(new Event("keydown"));
     updateActionSlug("autocomplete");
 });
 
 nextButton.addEventListener("click", () => {
-    terminal.listeners.next_listener_action(new Event("keydown"));
+    terminal.listeners.nextListenerAction(new Event("keydown"));
     updateActionSlug("next command");
 });
 
 previousButton.addEventListener("click", () => {
-    terminal.listeners.previous_listener_action(new Event("keydown"));
+    terminal.listeners.previousListenerAction(new Event("keydown"));
     updateActionSlug("previous command");
 });
 
 returnButton.addEventListener("click", () => {
-    terminal.listeners.return_listener_action(new Event("keydown"));
+    terminal.listeners.returnListenerAction(new Event("keydown"));
     updateActionSlug("execute command");
 });
 
-terminal.bin.empty_command = empty;
+terminal.bin.emptyCommand = empty;
 
-terminal.history.push(history_list)
+terminal.history.push(historyList)
 
 terminal.bin.add(changeThemeCommand);
 
