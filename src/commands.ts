@@ -115,6 +115,7 @@ export class Command {
     /**
      * Runs the command with the given input.
      * @param {string[]} user_input - the input array to parse
+     * @param {string} raw_input - the raw input that was used to execute the command
      * @param {Terminal} term - the terminal to run the command in
      * @returns {ExitObject} the `ExitObject` the command returns
      */
