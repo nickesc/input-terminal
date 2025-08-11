@@ -19,7 +19,7 @@ export class TermHistory {
      * Set the items in the history.
      * @type {ExitObject[]}
      */
-    public set items(command_list: ExitObject[]) { this._items = command_list; }
+    public set items(commandList: ExitObject[]) { this._items = commandList; }
 
     /**
      * @param {ExitObject[]} [history] - an optional history of commands to initialize the terminal with
@@ -32,7 +32,7 @@ export class TermHistory {
      * Resets the index to the beginning of the history.
      * @returns {void}
      */
-    public reset_index(): void {
+    public resetIndex(): void {
         this._index = undefined;
     }
 

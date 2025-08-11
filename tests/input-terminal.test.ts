@@ -47,44 +47,44 @@ describe('Terminal Tests', () => {
         expect(term.input).toBe(input);
     });
     it('should get the correct input value',  () => {
-        term.update_input("test");
-        expect(term.get_input_value()).toBe("test");
+        term.updateInput("test");
+        expect(term.getInputValue()).toBe("test");
     });
 
     // PREDICTION TESTS
     it('should return an empty array if no prediction is found', () => {
-        expect(term.get_predictions("test")).toEqual([]);
+        expect(term.getPredictions("test")).toEqual([]);
     });
     it('should return the correct predictions', () => {
         term.bin.add(new Command("test1", (args, options, terminal) => {return true;}));
         term.bin.add(new Command("test2", (args, options, terminal) => {return true;}));
-        expect(term.get_predictions("test")).toEqual(["test1", "test2"]);
+        expect(term.getPredictions("test")).toEqual(["test1", "test2"]);
     });
 
     // INPUT ARRAY PARSE TESTS
     it('should correctly parse quoted values', () => {
-        expect(term.get_input_array('command "quote" "multi word quote" \'single quote\' `backtick` unquote')).toEqual(["command", "quote", "multi word quote", "single quote", "backtick", "unquote"]);
+        expect(term.getInputArray('command "quote" "multi word quote" \'single quote\' `backtick` unquote')).toEqual(["command", "quote", "multi word quote", "single quote", "backtick", "unquote"]);
     });
     it('should correctly parse quoted values with nested quotes', () => {
-        expect(term.get_input_array('command "quote `nested quote`"')).toEqual(["command", "quote `nested quote`"]);
+        expect(term.getInputArray('command "quote `nested quote`"')).toEqual(["command", "quote `nested quote`"]);
     });
     it('should correctly parse prepended backslashes to not end or start strings', () => {
-        expect(term.get_input_array('command `quote\\`` \\`quote unstarted\\`')).toEqual(["command", "quote`", "`quote", "unstarted`"]);
+        expect(term.getInputArray('command `quote\\`` \\`quote unstarted\\`')).toEqual(["command", "quote`", "`quote", "unstarted`"]);
     });
     it('should recognize empty quoted strings as input values', () => {
-        expect(term.get_input_array('command ""')).toEqual(["command", ""]);
+        expect(term.getInputArray('command ""')).toEqual(["command", ""]);
     });
     it('should parse options and arguments correctly', () => {
         term.bin.add(new Command("test", (args, options, terminal) => {
             return [args,options]
         }))
-        expect(term.execute_command("test arg1 arg2 -o --option -value=x=10").output).toEqual([["arg1","arg2"],{o:{value:undefined},option:{value:undefined},value:{value:"x=10"}}]);
+        expect(term.executeCommand("test arg1 arg2 -o --option -value=x=10").output).toEqual([["arg1","arg2"],{o:{value:undefined},option:{value:undefined},value:{value:"x=10"}}]);
     });
     it('should parse option values correctly', () => {
         term.bin.add(new Command("test", (args, options, terminal) => {
             return [args,options]
         }))
-        expect(term.execute_command("test --val1=20 --val2='spaced value' -val3=x=10").output).toEqual([[],{val1:{value:"20"},val2:{value:"spaced value"},val3:{value:"x=10"}}]);
+        expect(term.executeCommand("test --val1=20 --val2='spaced value' -val3=x=10").output).toEqual([[],{val1:{value:"20"},val2:{value:"spaced value"},val3:{value:"x=10"}}]);
     });
 
     // PROMPT TESTS
@@ -99,7 +99,7 @@ describe('Terminal Tests', () => {
     it("should still grab the correct raw input on exit with a custom prompt", () => {
         term.options.prompt = ">> ";
         term.options.preprompt = ">> ";
-        expect(term.execute_command("test").raw_input).toEqual("test");
+        expect(term.executeCommand("test").rawInput).toEqual("test");
     });
 
     // INSTALL BUILT-INS TESTS
@@ -123,21 +123,21 @@ describe('Terminal Tests', () => {
         term.bin.add(new Command("test", (args, options, terminal) => {
             return true
         }))
-        expect(isExitObject(term.execute_command("command"))).toBe(true);
+        expect(isExitObject(term.executeCommand("command"))).toBe(true);
     });
     it('should successfully execute a known command', () => {
         term.bin.add(new Command("test", (args, options, terminal) => {
             return true
         }))
-        expect(term.execute_command("test").exit_code).toEqual(0);
+        expect(term.executeCommand("test").exitCode).toEqual(0);
     });
     it('should fail to execute an unknown command', () => {
-        expect(term.execute_command("test").exit_code).toEqual(1);
+        expect(term.executeCommand("test").exitCode).toEqual(1);
     });
     it('should have an exit code of 0 for an empty command', () => {
-        expect(term.execute_command("").exit_code).toEqual(0);
-        expect(term.execute_command(" ").exit_code).toEqual(0);
-        expect(term.execute_command("  ").exit_code).toEqual(0);
+        expect(term.executeCommand("").exitCode).toEqual(0);
+        expect(term.executeCommand(" ").exitCode).toEqual(0);
+        expect(term.executeCommand("  ").exitCode).toEqual(0);
     });
     it('should return the correct exit object', async () => {
         const command = new Command("test", (args, options, terminal) => {
@@ -145,36 +145,36 @@ describe('Terminal Tests', () => {
         })
         term.bin.add(command)
 
-        const executed = term.execute_command("test")
-        const test_exit = new ExitObject(["test"], "test", command, 0, true)
+        const executed = term.executeCommand("test")
+        const testExit = new ExitObject(["test"], "test", command, 0, true)
         try {
-            expect(executed).toEqual(test_exit);
+            expect(executed).toEqual(testExit);
         } catch (error) {
-            if (executed.timestamp !== test_exit.timestamp) {
+            if (executed.timestamp !== testExit.timestamp) {
                 console.warn("Timestamp mismatch")
-                expect(executed.exit_code).toEqual(test_exit.exit_code);
-                expect(executed.output).toEqual(test_exit.output);
+                expect(executed.exitCode).toEqual(testExit.exitCode);
+                expect(executed.output).toEqual(testExit.output);
                 expect(executed.timestamp).toBeDefined();
-                expect(executed.command).toEqual(test_exit.command);
-                expect(executed.user_input).toEqual(test_exit.user_input);
-                expect(executed.raw_input).toEqual(test_exit.raw_input);
+                expect(executed.command).toEqual(testExit.command);
+                expect(executed.userInput).toEqual(testExit.userInput);
+                expect(executed.rawInput).toEqual(testExit.rawInput);
             } else {
-                expect(executed).toEqual(test_exit);
+                expect(executed).toEqual(testExit);
             }
         }
     });
     it('should get undefined as the last exit code on initialization', () => {
-        expect(term.get_last_exit_object()).toEqual(undefined);
+        expect(term.getLastExitObject()).toEqual(undefined);
     });
     it('should get the correct last exit code', () => {
-        const exit = term.execute_command("test")
-        expect(term.get_last_exit_object()).toEqual(exit);
+        const exit = term.executeCommand("test")
+        expect(term.getLastExitObject()).toEqual(exit);
     });
 
     it('should pass terminal correctly', () => {
         term.bin.add(new Command("test", (args, options, terminal) => {
             return terminal;
         }))
-        expect(term.execute_command("test").output).toBe(term);
+        expect(term.executeCommand("test").output).toBe(term);
     });
 });

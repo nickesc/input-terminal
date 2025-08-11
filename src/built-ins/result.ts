@@ -10,7 +10,7 @@ const result: Command = new Command("result", (args, options, terminal) => {
     if (options.first || options.f){
         return {exit: terminal.history.items[terminal.history.items.length-1]};
     } else if (options.last || options.l){
-        return {exit: terminal.get_last_exit_object()};
+        return {exit: terminal.getLastExitObject()};
     } else if (options.index || options.i){
         console.log(options, args);
         const index: number = Number(options.index?.value || options.i?.value || -1);
@@ -19,7 +19,7 @@ const result: Command = new Command("result", (args, options, terminal) => {
         }
         return {exit: terminal.history.items[index]};
     }
-    return {exit: terminal.get_last_exit_object()};
+    return {exit: terminal.getLastExitObject()};
 });
 
 result.manual = `result [--first|-f] [--last|-l] [--index|-i]

@@ -18,8 +18,8 @@ function tCommand(key: string): Command {
     return new Command(key, () => {return {}});
 }
 
-let test_commands: Command[];
-let test_command: Command;
+let testCommands: Command[];
+let testCommand: Command;
 
 
 
@@ -37,21 +37,21 @@ describe('Command Tests', () => {
     it('should return an ArgsOptions object',  () => {
         const command: Command = new Command("test", () => {return {}});
         const input: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
-        const parsed_input: ArgsOptions = command.parse_input(input);
-        expect(isArgsOptions(parsed_input)).toBe(true);
+        const parsedInput: ArgsOptions = command.parseInput(input);
+        expect(isArgsOptions(parsedInput)).toBe(true);
     });
     it('should parse the input correctly and return an ArgsOptions object',  () => {
         const command: Command = new Command("test", () => {return {}});
         const input: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
-        const parsed_input: ArgsOptions = command.parse_input(input);
-        expect(parsed_input.options).toEqual({option1: {value:undefined}, option2: {value: "1"}, option3: {value:undefined}});
-        expect(parsed_input.args).toEqual(["arg1", "arg2", "arg 3"]);
+        const parsedInput: ArgsOptions = command.parseInput(input);
+        expect(parsedInput.options).toEqual({option1: {value:undefined}, option2: {value: "1"}, option3: {value:undefined}});
+        expect(parsedInput.args).toEqual(["arg1", "arg2", "arg 3"]);
     });
     it('should log error if unable to parse input',  () => {
         const command: Command = new Command("test", () => {return {}});
         const input: string[] = ["test", "--="];
-        const parsed_input = command.parse_input(input);
-        expect(parsed_input.options).toEqual({});
+        const parsedInput = command.parseInput(input);
+        expect(parsedInput.options).toEqual({});
     });
     it('should run the command with the correct input',  () => {
         const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
@@ -59,13 +59,13 @@ describe('Command Tests', () => {
         const input = document.getElementById('terminal-input') as HTMLInputElement;
         const term = new Terminal(input);
         const command: Command = new Command("test", () => {return {}});
-        const user_input: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
-        const exit_object = command.run(user_input, user_input.join(" "), term);
-        expect(exit_object.output).toEqual({});
-        expect(exit_object.exit_code).toEqual(0);
-        expect(exit_object.user_input).toEqual(user_input);
-        expect(exit_object.raw_input).toEqual(user_input.join(" "));
-        expect(exit_object.command).toEqual(command);
+        const userInput: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
+        const exitObject = command.run(userInput, userInput.join(" "), term);
+        expect(exitObject.output).toEqual({});
+        expect(exitObject.exitCode).toEqual(0);
+        expect(exitObject.userInput).toEqual(userInput);
+        expect(exitObject.rawInput).toEqual(userInput.join(" "));
+        expect(exitObject.command).toEqual(command);
     });
     it('should return an error when the command throws an error',  () => {
         const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
@@ -73,33 +73,33 @@ describe('Command Tests', () => {
         const input = document.getElementById('terminal-input') as HTMLInputElement;
         const term = new Terminal(input);
         const command: Command = new Command("test", () => {throw new Error("test error");});
-        const user_input: string[] = ["test"];
-        const exit_object = command.run(user_input, user_input.join(" "), term);
-        expect(exit_object.output).toEqual({error: new Error("test error")});
-        expect(exit_object.exit_code).toEqual(1);
-        expect(exit_object.user_input).toEqual(user_input);
-        expect(exit_object.raw_input).toEqual(user_input.join(" "));
-        expect(exit_object.command).toEqual(command);
+        const userInput: string[] = ["test"];
+        const exitObject = command.run(userInput, userInput.join(" "), term);
+        expect(exitObject.output).toEqual({error: new Error("test error")});
+        expect(exitObject.exitCode).toEqual(1);
+        expect(exitObject.userInput).toEqual(userInput);
+        expect(exitObject.rawInput).toEqual(userInput.join(" "));
+        expect(exitObject.command).toEqual(command);
     });
 });
 
 describe('ExitObject Tests', () => {
     beforeEach(() => {
-        test_command = tCommand("test0");
-        test_commands = [tCommand("test1"), tCommand("test2"), tCommand("test3")];
+        testCommand = tCommand("test0");
+        testCommands = [tCommand("test1"), tCommand("test2"), tCommand("test3")];
     });
     // EXIT OBJECT TESTS
     it('should construct an exit object',  () => {
-        const exit_object: ExitObject = new ExitObject([], "", test_command, 0, {});
-        expect(isExitObject(exit_object)).toBe(true);
+        const exitObject: ExitObject = new ExitObject([], "", testCommand, 0, {});
+        expect(isExitObject(exitObject)).toBe(true);
     });
     it('should construct with the correct property values',  () => {
-        const exit_object: ExitObject = new ExitObject([], "", test_command, 0, {});
-        expect(exit_object.command).toEqual(test_command);
-        expect(exit_object.timestamp).toBeDefined();
-        expect(exit_object.exit_code).toEqual(0);
-        expect(exit_object.user_input).toEqual([]);
-        expect(exit_object.raw_input).toEqual("");
-        expect(exit_object.output).toEqual({});
+        const exitObject: ExitObject = new ExitObject([], "", testCommand, 0, {});
+        expect(exitObject.command).toEqual(testCommand);
+        expect(exitObject.timestamp).toBeDefined();
+        expect(exitObject.exitCode).toEqual(0);
+        expect(exitObject.userInput).toEqual([]);
+        expect(exitObject.rawInput).toEqual("");
+        expect(exitObject.output).toEqual({});
     });
 });

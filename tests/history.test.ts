@@ -9,11 +9,11 @@ function tExitObject(text: string): ExitObject {
     return new ExitObject([text], text, undefined, 0, {});
 }
 
-let test_commands: ExitObject[];
+let testCommands: ExitObject[];
 
 describe('TermHistory Tests', () => {
     beforeEach(() => {
-        test_commands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
+        testCommands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
     });
 
     // CONSTRUCTION TEST
@@ -25,78 +25,78 @@ describe('TermHistory Tests', () => {
 
     // COMMAND HISTORY TESTS
     it('should have empty command history by default', () => {
-        const test_history: ExitObject[] = [];
+        const testHistory: ExitObject[] = [];
         const history: TermHistory = new TermHistory();
-        expect(history.items).toEqual(test_history);
+        expect(history.items).toEqual(testHistory);
     });
     it('should construct with custom command history',  () => {
-        const history: TermHistory = new TermHistory(test_commands);
-        expect(history.items).toBe(test_commands);
+        const history: TermHistory = new TermHistory(testCommands);
+        expect(history.items).toBe(testCommands);
     });
     it('should set custom command history',  () => {
         const history: TermHistory = new TermHistory();
-        history.items = test_commands;
-        expect(history.items).toEqual(test_commands);
+        history.items = testCommands;
+        expect(history.items).toEqual(testCommands);
     });
 
 
     // PUSH HISTORY TESTS
     it('should return the length of the command history on push',  () => {
         const history: TermHistory = new TermHistory();
-        expect(history.push(test_commands[0])).toBe(1);
+        expect(history.push(testCommands[0])).toBe(1);
     });
     it('should push command to history',  () => {
         const history: TermHistory = new TermHistory();
-        history.push(test_commands[0]);
-        history.push(test_commands[1]);
-        expect(history.items).toEqual([test_commands[1],test_commands[0]]);
+        history.push(testCommands[0]);
+        history.push(testCommands[1]);
+        expect(history.items).toEqual([testCommands[1],testCommands[0]]);
     });
     it('should retain index in history when command is pushed',  () => {
         const history: TermHistory = new TermHistory();
 
-        history.push(test_commands[0]);
-        history.push(test_commands[1]);
+        history.push(testCommands[0]);
+        history.push(testCommands[1]);
         history.previous()
 
-        history.push(test_commands[2]);
-        expect(history.current()).toBe(test_commands[1]);
-        expect(history.previous()).toBe(test_commands[0]);
+        history.push(testCommands[2]);
+        expect(history.current()).toBe(testCommands[1]);
+        expect(history.previous()).toBe(testCommands[0]);
     });
     it('should push multiple commands to history',  () => {
         const history: TermHistory = new TermHistory();
-        const test_item: ExitObject = new ExitObject(["test"], "test", undefined, 0, {});
-        history.push(test_item);
-        history.push(test_commands);
-        expect(history.items).toEqual([...test_commands, test_item]);
+        const testItem: ExitObject = new ExitObject(["test"], "test", undefined, 0, {});
+        history.push(testItem);
+        history.push(testCommands);
+        expect(history.items).toEqual([...testCommands, testItem]);
     });
 
 
     // POP HISTORY TESTS
     it('should return the removed command on pop',  () => {
-        const history: TermHistory = new TermHistory([test_commands[0]]);
-        expect(history.pop()).toBe(test_commands[0]);
+        const history: TermHistory = new TermHistory([testCommands[0]]);
+        expect(history.pop()).toBe(testCommands[0]);
     });
     it('should remove first command from history',  () => {
         const history: TermHistory = new TermHistory();
-        history.push(test_commands[0]);
-        history.push(test_commands[1]);
+        history.push(testCommands[0]);
+        history.push(testCommands[1]);
         history.pop()
-        expect(history.items).toEqual([test_commands[0]]);
+        expect(history.items).toEqual([testCommands[0]]);
     });
     it('should retain index in history if command is popped',  () => {
-        const history: TermHistory = new TermHistory(test_commands);
-        history.push(test_commands[0]);
-        history.push(test_commands[1]);
-        history.push(test_commands[2]);
+        const history: TermHistory = new TermHistory(testCommands);
+        history.push(testCommands[0]);
+        history.push(testCommands[1]);
+        history.push(testCommands[2]);
         history.previous();
 
         history.pop();
         expect(history.current()).toBe(undefined);
-        expect(history.previous()).toBe(test_commands[1]);
-        expect(history.previous()).toBe(test_commands[0]);
+        expect(history.previous()).toBe(testCommands[1]);
+        expect(history.previous()).toBe(testCommands[0]);
 
         history.pop();
-        expect(history.current()).toBe(test_commands[0]);
+        expect(history.current()).toBe(testCommands[0]);
         history.pop();
         expect(history.current()).toBe(undefined);
     });
@@ -105,13 +105,13 @@ describe('TermHistory Tests', () => {
     // PREVIOUS HISTORY TESTS
     it('should return the last executed command on previous history call',  () => {
         const history: TermHistory = new TermHistory();
-        history.push(test_commands[0]);
-        history.push(test_commands[1]);
-        history.push(test_commands[2]);
+        history.push(testCommands[0]);
+        history.push(testCommands[1]);
+        history.push(testCommands[2]);
 
-        expect(history.previous()).toBe(test_commands[2]);
-        expect(history.previous()).toBe(test_commands[1]);
-        expect(history.previous()).toBe(test_commands[0]);
+        expect(history.previous()).toBe(testCommands[2]);
+        expect(history.previous()).toBe(testCommands[1]);
+        expect(history.previous()).toBe(testCommands[0]);
         expect(history.previous()).toBe(null);
     });
     it('should return undefined on previous history call with no command history',  () => {
@@ -123,15 +123,15 @@ describe('TermHistory Tests', () => {
     // NEXT HISTORY TESTS
     it('should return the next executed command on next history call',  () => {
         const history: TermHistory = new TermHistory();
-        history.push(test_commands[0]);
-        history.push(test_commands[1]);
-        history.push(test_commands[2]);
+        history.push(testCommands[0]);
+        history.push(testCommands[1]);
+        history.push(testCommands[2]);
 
         history.previous()
         history.previous()
         history.previous()
-        expect(history.next()).toBe(test_commands[1]);
-        expect(history.next()).toBe(test_commands[2]);
+        expect(history.next()).toBe(testCommands[1]);
+        expect(history.next()).toBe(testCommands[2]);
         expect(history.next()).toBe(undefined);
         expect(history.next()).toBe(undefined);
     });
@@ -140,7 +140,7 @@ describe('TermHistory Tests', () => {
         expect(history.next()).toBe(undefined);
     });
     it('should return undefined on next history call at top of history',  () => {
-        const history: TermHistory = new TermHistory(test_commands);
+        const history: TermHistory = new TermHistory(testCommands);
         expect(history.next()).toBe(undefined);
     });
 

@@ -27,7 +27,7 @@ export const built_ins: Command[] = [echo, alert, result, man, return_];
  */
 export class TermBin{
     private _list: Command[] = [];
-    private _empty_command: Command = new Command("", (args, options, terminal) => { return {}; });
+    private _emptyCommand: Command = new Command("", (args, options, terminal) => { return {}; });
 
     /**
      * Get the list of commands in the terminal's bin.
@@ -49,13 +49,13 @@ export class TermBin{
      * Get the command that is executed when empty input is provided.
      * @type {Command}
      */
-    public get empty_command(): Command { return this._empty_command; }
+    public get emptyCommand(): Command { return this._emptyCommand; }
 
     /**
      * Set the command that is executed when empty input is provided.
      * @type {Command}
      */
-    public set empty_command(command: Command) { this._empty_command = command; }
+    public set emptyCommand(command: Command) { this._emptyCommand = command; }
 
     /**
      * @param {Command[]} [commands] - an optional list of commands to initialize the terminal with
@@ -70,18 +70,18 @@ export class TermBin{
      * Retrieves a list of keys for all commands in the terminal's bin.
      * @returns {string[]} a list of the keys of all commands in the terminal's bin
      */
-    public get_command_keys(): string[] {
+    public getCommandKeys(): string[] {
         return this._list.map(command => command.key);
     }
 
     /**
      * Finds a command by its key in the terminal's bin.
-     * @param {string} [command_key] - the key of the command to find
+     * @param {string} [commandKey] - the key of the command to find
      * @returns {Command | undefined} the command with the given key; `undefined` if the command is not found or if no key is provided
      */
-    public find(command_key?: string): Command | undefined {
-        if (!command_key){return undefined;};
-        return this.list.find(command => command.key === command_key);
+    public find(commandKey?: string): Command | undefined {
+        if (!commandKey){return undefined;};
+        return this.list.find(command => command.key === commandKey);
     }
 
     /**
