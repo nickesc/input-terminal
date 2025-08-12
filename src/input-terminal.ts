@@ -30,7 +30,7 @@ export class Terminal extends EventTarget {
     private _listeners: TermListeners;
     private _started: boolean = false;
 
-    #emitExecutedEvent(exitObject: ExitObject): void {
+    private emitExecutedEvent(exitObject: ExitObject): void {
         this.dispatchEvent(new CustomEvent("inputTerminalExecuted", {detail: exitObject}));
     }
 
@@ -231,7 +231,7 @@ export class Terminal extends EventTarget {
         }
         this.history.resetIndex();
 
-        this.#emitExecutedEvent(exitObject);
+        this.emitExecutedEvent(exitObject);
 
         return exitObject
     }
