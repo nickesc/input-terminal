@@ -15,7 +15,7 @@ function isExitObject(target: any): boolean {
 }
 
 function tCommand(key: string): Command {
-    return new Command(key, () => {return {}});
+    return new Command(key, () => {return});
 }
 
 let testCommands: Command[];
@@ -24,31 +24,30 @@ let testCommand: Command;
 
 
 describe('Command Tests', () => {
-    // COMMAND TESTS
     it('should construct a Command object',  () => {
-        const command: Command = new Command("test", () => {return {}});
+        const command: Command = new Command("test", () => {return});
         expect(isCommand(command)).toBe(true);
     });
     it('should construct with the correct properties',  () => {
-        const command: Command = new Command("test", () => {return {}});
+        const command: Command = new Command("test", () => {return});
         expect(command.key).toEqual("test");
         expect(command.action).toBeDefined();
     });
     it('should return an ArgsOptions object',  () => {
-        const command: Command = new Command("test", () => {return {}});
+        const command: Command = new Command("test", () => {return});
         const input: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
         const parsedInput: ArgsOptions = command.parseInput(input);
         expect(isArgsOptions(parsedInput)).toBe(true);
     });
     it('should parse the input correctly and return an ArgsOptions object',  () => {
-        const command: Command = new Command("test", () => {return {}});
+        const command: Command = new Command("test", () => {return});
         const input: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
         const parsedInput: ArgsOptions = command.parseInput(input);
         expect(parsedInput.options).toEqual({option1: {value:undefined}, option2: {value: "1"}, option3: {value:undefined}});
         expect(parsedInput.args).toEqual(["arg1", "arg2", "arg 3"]);
     });
     it('should log error if unable to parse input',  () => {
-        const command: Command = new Command("test", () => {return {}});
+        const command: Command = new Command("test", () => {return});
         const input: string[] = ["test", "--="];
         const parsedInput = command.parseInput(input);
         expect(parsedInput.options).toEqual({});
@@ -58,10 +57,10 @@ describe('Command Tests', () => {
         const document = dom.window.document;
         const input = document.getElementById('terminal-input') as HTMLInputElement;
         const term = new Terminal(input);
-        const command: Command = new Command("test", () => {return {}});
+        const command: Command = new Command("test", () => {return});
         const userInput: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "arg2", "arg 3"];
         const exitObject = command.run(userInput, userInput.join(" "), term);
-        expect(exitObject.output).toEqual({});
+        expect(exitObject.output).toEqual(undefined);
         expect(exitObject.exitCode).toEqual(0);
         expect(exitObject.userInput).toEqual(userInput);
         expect(exitObject.rawInput).toEqual(userInput.join(" "));
@@ -94,12 +93,12 @@ describe('ExitObject Tests', () => {
         expect(isExitObject(exitObject)).toBe(true);
     });
     it('should construct with the correct property values',  () => {
-        const exitObject: ExitObject = new ExitObject([], "", testCommand, 0, {});
+        const exitObject: ExitObject = new ExitObject([], "", testCommand, 0, undefined);
         expect(exitObject.command).toEqual(testCommand);
         expect(exitObject.timestamp).toBeDefined();
         expect(exitObject.exitCode).toEqual(0);
         expect(exitObject.userInput).toEqual([]);
         expect(exitObject.rawInput).toEqual("");
-        expect(exitObject.output).toEqual({});
+        expect(exitObject.output).toEqual(undefined);
     });
 });

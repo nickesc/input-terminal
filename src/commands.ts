@@ -61,7 +61,7 @@ export class ArgsOptions {
  */
 export class Command {
     private _key: string;
-    private _action: (args: string[], options: Record<string, any>, terminal: Terminal) => {};
+    private _action: (args: string[], options: Record<string, any>, terminal: Terminal) => any;
     private _manual: string | undefined = undefined;
 
     /**
@@ -98,7 +98,7 @@ export class Command {
      * @param {string} key - the key used to identify the command
      * @param {function} action - the function to execute when the command is run
      */
-    constructor(key: string, action: (args: string[], options: Record<string, any>, terminal: Terminal) => {}) {
+    constructor(key: string, action: (args: string[], options: Record<string, any>, terminal: Terminal) => any) {
         this._key = key;
         this._action = action;
     }
@@ -182,9 +182,9 @@ export class ExitObject{
 
     /**
      * Get the output of the execution.
-     * @type {object}
+     * @type {any}
      */
-    public get output(): object { return this._output; }
+    public get output(): any { return this._output; }
 
     /**
      * @param {string[]} userInput - the input array that was used to execute the command
