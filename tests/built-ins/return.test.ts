@@ -16,10 +16,23 @@ describe("return command tests", () => {
     });
 
     it("should run the return command", () => {
+        const exit: ExitObject = return_.run(["return"], "return", term);
+        expect(exit.command).toBe(return_);
+        expect(exit.exitCode).toEqual(0);
+        expect(exit.output).toEqual({});
+        expect(exit.userInput).toEqual(["return"]);
+    })
+
+    it("should run the return command with arguments", () => {
         const exit: ExitObject = return_.run(["return", "x"], "return x", term);
         expect(exit.command).toBe(return_);
         expect(exit.exitCode).toEqual(0);
         expect(exit.output).toEqual({});
         expect(exit.userInput).toEqual(["return", "x"]);
+    })
+
+    it("should have manual page", () => {
+        expect(return_.manual).toBeDefined();
+        expect(return_.manual?.length).toBeGreaterThan(0);
     })
 });
