@@ -29,6 +29,18 @@ export class ArgsOptions {
         this.init();
     }
 
+    private castStringToValue(string: string): any {
+        if (/^-?[0-9]+$/.test(string)) {
+            return Number.parseInt(string);
+        } else if (string === "true") {
+            return true;
+        } else if (string === "false") {
+            return false;
+        } else {
+            return string;
+        }
+    }
+
     private string2opt(string: string): void {
         const key: string = string.split("=")[0] || "";
         const value: string = string.split("=").slice(1).join("=");
