@@ -15,7 +15,7 @@ export declare class TermHistory {
      * Set the items in the history.
      * @type {ExitObject[]}
      */
-    set items(command_list: ExitObject[]);
+    set items(commandList: ExitObject[]);
     /**
      * @param {ExitObject[]} [history] - an optional history of commands to initialize the terminal with
      */
@@ -24,7 +24,7 @@ export declare class TermHistory {
      * Resets the index to the beginning of the history.
      * @returns {void}
      */
-    reset_index(): void;
+    resetIndex(): void;
     /**
      * Retrieves the active item at the current index in the terminal's history.
      * @returns {ExitObject | undefined} the item at the current index in the terminal's history; if no item is active, returns `undefined`

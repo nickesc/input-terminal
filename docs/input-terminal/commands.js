@@ -4,7 +4,7 @@ import { Terminal } from "./input-terminal.js";
  * @category Command Components
  */
 export class ArgsOptions {
-    _user_input;
+    _userInput;
     _args = [];
     _options = {};
     /**
@@ -18,10 +18,10 @@ export class ArgsOptions {
      */
     get options() { return this._options; }
     /**
-     * @param {string[]} user_input - the input array to parse
+     * @param {string[]} userInput - the input array to parse
      */
-    constructor(user_input) {
-        this._user_input = user_input;
+    constructor(userInput) {
+        this._userInput = userInput;
         this.init();
     }
     string2opt(string) {
@@ -38,8 +38,8 @@ export class ArgsOptions {
         }
     }
     init() {
-        for (let i = 1; i < this._user_input.length; i++) {
-            const item = this._user_input[i];
+        for (let i = 1; i < this._userInput.length; i++) {
+            const item = this._userInput[i];
             if (item.startsWith("--")) {
                 this.string2opt(item.slice(2));
             }
@@ -96,33 +96,34 @@ export class Command {
     }
     /**
      * Parses an input array into an `ArgsOptions` object.
-     * @param {string[]} user_input - the input array to parse
+     * @param {string[]} userInput - the input array to parse
      * @returns {ArgsOptions} the parsed input
      */
-    parse_input(user_input) {
-        return new ArgsOptions(user_input);
+    parseInput(userInput) {
+        return new ArgsOptions(userInput);
     }
     /**
      * Runs the command with the given input.
-     * @param {string[]} user_input - the input array to parse
+     * @param {string[]} userInput - the input array to parse
+     * @param {string} rawInput - the raw input that was used to execute the command
      * @param {Terminal} term - the terminal to run the command in
      * @returns {ExitObject} the `ExitObject` the command returns
      */
-    run(user_input, raw_input, term) {
-        let return_value;
-        let exit_code;
-        const parsed_input = this.parse_input(user_input);
+    run(userInput, rawInput, term) {
+        let returnValue;
+        let exitCode;
+        const parsedInput = this.parseInput(userInput);
         try {
-            return_value = this._action(parsed_input.args, parsed_input.options, term);
-            exit_code = 0;
+            returnValue = this._action(parsedInput.args, parsedInput.options, term);
+            exitCode = 0;
         }
         catch (error) {
-            return_value = { error: error };
+            returnValue = { error: error };
             console.error(error);
-            exit_code = 1;
+            exitCode = 1;
         }
-        const exit_reply = new ExitObject(user_input, raw_input, this, exit_code, return_value);
-        return exit_reply;
+        const exitReply = new ExitObject(userInput, rawInput, this, exitCode, returnValue);
+        return exitReply;
     }
 }
 /**
@@ -131,9 +132,9 @@ export class Command {
 export class ExitObject {
     _command;
     _timestamp;
-    _exit_code;
-    _user_input;
-    _raw_input;
+    _exitCode;
+    _userInput;
+    _rawInput;
     _output;
     /**
      * Get the command that was executed.
@@ -149,34 +150,35 @@ export class ExitObject {
      * Get the exit code of the execution.
      * @type {number}
      */
-    get exit_code() { return this._exit_code; }
+    get exitCode() { return this._exitCode; }
     /**
      * Get the input that was used to execute the command.
      * @type {string[]}
      */
-    get user_input() { return this._user_input; }
+    get userInput() { return this._userInput; }
     /**
      * Get the raw input that was entered to execute the command.
      * @type {string}
      */
-    get raw_input() { return this._raw_input; }
+    get rawInput() { return this._rawInput; }
     /**
      * Get the output of the execution.
-     * @type {object}
+     * @type {any}
      */
     get output() { return this._output; }
     /**
-     * @param {string[]} user_input - the input array that was used to execute the command
+     * @param {string[]} userInput - the input array that was used to execute the command
+     * @param {string} rawInput - the raw input that was used to execute the command
      * @param {Command | undefined} command - the command that was executed; `undefined` if the command is not found
-     * @param {number} exit_code - the exit code of the command
+     * @param {number} exitCode - the exit code of the command
      * @param {object} output - the output of the command
      */
-    constructor(user_input, raw_input, command, exit_code, output) {
+    constructor(userInput, rawInput, command, exitCode, output) {
         this._command = command;
         this._timestamp = Date.now();
-        this._exit_code = exit_code;
-        this._user_input = user_input;
-        this._raw_input = raw_input;
+        this._exitCode = exitCode;
+        this._userInput = userInput;
+        this._rawInput = rawInput;
         this._output = output;
     }
 }

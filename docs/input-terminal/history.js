@@ -15,7 +15,7 @@ export class TermHistory {
      * Set the items in the history.
      * @type {ExitObject[]}
      */
-    set items(command_list) { this._items = command_list; }
+    set items(commandList) { this._items = commandList; }
     /**
      * @param {ExitObject[]} [history] - an optional history of commands to initialize the terminal with
      */
@@ -26,7 +26,7 @@ export class TermHistory {
      * Resets the index to the beginning of the history.
      * @returns {void}
      */
-    reset_index() {
+    resetIndex() {
         this._index = undefined;
     }
     /**

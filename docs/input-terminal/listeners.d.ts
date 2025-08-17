@@ -5,8 +5,8 @@ import type { Terminal } from './input-terminal';
  */
 export declare class TermListeners {
     private _terminal;
-    private _prediction_index;
-    private _autocomplete_predictions;
+    private _predictionIndex;
+    private _autocompletePredictions;
     /**
      * @param {Terminal} terminal - the terminal to attach listeners to
      */
@@ -16,32 +16,32 @@ export declare class TermListeners {
      * @param {Event} event - the event that triggered the action
      * @returns {void}
      */
-    previous_listener_action(event: Event): void;
+    previousListenerAction(event: Event): void;
     /**
      * Update input and move history to the next command.
      * @param {Event} event - the event that triggered the action
      * @returns {void}
      */
-    next_listener_action(event: Event): void;
+    nextListenerAction(event: Event): void;
     /**
      * Attempt to autocomplete the current input in the terminal.
      * @param {Event} event - the event that triggered the action
      * @returns {void}
      */
-    autocomplete_listener_action(event: Event): void;
+    autocompleteListenerAction(event: Event): void;
     /**
      * Execute with the current terminal input.
      * @param {Event} event - the event that triggered the action
      * @returns {void}
      */
-    return_listener_action(event: Event): void;
-    private _handle_keyboard_event;
-    private _handle_selection_event;
+    returnListenerAction(event: Event): void;
+    private _handleKeyboardEvent;
+    private _handleSelectionEvent;
     /**
      * Attaches listeners to the terminal's input element.
      * @param {string} [previousKey="ArrowUp"] - the key used to select the previous command; defaults to `ArrowUp`
      * @param {string} [nextKey="ArrowDown"] - the key used to select the next command; defaults to `ArrowDown`
      * @returns {void}
      */
-    attach_input_listeners(previousKey?: string, nextKey?: string): void;
+    attachInputListeners(previousKey?: string, nextKey?: string): void;
 }

@@ -4,7 +4,7 @@ import { Terminal } from './input-terminal.ts';
  * @category Command Components
  */
 export declare class ArgsOptions {
-    private _user_input;
+    private _userInput;
     private _args;
     private _options;
     /**
@@ -18,9 +18,9 @@ export declare class ArgsOptions {
      */
     get options(): Record<string, any>;
     /**
-     * @param {string[]} user_input - the input array to parse
+     * @param {string[]} userInput - the input array to parse
      */
-    constructor(user_input: string[]);
+    constructor(userInput: string[]);
     private string2opt;
     private init;
 }
@@ -58,17 +58,18 @@ export declare class Command {
     constructor(key: string, action: (args: string[], options: Record<string, any>, terminal: Terminal) => {});
     /**
      * Parses an input array into an `ArgsOptions` object.
-     * @param {string[]} user_input - the input array to parse
+     * @param {string[]} userInput - the input array to parse
      * @returns {ArgsOptions} the parsed input
      */
-    parse_input(user_input: string[]): ArgsOptions;
+    parseInput(userInput: string[]): ArgsOptions;
     /**
      * Runs the command with the given input.
-     * @param {string[]} user_input - the input array to parse
+     * @param {string[]} userInput - the input array to parse
+     * @param {string} rawInput - the raw input that was used to execute the command
      * @param {Terminal} term - the terminal to run the command in
      * @returns {ExitObject} the `ExitObject` the command returns
      */
-    run(user_input: string[], raw_input: string, term: Terminal): ExitObject;
+    run(userInput: string[], rawInput: string, term: Terminal): ExitObject;
 }
 /**
  * An object that is returned when a command is executed.
@@ -76,9 +77,9 @@ export declare class Command {
 export declare class ExitObject {
     private _command;
     private _timestamp;
-    private _exit_code;
-    private _user_input;
-    private _raw_input;
+    private _exitCode;
+    private _userInput;
+    private _rawInput;
     private _output;
     /**
      * Get the command that was executed.
@@ -94,27 +95,28 @@ export declare class ExitObject {
      * Get the exit code of the execution.
      * @type {number}
      */
-    get exit_code(): number;
+    get exitCode(): number;
     /**
      * Get the input that was used to execute the command.
      * @type {string[]}
      */
-    get user_input(): string[];
+    get userInput(): string[];
     /**
      * Get the raw input that was entered to execute the command.
      * @type {string}
      */
-    get raw_input(): string;
+    get rawInput(): string;
     /**
      * Get the output of the execution.
-     * @type {object}
+     * @type {any}
      */
-    get output(): object;
+    get output(): any;
     /**
-     * @param {string[]} user_input - the input array that was used to execute the command
+     * @param {string[]} userInput - the input array that was used to execute the command
+     * @param {string} rawInput - the raw input that was used to execute the command
      * @param {Command | undefined} command - the command that was executed; `undefined` if the command is not found
-     * @param {number} exit_code - the exit code of the command
+     * @param {number} exitCode - the exit code of the command
      * @param {object} output - the output of the command
      */
-    constructor(user_input: string[], raw_input: string, command: Command | undefined, exit_code: number, output: any);
+    constructor(userInput: string[], rawInput: string, command: Command | undefined, exitCode: number, output: any);
 }

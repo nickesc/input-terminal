@@ -25,9 +25,9 @@ import { TermBin, built_ins } from './bin.ts';
  * ```
  */
 export declare class Terminal extends EventTarget {
-    #private;
     private _listeners;
     private _started;
+    private emitExecutedEvent;
     /**
      * The input element that the terminal is attached to.
      * @type {HTMLInputElement}
@@ -77,37 +77,37 @@ export declare class Terminal extends EventTarget {
     init(): void;
     /**
      * Updates the terminal's user input value.
-     * @param {string} [user_input] - the value to update the input with; clears the input if no value is provided
+     * @param {string} [userInput] - the value to update the input with; clears the input if no value is provided
      * @returns {void}
      */
-    update_input(user_input?: string): void;
+    updateInput(userInput?: string): void;
     /**
      * Gets the terminal's user input.
      * @returns {string} The string in the input, not including the preprompt and prompt
      */
-    get_input_value(): string;
+    getInputValue(): string;
     /**
      * Gets the command predictions based on the user's input.
      * @param {string} [text] - The text to get predictions for; if no text is provided, all commands are returned
      * @returns {string[]} The predictions for the terminal's user input
      */
-    get_predictions(text?: string): string[];
+    getPredictions(text?: string): string[];
     /**
      * Converts the user's input into an array for command execution.
      * @param {string} input - The string to convert into an array
      * @returns {string[]} The array created from the input
      */
-    get_input_array(input: string): string[];
+    getInputArray(input: string): string[];
     /**
      * Get the last exit object of the terminal.
      * @type {ExitObject | undefined}
      */
-    get_last_exit_object(): ExitObject | undefined;
+    getLastExitObject(): ExitObject | undefined;
     /**
      * Executes a command based on the user's input.
      * @param {string} input - The command to execute
      * @returns {ExitObject} The ExitObject returned by the execution
      */
-    execute_command(input: string): ExitObject;
+    executeCommand(input: string): ExitObject;
 }
 export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, built_ins };

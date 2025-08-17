@@ -27,7 +27,7 @@ import { TermBin, built_ins } from "./bin.js";
 export class Terminal extends EventTarget {
     _listeners;
     _started = false;
-    #emit_executed_event(exitObject) {
+    emitExecutedEvent(exitObject) {
         this.dispatchEvent(new CustomEvent("inputTerminalExecuted", { detail: exitObject }));
     }
     /**
@@ -85,27 +85,27 @@ export class Terminal extends EventTarget {
      */
     init() {
         if (!this._started) {
-            if (this.options.installBuiltIns) {
+            if (this.options.installBuiltins) {
                 this.bin.list = [...this.bin.list, ...built_ins];
             }
-            this._listeners.attach_input_listeners();
-            this.update_input();
+            this._listeners.attachInputListeners();
+            this.updateInput();
             this._started = true;
         }
     }
     /**
      * Updates the terminal's user input value.
-     * @param {string} [user_input] - the value to update the input with; clears the input if no value is provided
+     * @param {string} [userInput] - the value to update the input with; clears the input if no value is provided
      * @returns {void}
      */
-    update_input(user_input) {
-        this.input.value = this.options.preprompt + this.options.prompt + (user_input || "");
+    updateInput(userInput) {
+        this.input.value = this.options.preprompt + this.options.prompt + (userInput || "");
     }
     /**
      * Gets the terminal's user input.
      * @returns {string} The string in the input, not including the preprompt and prompt
      */
-    get_input_value() {
+    getInputValue() {
         return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
     }
     /**
@@ -113,14 +113,14 @@ export class Terminal extends EventTarget {
      * @param {string} [text] - The text to get predictions for; if no text is provided, all commands are returned
      * @returns {string[]} The predictions for the terminal's user input
      */
-    get_predictions(text) {
+    getPredictions(text) {
         let predictions = [];
         if (text) {
-            const partial_matches = this.bin.get_command_keys().filter(key => key.startsWith(text));
-            predictions = partial_matches;
+            const partialMatches = this.bin.getCommandKeys().filter(key => key.startsWith(text));
+            predictions = partialMatches;
         }
         else {
-            predictions = this.bin.get_command_keys();
+            predictions = this.bin.getCommandKeys();
         }
         return predictions;
     }
@@ -129,8 +129,8 @@ export class Terminal extends EventTarget {
      * @param {string} input - The string to convert into an array
      * @returns {string[]} The array created from the input
      */
-    get_input_array(input) {
-        function clean_buffer(toClean) {
+    getInputArray(input) {
+        function cleanBuffer(toClean) {
             toClean = toClean.trim();
             toClean = toClean.replace(/\\/g, "");
             return toClean;
@@ -150,7 +150,7 @@ export class Terminal extends EventTarget {
                         currQuote = char;
                     }
                     else if (currQuote === char) {
-                        result.push(clean_buffer(buffer));
+                        result.push(cleanBuffer(buffer));
                         buffer = "";
                         currQuote = null;
                     }
@@ -160,7 +160,7 @@ export class Terminal extends EventTarget {
                 }
                 else if (char === " " && currQuote == null) {
                     if (buffer.length > 0) {
-                        result.push(clean_buffer(buffer));
+                        result.push(cleanBuffer(buffer));
                         buffer = "";
                     }
                 }
@@ -170,7 +170,7 @@ export class Terminal extends EventTarget {
             }
         }
         if (buffer.length > 0) {
-            result.push(clean_buffer(buffer));
+            result.push(cleanBuffer(buffer));
         }
         return result;
     }
@@ -178,7 +178,7 @@ export class Terminal extends EventTarget {
      * Get the last exit object of the terminal.
      * @type {ExitObject | undefined}
      */
-    get_last_exit_object() {
+    getLastExitObject() {
         return this.history.items[0];
     }
     /**
@@ -186,30 +186,30 @@ export class Terminal extends EventTarget {
      * @param {string} input - The command to execute
      * @returns {ExitObject} The ExitObject returned by the execution
      */
-    execute_command(input) {
-        const user_input = this.get_input_array(input.trim());
-        const command = this.bin.find(user_input[0]);
+    executeCommand(input) {
+        const userInput = this.getInputArray(input.trim());
+        const command = this.bin.find(userInput[0]);
         let addToHistory = true;
         let exitObject;
         if (command) {
-            exitObject = command.run(user_input, input, this);
+            exitObject = command.run(userInput, input, this);
         }
-        else if (user_input[0] === "") {
-            exitObject = this.bin.empty_command.run(user_input, input, this);
+        else if (userInput[0] === "") {
+            exitObject = this.bin.emptyCommand.run(userInput, input, this);
             if (!this.options.addEmptyCommandToHistory) {
                 addToHistory = false;
             }
         }
         else {
-            const errText = `Command ${user_input[0]} not found`;
+            const errText = `Command ${userInput[0]} not found`;
             console.error(errText);
-            exitObject = new ExitObject(user_input, input, undefined, 1, { error: errText });
+            exitObject = new ExitObject(userInput, input, undefined, 1, { error: errText });
         }
         if (addToHistory) {
             this.history.push(exitObject);
         }
-        this.history.reset_index();
-        this.#emit_executed_event(exitObject);
+        this.history.resetIndex();
+        this.emitExecutedEvent(exitObject);
         return exitObject;
     }
 }

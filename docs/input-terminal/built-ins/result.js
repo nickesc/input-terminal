@@ -8,7 +8,7 @@ const result = new Command("result", (args, options, terminal) => {
         return { exit: terminal.history.items[terminal.history.items.length - 1] };
     }
     else if (options.last || options.l) {
-        return { exit: terminal.get_last_exit_object() };
+        return { exit: terminal.getLastExitObject() };
     }
     else if (options.index || options.i) {
         console.log(options, args);
@@ -18,7 +18,7 @@ const result = new Command("result", (args, options, terminal) => {
         }
         return { exit: terminal.history.items[index] };
     }
-    return { exit: terminal.get_last_exit_object() };
+    return { exit: terminal.getLastExitObject() };
 });
 result.manual = `result [--first|-f] [--last|-l] [--index|-i]
 

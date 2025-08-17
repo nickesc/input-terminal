@@ -32,7 +32,7 @@ export declare class TermOptions {
      * Whether the terminal should install built-in commands.
      * @type {boolean}
      */
-    installBuiltIns: boolean;
+    installBuiltins: boolean;
     /**
      * A line of text that is displayed at the beginning of the command line.
      * @type {string}

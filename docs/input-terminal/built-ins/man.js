@@ -6,9 +6,12 @@ import { Command } from "../commands.js";
  * @type {Command}
  */
 const man = new Command("man", (args, options, terminal) => {
-    const target_command = terminal.bin.find(args[0]);
-    if (target_command) {
-        return target_command.manual || target_command.key;
+    if (args.length === 0) {
+        return `man: Error: No command provided.\n\n${man.manual}`;
+    }
+    const targetCommand = terminal.bin.find(args[0]);
+    if (targetCommand) {
+        return targetCommand.manual || targetCommand.key;
     }
     else {
         return `Command "${args[0]}" not found`;

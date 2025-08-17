@@ -26,7 +26,8 @@
     --terminal-background: #000000D0;
     --terminal-background-hover: #000000C0;
     --output-background: #000000DD;
-    --output-status-background: #0d0d0dDD;
+    --output-bar-background: hsla(0, 0%, 6%, 0.867);
+    --output-bar-text: #575757dd;
     --terminal-text: #efefef;
     --output-text: #d0d0d0;
 }
@@ -183,6 +184,8 @@ li > code {
 #output-container {
     display: flex;
     flex-direction: column;
+    border-radius: var(--border-rad-1);
+    background-color: var(--output-background);
 }
 
 #output-status, #output-bar {
@@ -194,29 +197,25 @@ pre#output {
     padding: 10px 10px 10px 10px;
     min-height: 1em;
     line-height: normal;
-    background-color: var(--output-background);
     color: var(--output-text);
     overflow-x: auto;
     text-wrap: nowrap;
     margin-bottom: 0;
-    border-radius: 5px 5px 0 0;
     scrollbar-width: thin;
+    background: none;
+    margin: 0;
     scrollbar-color: var(--color-accent) transparent;
 }
 
-pre#output::-webkit-scrollbar {
-    width: 10px;
-}
-
 #output-bar {
-    background-color: var(--output-status-background);
-    color: #606060;
-    border-radius: 0 0 5px 5px;
+    background-color: var(--output-bar-background);
+    color: var(--output-bar-text);
     font-size: .8em;
     padding: 5px 8px 7px 8px;
     font-family: 'IBM Plex Mono', monospace;
     line-height: normal;
     justify-content: space-between;
+    border-radius: 0 0 var(--border-rad-1) var(--border-rad-1);
 }
 
 #output-status {
@@ -328,6 +327,7 @@ input#termd:focus {
     justify-content: flex-end;
     align-items: center;
     width: 100%;
+    margin-bottom: 15px;
 }
 
 #action-slug {
