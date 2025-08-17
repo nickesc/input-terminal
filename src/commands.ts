@@ -6,14 +6,14 @@ import { Terminal } from './input-terminal.ts';
  */
 export class ArgsOptions {
     private _userInput: string[];
-    private _args: string[] = [];
+    private _args: (string|number|boolean)[] = [];
     private _options: Record<string, any> = {};
 
     /**
      * Get the arguments for the command.
-     * @type {string[]}
+     * @type {(string|number|boolean)[]}
      */
-    public get args(): string[] { return this._args; }
+    public get args(): (string|number|boolean)[] { return this._args; }
 
     /**
      * Get the options for the command.
@@ -29,9 +29,9 @@ export class ArgsOptions {
         this.init();
     }
 
-    private castStringToValue(string: string): any {
-        if (/^-?[0-9]+$/.test(string)) {
-            return Number.parseInt(string);
+    private castStringToValue(string: string): (string|number|boolean) {
+        if (typeof Number(string) === "number" && !isNaN(Number(string))) {
+            return Number(string);
         } else if (string === "true") {
             return true;
         } else if (string === "false") {
@@ -62,7 +62,7 @@ export class ArgsOptions {
             } else if (item.startsWith("-")){
                 this.string2opt(item.slice(1));
             } else {
-                this._args.push(item);
+                this._args.push(this.castStringToValue(item));
             }
         }
     }
@@ -73,7 +73,7 @@ export class ArgsOptions {
  */
 export class Command {
     private _key: string;
-    private _action: (args: string[], options: Record<string, any>, terminal: Terminal) => any;
+    private _action: (args: (string|number|boolean)[], options: Record<string, any>, terminal: Terminal) => any;
     private _manual: string | undefined = undefined;
 
     /**
@@ -86,7 +86,7 @@ export class Command {
      * Get the function to execute when the command is run.
      * @type {function}
      */
-    public get action(): (args: string[], options: Record<string, any>, terminal: Terminal) => {} { return this._action; }
+    public get action(): (args: (string|number|boolean)[], options: Record<string, any>, terminal: Terminal) => {} { return this._action; }
 
     /**
      * Get the manual for the command.
@@ -110,7 +110,7 @@ export class Command {
      * @param {string} key - the key used to identify the command
      * @param {function} action - the function to execute when the command is run
      */
-    constructor(key: string, action: (args: string[], options: Record<string, any>, terminal: Terminal) => any) {
+    constructor(key: string, action: (args: (string|number|boolean)[], options: Record<string, any>, terminal: Terminal) => any) {
         this._key = key;
         this._action = action;
     }
