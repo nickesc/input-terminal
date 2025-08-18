@@ -6,16 +6,21 @@ import { Command } from "../commands.ts";
  */
 const result: Command = new Command("result", (args, options, terminal) => {
 
-
     if (options.first || options.f){
         return {exit: terminal.history.items[terminal.history.items.length-1]};
     } else if (options.last || options.l){
         return {exit: terminal.getLastExitObject()};
     } else if (options.index || options.i){
-        console.log(options, args);
-        const index: number = Number(options.index?.value || options.i?.value || -1);
+        let index: number;
+        const rawIndex = options.index?.value || options.i?.value || -1;
+        if (typeof rawIndex === "number"){
+            index = rawIndex;
+        } else {
+            index = -1;
+        }
+
         if (index < 0 || index >= terminal.history.items.length){
-            return {exit: {error: "Index out of bounds"}};
+            return {exit: {error: "Invalid index"}};
         }
         return {exit: terminal.history.items[index]};
     }
