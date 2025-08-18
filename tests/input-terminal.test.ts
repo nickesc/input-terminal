@@ -84,7 +84,7 @@ describe('Terminal Tests', () => {
         term.bin.add(new Command("test", (args, options, terminal) => {
             return [args,options]
         }))
-        expect(term.executeCommand("test --val1=20 --val2='spaced value' -val3=x=10").output).toEqual([[],{val1:{value:"20"},val2:{value:"spaced value"},val3:{value:"x=10"}}]);
+        expect(term.executeCommand("test --val1=20 --val2='spaced value' -val3=x=10 --val4=true --val5=false").output).toEqual([[],{val1:{value:20},val2:{value:"spaced value"},val3:{value:"x=10"},val4:{value:true},val5:{value:false}}]);
     });
 
     // PROMPT TESTS

@@ -43,7 +43,7 @@ describe('Command Tests', () => {
         const command: Command = new Command("test", () => {return});
         const input: string[] = ["test", "--option1", "--option2=1", "--option3=", "arg1", "2", "true"];
         const parsedInput: ArgsOptions = command.parseInput(input);
-        expect(parsedInput.options).toEqual({option1: {value:undefined}, option2: {value: "1"}, option3: {value:undefined}});
+        expect(parsedInput.options).toEqual({option1: {value:undefined}, option2: {value: 1}, option3: {value:undefined}});
         expect(parsedInput.args).toEqual(["arg1", 2, true]);
     });
     it('should log error if unable to parse input',  () => {
