@@ -280,3 +280,67 @@ describe("Custom Key Tests", () => {
         expect(terminal.getInputValue()).toBe(built_ins[0].key);
     });
 });
+
+describe('ListenerAction Method Tests', () => {
+
+    let terminal: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        terminal = new Terminal(input, { installBuiltins: false });
+        terminal.init();
+    });
+
+    it('previousListenerAction sets input to previous history item', () => {
+        terminal.history.push(new ExitObject(['test', 'arg'], 'test arg', undefined, 0, {}));
+        const event = new dom.window.KeyboardEvent('keydown');
+        terminal.listeners.previousListenerAction(event);
+        expect(terminal.getInputValue()).toBe('test arg');
+    });
+
+    it('nextListenerAction moves forward in history or clears when at end', () => {
+        terminal.history.push(new ExitObject(['one'], 'one', undefined, 0, {}));
+        terminal.history.push(new ExitObject(['two'], 'two', undefined, 0, {}));
+        terminal.history.previous();
+        terminal.history.previous();
+
+        let event = new dom.window.KeyboardEvent('keydown');
+        terminal.listeners.nextListenerAction(event);
+        expect(terminal.getInputValue()).toBe('two');
+
+        event = new dom.window.KeyboardEvent('keydown');
+        terminal.listeners.nextListenerAction(event);
+        expect(terminal.getInputValue()).toBe("");
+    });
+
+    it('autocompleteListenerAction autocompletes single and cycles multiple predictions', () => {
+        terminal.bin.add(new Command('test1', () => true));
+        terminal.bin.add(new Command('test2', () => true));
+        terminal.updateInput('test');
+
+        let event = new dom.window.KeyboardEvent('keydown');
+        terminal.listeners.autocompleteListenerAction(event);
+        expect(terminal.getInputValue()).toBe('test1');
+
+        event = new dom.window.KeyboardEvent('keydown');
+        terminal.listeners.autocompleteListenerAction(event);
+        expect(terminal.getInputValue()).toBe('test2');
+
+        event = new dom.window.KeyboardEvent('keydown');
+        terminal.listeners.autocompleteListenerAction(event);
+        expect(terminal.getInputValue()).toBe('test1');
+    });
+
+    it('returnListenerAction executes command and clears input', () => {
+        terminal.bin.add(new Command('do', () => ({ ok: true })));
+        terminal.updateInput('do');
+        const event = new dom.window.KeyboardEvent('keydown');
+        terminal.listeners.returnListenerAction(event);
+        expect(terminal.getLastExitObject()?.rawInput).toBe('do');
+        expect(terminal.getInputValue()).toBe("");
+    });
+});
