@@ -2,10 +2,6 @@ import { TermHistory, ExitObject, Terminal } from '../src/input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 
-function isHistory(target: any): boolean {
-    return target instanceof TermHistory;
-}
-
 function tExitObject(text: string): ExitObject {
     return new ExitObject([text], text, undefined, 0, {});
 }
@@ -20,11 +16,15 @@ describe('TermHistory Tests', () => {
     // CONSTRUCTION TEST
     it('should construct a History object',  () => {
         const history: TermHistory = new TermHistory();
-        expect(isHistory(history)).toBe(true);
+        expect(history).toBeInstanceOf(TermHistory);
+    });
+});
+
+describe('TermHistory Command History Tests', () => {
+    beforeEach(() => {
+        testCommands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
     });
 
-
-    // COMMAND HISTORY TESTS
     it('should have empty command history by default', () => {
         const testHistory: ExitObject[] = [];
         const history: TermHistory = new TermHistory();
@@ -39,9 +39,13 @@ describe('TermHistory Tests', () => {
         history.items = testCommands;
         expect(history.items).toEqual(testCommands);
     });
+});
 
+describe('TermHistory Push History Tests', () => {
+    beforeEach(() => {
+        testCommands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
+    });
 
-    // PUSH HISTORY TESTS
     it('should return the length of the command history on push',  () => {
         const history: TermHistory = new TermHistory();
         expect(history.push(testCommands[0])).toBe(1);
@@ -70,9 +74,13 @@ describe('TermHistory Tests', () => {
         history.push(testCommands);
         expect(history.items).toEqual([...testCommands, testItem]);
     });
+});
 
+describe('TermHistory Pop History Tests', () => {
+    beforeEach(() => {
+        testCommands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
+    });
 
-    // POP HISTORY TESTS
     it('should return the removed command on pop',  () => {
         const history: TermHistory = new TermHistory([testCommands[0]]);
         expect(history.pop()).toBe(testCommands[0]);
@@ -101,9 +109,13 @@ describe('TermHistory Tests', () => {
         history.pop();
         expect(history.current()).toBe(undefined);
     });
+});
 
+describe('TermHistory Previous History Tests', () => {
+    beforeEach(() => {
+        testCommands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
+    });
 
-    // PREVIOUS HISTORY TESTS
     it('should return the last executed command on previous history call',  () => {
         const history: TermHistory = new TermHistory();
         history.push(testCommands[0]);
@@ -119,9 +131,13 @@ describe('TermHistory Tests', () => {
         const history: TermHistory = new TermHistory();
         expect(history.previous()).toBe(undefined);
     });
+});
 
+describe('TermHistory Next History Tests', () => {
+    beforeEach(() => {
+        testCommands = [tExitObject("test1"), tExitObject("test2"), tExitObject("test3")];
+    });
 
-    // NEXT HISTORY TESTS
     it('should return the next executed command on next history call',  () => {
         const history: TermHistory = new TermHistory();
         history.push(testCommands[0]);
@@ -146,8 +162,7 @@ describe('TermHistory Tests', () => {
     });
 });
 
-    // ADD EMPTY COMMAND TO HISTORY TESTS
-describe('Empty Command History Tests', () => {
+describe('TermHistory Empty Command History Tests', () => {
     let terminal: Terminal;
     let input: HTMLInputElement;
     let dom: JSDOM;

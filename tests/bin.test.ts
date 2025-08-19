@@ -2,15 +2,6 @@ import { Command, TermBin, Terminal } from '../src/input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 
-function isTermBin(target: any): boolean {
-  return target instanceof TermBin;
-}
-
-function isCommand(target: any): boolean {
-    return target instanceof Command;
-}
-
-
 function tCommand(key: string): Command {
     return new Command(key, () => {return {}});
 }
@@ -18,20 +9,27 @@ function tCommand(key: string): Command {
 let testBin: Command[];
 let testCommand: Command;
 
-describe('TermBin Tests', () => {
+function setTestArrays(): void {
+    testCommand = tCommand("test0");
+    testBin = [tCommand("test1"), tCommand("test2"), tCommand("test3")];
+}
+
+describe('TermBin Construction Tests', () => {
     beforeEach(() => {
-        testCommand = tCommand("test0");
-        testBin = [tCommand("test1"), tCommand("test2"), tCommand("test3")];
+        setTestArrays();
     });
 
-    // CONSTRUCTION TEST
     it('should construct a TermBin object',  () => {
         const bin: TermBin = new TermBin();
-        expect(isTermBin(bin)).toBe(true);
+        expect(bin).toBeInstanceOf(TermBin);
+    });
+});
+
+describe('TermBin List Tests', () => {
+    beforeEach(() => {
+        setTestArrays();
     });
 
-
-    // BIN LIST TESTS
     it('should have empty bin by default', () => {
         const bin: TermBin = new TermBin();
         expect(bin.list).toEqual([]);
@@ -53,9 +51,13 @@ describe('TermBin Tests', () => {
         const bin: TermBin = new TermBin(testBin);
         expect(bin.getCommandKeys()).toEqual(["test1", "test2", "test3"]);
     });
+});
 
+describe('TermBin Add Command Tests', () => {
+    beforeEach(() => {
+        setTestArrays();
+    });
 
-    // ADD COMMAND TESTS
     it('should add a command to the list',  () => {
         const bin: TermBin = new TermBin();
         const startingLength: number = bin.list.length;
@@ -88,9 +90,13 @@ describe('TermBin Tests', () => {
         bin.add(testBin);
         expect(bin.list).toEqual([testCommand, ...testBin]);
     });
+});
 
+describe('TermBin Remove Command Tests', () => {
+    beforeEach(() => {
+        setTestArrays();
+    });
 
-    // REMOVE COMMAND TESTS
     it('should remove a command from the list',  () => {
         const bin: TermBin = new TermBin(testBin);
         const removedCommand: Command | undefined = bin.remove(testBin[0]);
@@ -103,12 +109,24 @@ describe('TermBin Tests', () => {
         expect(bin.list).toEqual(testBin);
         expect(removedCommand).toEqual(undefined);
     });
+});
 
+describe('TermBin Empty Command Tests', () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
 
-    // EMPTY COMMAND TESTS
+    beforeEach(() => {
+        setTestArrays();
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        term = new Terminal(input);
+    });
+
     it('should have a default empty command', () => {
         const bin: TermBin = new TermBin();
-        expect(isCommand(bin.emptyCommand)).toBe(true);
+        expect(bin.emptyCommand).toBeInstanceOf(Command);
     });
     it('should get the empty command', () => {
         const bin: TermBin = new TermBin();
@@ -122,30 +140,18 @@ describe('TermBin Tests', () => {
         expect(bin.emptyCommand).toEqual(customEmpty);
     });
     it('should run the empty command with empty input', () => {
-        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
-        const document = dom.window.document;
-        const input = document.getElementById('terminal-input') as HTMLInputElement;
-        const term = new Terminal(input);
         const emptyInput: string = "";
         const exitObject = term.executeCommand(emptyInput);
         expect(exitObject.command).toEqual(term.bin.emptyCommand);
     });
     it('should run a custom empty command with custom output', () => {
-        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
-        const document = dom.window.document;
-        const input = document.getElementById('terminal-input') as HTMLInputElement;
-        const term = new Terminal(input);
         const emptyInput: string = ""
         const customEmpty = new Command("customEmpty", () => ({ message: "No command provided" }));
         term.bin.emptyCommand = customEmpty;
         const exitObject = term.executeCommand(emptyInput);
         expect(exitObject.command).toEqual(term.bin.emptyCommand);
     });
-    it('should handle empty command errors gracefully', () => {
-        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
-        const document = dom.window.document;
-        const input = document.getElementById('terminal-input') as HTMLInputElement;
-        const term = new Terminal(input);
+    it('should handle errors in the empty command gracefully', () => {
         const errorEmpty = new Command("errorEmpty", () => { throw new Error("Empty command error"); });
         term.bin.emptyCommand = errorEmpty;
         const emptyInput: string = ""

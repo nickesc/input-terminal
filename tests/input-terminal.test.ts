@@ -2,18 +2,7 @@ import { Terminal, Command, ExitObject, built_ins } from '../src/input-terminal'
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-function isTerminal(target: any): boolean {
-  return target instanceof Terminal;
-}
-
-function isExitObject(target: any): boolean {
-  return target instanceof ExitObject;
-}
-
-
-describe('Terminal Tests', () => {
+describe('Terminal Construction Tests', () => {
     let term: Terminal;
     let input: HTMLInputElement;
     let dom: JSDOM;
@@ -26,11 +15,22 @@ describe('Terminal Tests', () => {
     });
 
     it('should construct a Terminal object',  () => {
-        expect(isTerminal(term)).toBe(true);
+        expect(term).toBeInstanceOf(Terminal);
+    });
+});
+
+describe('Terminal Initialization Tests', () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        term = new Terminal(input);
     });
 
-
-    // INITIALIZATION TESTS
     it('should initialize and mark itself started',  () => {
         term.init();
         expect(term.started).toBe(true);
@@ -41,8 +41,20 @@ describe('Terminal Tests', () => {
     it('should initialize with a listener manager',  () => {
         expect(term.listeners).toBeDefined();
     });
+});
 
-    // INPUT TESTS
+describe('Terminal Input Tests', () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        term = new Terminal(input);
+    });
+
     it('should construct with correct input',  () => {
         expect(term.input).toBe(input);
     });
@@ -51,7 +63,20 @@ describe('Terminal Tests', () => {
         expect(term.getInputValue()).toBe("test");
     });
 
-    // PREDICTION TESTS
+});
+
+describe('Terminal Prediction Tests', () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        term = new Terminal(input);
+    });
+
     it('should return an empty array if no prediction is found', () => {
         expect(term.getPredictions("test")).toEqual([]);
     });
@@ -61,7 +86,20 @@ describe('Terminal Tests', () => {
         expect(term.getPredictions("test")).toEqual(["test1", "test2"]);
     });
 
-    // INPUT ARRAY PARSE TESTS
+});
+
+describe('Terminal Input Array Parse Tests', () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        term = new Terminal(input);
+    });
+
     it('should correctly parse quoted values', () => {
         expect(term.getInputArray('command "quote" "multi word quote" \'single quote\' `backtick` unquote')).toEqual(["command", "quote", "multi word quote", "single quote", "backtick", "unquote"]);
     });
@@ -86,8 +124,20 @@ describe('Terminal Tests', () => {
         }))
         expect(term.executeCommand("test --val1=20 --val2='spaced value' -val3=x=10 --val4=true --val5=false").output).toEqual([[],{val1:{value:20},val2:{value:"spaced value"},val3:{value:"x=10"},val4:{value:true},val5:{value:false}}]);
     });
+});
 
-    // PROMPT TESTS
+describe('Terminal Prompt Tests', () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        term = new Terminal(input);
+    });
+
     it("should change the prompt", () => {
         term.options.prompt = ">> ";
         expect(term.options.prompt).toEqual(">> ");
@@ -97,12 +147,25 @@ describe('Terminal Tests', () => {
         expect(term.options.preprompt).toEqual(">> ");
     });
     it("should still grab the correct raw input on exit with a custom prompt", () => {
+        term.bin.add(new Command("test", (args, options, terminal) => {return}));
         term.options.prompt = ">> ";
         term.options.preprompt = ">> ";
         expect(term.executeCommand("test").rawInput).toEqual("test");
     });
+});
 
-    // INSTALL BUILT-INS TESTS
+describe('Terminal Install Built-Ins Tests', () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        term = new Terminal(input);
+    });
+
     it("should install built-ins by default", () => {
         term.init()
         expect(term.bin.list.length).toEqual(built_ins.length);
@@ -126,13 +189,25 @@ describe('Terminal Tests', () => {
         term.options.installBuiltins = true;
         expect(term.bin.list.length).toEqual(0);
     });
+});
 
-    // COMMAND EXECUTION TESTS
+describe('Terminal Command Execution Tests', () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        term = new Terminal(input);
+    });
+
     it('should return an ExitObject after execution', () => {
         term.bin.add(new Command("test", (args, options, terminal) => {
             return true
         }))
-        expect(isExitObject(term.executeCommand("command"))).toBe(true);
+        expect(term.executeCommand("test")).toBeInstanceOf(ExitObject);
     });
     it('should successfully execute a known command', () => {
         term.bin.add(new Command("test", (args, options, terminal) => {
@@ -140,7 +215,7 @@ describe('Terminal Tests', () => {
         }))
         expect(term.executeCommand("test").exitCode).toEqual(0);
     });
-    it('should fail to execute an unknown command', () => {
+    it('should fail to execute an unknown command and log an error', () => {
         expect(term.executeCommand("test").exitCode).toEqual(1);
     });
     it('should have an exit code of 0 for an empty command', () => {
@@ -176,6 +251,7 @@ describe('Terminal Tests', () => {
         expect(term.getLastExitObject()).toEqual(undefined);
     });
     it('should get the correct last exit code', () => {
+        term.bin.add(new Command("test", (args, options, terminal) => {return}));
         const exit = term.executeCommand("test")
         expect(term.getLastExitObject()).toEqual(exit);
     });
