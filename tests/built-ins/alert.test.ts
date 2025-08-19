@@ -7,12 +7,13 @@ describe("alert command tests", () => {
     let term: Terminal;
     let input: HTMLInputElement;
     let dom: JSDOM;
-    const alertSpy = vi.spyOn(window, 'alert');
+    let alertSpy: any;
 
     beforeEach(() => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById('terminal-input') as HTMLInputElement;
+        alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
         term = new Terminal(input);
         term.init()
     });
