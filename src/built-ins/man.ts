@@ -11,7 +11,7 @@ const man: Command = new Command("man", (args, options, terminal) => {
         return `man: Error: No command provided.\n\n${man.manual}`;
     }
 
-    const targetCommand: Command | undefined = terminal.bin.find(args[0]);
+    const targetCommand: Command | undefined = terminal.bin.find(args[0] as string);
     if (targetCommand){
         return targetCommand.manual || targetCommand.key;
     } else {
