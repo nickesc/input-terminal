@@ -103,8 +103,13 @@ describe('Terminal Tests', () => {
     });
 
     // INSTALL BUILT-INS TESTS
-    it("should have the correct number of installed built-ins", () => {
+    it("should install built-ins by default", () => {
         term.init()
+        expect(term.bin.list.length).toEqual(built_ins.length);
+    });
+    it("should install built-ins when enabled via constructor options", () => {
+        term = new Terminal(input, { installBuiltins: true });
+        term.init();
         expect(term.bin.list.length).toEqual(built_ins.length);
     });
     it("should install built-ins if set to true in options", () => {
@@ -115,6 +120,10 @@ describe('Terminal Tests', () => {
     it("should not install built-ins if set to false in options", () => {
         term.options.installBuiltins = false;
         term.init()
+        expect(term.bin.list.length).toEqual(0);
+    });
+    it("should not install built-ins before initialization", () => {
+        term.options.installBuiltins = true;
         expect(term.bin.list.length).toEqual(0);
     });
 
