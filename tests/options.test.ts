@@ -19,7 +19,6 @@ describe('TermOptions Tests', () => {
         expect(options.nextKey).toEqual("ArrowDown");
         expect(options.returnKey).toEqual("Enter");
         expect(options.autocompleteKey).toEqual("Tab");
-        expect(options.modKey).toEqual("Ctrl");
         expect(options.preprompt).toEqual("");
         expect(options.prompt).toEqual("> ");
         expect(options.installBuiltins).toEqual(true);
@@ -34,7 +33,6 @@ describe('TermOptions Tests', () => {
             nextKey: "Down",
             returnKey: "Return",
             autocompleteKey: "Tabulator",
-            modKey: "Ctrl",
             prompt: "prompt",
             preprompt: "preprompt",
             installBuiltins: false,
@@ -46,7 +44,6 @@ describe('TermOptions Tests', () => {
         expect(options.nextKey).toEqual(customOptions.nextKey);
         expect(options.returnKey).toEqual(customOptions.returnKey);
         expect(options.autocompleteKey).toEqual(customOptions.autocompleteKey);
-        expect(options.modKey).toEqual(customOptions.modKey);
         expect(options.preprompt).toEqual(customOptions.preprompt);
         expect(options.prompt).toEqual(customOptions.prompt);
         expect(options.installBuiltins).toEqual(customOptions.installBuiltins);
