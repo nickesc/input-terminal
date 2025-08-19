@@ -9,12 +9,12 @@ export class ArgsOptions {
     _options = {};
     /**
      * Get the arguments for the command.
-     * @type {string[]}
+     * @type {(string|number|boolean)[]}
      */
     get args() { return this._args; }
     /**
      * Get the options for the command.
-     * @type {Record<string, any>}
+     * @type {Options}
      */
     get options() { return this._options; }
     /**
@@ -24,11 +24,25 @@ export class ArgsOptions {
         this._userInput = userInput;
         this.init();
     }
+    castStringToValue(string) {
+        if (typeof Number(string) === "number" && !isNaN(Number(string))) {
+            return Number(string);
+        }
+        else if (string === "true") {
+            return true;
+        }
+        else if (string === "false") {
+            return false;
+        }
+        else {
+            return string;
+        }
+    }
     string2opt(string) {
         const key = string.split("=")[0] || "";
         const value = string.split("=").slice(1).join("=");
         if (key && value) {
-            Object.assign(this._options, { [key]: { value: value } });
+            Object.assign(this._options, { [key]: { value: this.castStringToValue(value) } });
         }
         else if (key) {
             Object.assign(this._options, { [key]: { value: undefined } });
@@ -47,7 +61,7 @@ export class ArgsOptions {
                 this.string2opt(item.slice(1));
             }
             else {
-                this._args.push(item);
+                this._args.push(this.castStringToValue(item));
             }
         }
     }

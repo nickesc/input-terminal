@@ -1,4 +1,7 @@
 import { Terminal } from './input-terminal.ts';
+type Options = Record<string, {
+    value: (string | number | boolean);
+}>;
 /**
  * Manages and stores the arguments and options for a command.
  * @category Command Components
@@ -9,18 +12,19 @@ export declare class ArgsOptions {
     private _options;
     /**
      * Get the arguments for the command.
-     * @type {string[]}
+     * @type {(string|number|boolean)[]}
      */
-    get args(): string[];
+    get args(): (string | number | boolean)[];
     /**
      * Get the options for the command.
-     * @type {Record<string, any>}
+     * @type {Options}
      */
-    get options(): Record<string, any>;
+    get options(): Options;
     /**
      * @param {string[]} userInput - the input array to parse
      */
     constructor(userInput: string[]);
+    private castStringToValue;
     private string2opt;
     private init;
 }
@@ -40,7 +44,7 @@ export declare class Command {
      * Get the function to execute when the command is run.
      * @type {function}
      */
-    get action(): (args: string[], options: Record<string, any>, terminal: Terminal) => {};
+    get action(): (args: (string | number | boolean)[], options: Options, terminal: Terminal) => {};
     /**
      * Get the manual for the command.
      * @type {string}
@@ -55,7 +59,7 @@ export declare class Command {
      * @param {string} key - the key used to identify the command
      * @param {function} action - the function to execute when the command is run
      */
-    constructor(key: string, action: (args: string[], options: Record<string, any>, terminal: Terminal) => {});
+    constructor(key: string, action: (args: (string | number | boolean)[], options: Options, terminal: Terminal) => any);
     /**
      * Parses an input array into an `ArgsOptions` object.
      * @param {string[]} userInput - the input array to parse
@@ -120,3 +124,4 @@ export declare class ExitObject {
      */
     constructor(userInput: string[], rawInput: string, command: Command | undefined, exitCode: number, output: any);
 }
+export {};

@@ -11,10 +11,16 @@ const result = new Command("result", (args, options, terminal) => {
         return { exit: terminal.getLastExitObject() };
     }
     else if (options.index || options.i) {
-        console.log(options, args);
-        const index = Number(options.index?.value || options.i?.value || -1);
+        let index;
+        const rawIndex = options.index?.value || options.i?.value || -1;
+        if (typeof rawIndex === "number") {
+            index = rawIndex;
+        }
+        else {
+            index = -1;
+        }
         if (index < 0 || index >= terminal.history.items.length) {
-            return { exit: { error: "Index out of bounds" } };
+            return { exit: { error: "Invalid index" } };
         }
         return { exit: terminal.history.items[index] };
     }
