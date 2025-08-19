@@ -22,6 +22,46 @@ describe('TermListeners Tests', () => {
         expect(terminal.getInputValue()).toBe('test "quoted text"');
     });
 
+    it('should skip duplicate previous commands when showDuplicateCommands is disabled', () => {
+        terminal.options.showDuplicateCommands = false;
+        terminal.history.push(new ExitObject(['test1'], 'test1', undefined, 0, 'test1'));
+        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        expect(terminal.getInputValue()).toBe('test');
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        expect(terminal.getInputValue()).toBe('test1');
+    });
+
+    it('should skip the previous command when the current input is the same as the previous command and showDuplicateCommands is disabled', () => {
+        terminal.options.showDuplicateCommands = false;
+        terminal.history.push(new ExitObject(['test1'], 'test1', undefined, 0, 'test1'));
+        terminal.history.push(new ExitObject(['test2'], 'test2', undefined, 0, 'test2'));
+        terminal.updateInput('test2');
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        expect(terminal.getInputValue()).toBe('test1');
+    });
+
+    it('should not skip duplicate previous commands when showDuplicateCommands is enabled', () => {
+        terminal.options.showDuplicateCommands = true;
+        terminal.history.push(new ExitObject(['test1'], 'test1', undefined, 0, 'test1'));
+        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        expect(terminal.getInputValue()).toBe('test');
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        expect(terminal.getInputValue()).toBe('test');
+    });
+
+    it('should not skip the previous command when the current input is the same as the previous command and showDuplicateCommands is enabled', () => {
+        terminal.options.showDuplicateCommands = true;
+        terminal.history.push(new ExitObject(['test1'], 'test1', undefined, 0, 'test1'));
+        terminal.history.push(new ExitObject(['test2'], 'test2', undefined, 0, 'test2'));
+        terminal.updateInput('test2');
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        expect(terminal.getInputValue()).toBe('test2');
+    });
+
     it('should handle next key', () => {
         terminal.history.push(new ExitObject(['test2'], 'test2', undefined, 0, 'test'));
         terminal.history.push(new ExitObject(['test1'], 'test1', undefined, 0, 'test'));
@@ -34,6 +74,33 @@ describe('TermListeners Tests', () => {
         event = new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' });
         input.dispatchEvent(event);
         expect(terminal.getInputValue()).toBe("test1");
+    });
+
+    it('should skip duplicate next commands when showDuplicateCommands is disabled', () => {
+        terminal.options.showDuplicateCommands = false;
+        terminal.history.push(new ExitObject(['test1'], 'test1', undefined, 0, 'test1'));
+        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' }));
+        expect(terminal.getInputValue()).toBe("test");
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' }));
+        expect(terminal.getInputValue()).toBe("");
+    });
+
+    it('should not skip duplicate next commands when showDuplicateCommands is enabled', () => {
+        terminal.options.showDuplicateCommands = true;
+        terminal.history.push(new ExitObject(['test1'], 'test1', undefined, 0, 'test1'));
+        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        terminal.history.push(new ExitObject(['test'], 'test', undefined, 0, 'test'));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp' }));
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' }));
+        expect(terminal.getInputValue()).toBe("test");
+        input.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowDown' }));
+        expect(terminal.getInputValue()).toBe("test");
     });
 
     it('should handle return key', () => {
