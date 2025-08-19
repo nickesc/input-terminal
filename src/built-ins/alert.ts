@@ -8,7 +8,6 @@ import { Command } from "../commands.ts";
  */
 const alert: Command = new Command("alert", (args, options, terminal) => {
     window.alert(`${args.join(" ")}`);
-    return {};
 });
 
 alert.manual = `alert [arguments]
