@@ -7,7 +7,6 @@ import { Command } from "../commands.js";
  */
 const alert = new Command("alert", (args, options, terminal) => {
     window.alert(`${args.join(" ")}`);
-    return {};
 });
 alert.manual = `alert [arguments]
 

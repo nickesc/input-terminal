@@ -24,11 +24,6 @@ export class TermOptions {
      */
     autocompleteKey = "Tab";
     /**
-     * The modifier key.
-     * @type {string}
-     */
-    modKey = "Ctrl";
-    /**
      * Whether the terminal should install built-in commands.
      * @type {boolean}
      */

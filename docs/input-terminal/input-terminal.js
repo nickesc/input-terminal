@@ -176,7 +176,7 @@ export class Terminal extends EventTarget {
     }
     /**
      * Get the last exit object of the terminal.
-     * @type {ExitObject | undefined}
+     * @returns {ExitObject | undefined} The last exit object of the terminal; if no exit objects are found, returns undefined
      */
     getLastExitObject() {
         return this.history.items[0];

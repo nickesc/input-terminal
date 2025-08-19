@@ -4,7 +4,8 @@
 - [ ] Finish implementation
   - [ ] Finish adding features, tweaking architecture, fixing big bugs; get it stable and stop messing with the api
 - [ ] Finish writing tests
-  - [ ] 100% test coverage for all features
+  - [x] 100% test coverage
+  - [ ] test coverage for all features
 - [ ] Accurate (ish) terminal simulation
   - [ ] Make the terminal as close as possible to a real terminal
 - [ ] Performance optimization
@@ -50,16 +51,21 @@
 - [x] add testing for adding command and history as a list
 - [x] add listener access tests now that they are public
 - [x] add builtin and command history nav option tests
-- [ ] add individual listener tests
-- [ ] add builtin tests
-- [ ] add modkey tests (test for a command that utilizes the modkey in its execution)
-- [ ] add tests for operation with different option settings
+- [x] add individual listener tests
+  - [x] previous
+  - [x] next
+  - [x] autocomplete
+  - [x] return
+- [x] add builtin tests
+- [x] removed modkey option -- never used
+- [x] add tests for operation with different option settings
   - [x] for custom defined keys
   - [x] for different prompts with different lengths
-  - [ ] for terminal with installed builtins or not
-  - [ ] for whether command history nav should show empty or duplicate commands
-- [ ] separate grouped tests (at "//PREDICTION TESTS", etc. headings)
-- [ ] add manual tests
+  - [x] for terminal with installed builtins or not
+  - [x] for whether command history should include empty commands
+  - [x] for whether command history nav should show duplicate commands
+- [x] separate grouped tests (at "//PREDICTION TESTS", etc. headings)
+- [x] add manual tests
 
 ### Big changes
 - [x] look into return values for classes to prevent access to private vars, but cannot use closures for classes, so not helpful (https://dev.to/bhagatparwinder/classes-in-js-public-private-and-protected-1lok#private)
@@ -77,7 +83,12 @@
     - [ ] rm
   - [ ] filesystem only supports certain file types -- number string boolean
   - [ ] allow exporting filesystem to json string
-- [ ] Add terminal functions that cause events with attached data for stdout and errout, that the developer can hook into. prevents having to build a new return/exitobject structure (lets us do realtime output instead of all output returned at the end of the function)
+- [ ] Add terminal functions that cause events with attached data for stdout and errout, that the developer can hook into.
+  - [ ] prevents having to build a new return/exitobject structure
+  - [ ] lets us do realtime output instead of all output returned at the end of the function
+  - [ ] also give option to use browser as the output area
+  - [ ] add output class that can be attached to an element and hooks into the events automatically
+    - [ ] document how to use the default output or how to build your own
 - [ ] add callback for command class on execution?
 
 ### Docs

@@ -24,11 +24,6 @@ export declare class TermOptions {
      */
     autocompleteKey: string;
     /**
-     * The modifier key.
-     * @type {string}
-     */
-    modKey: string;
-    /**
      * Whether the terminal should install built-in commands.
      * @type {boolean}
      */

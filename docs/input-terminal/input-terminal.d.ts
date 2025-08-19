@@ -100,7 +100,7 @@ export declare class Terminal extends EventTarget {
     getInputArray(input: string): string[];
     /**
      * Get the last exit object of the terminal.
-     * @type {ExitObject | undefined}
+     * @returns {ExitObject | undefined} The last exit object of the terminal; if no exit objects are found, returns undefined
      */
     getLastExitObject(): ExitObject | undefined;
     /**
