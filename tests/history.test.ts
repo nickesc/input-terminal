@@ -1,5 +1,6 @@
-import { TermHistory, ExitObject } from '../src/input-terminal';
+import { TermHistory, ExitObject, Terminal } from '../src/input-terminal';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { JSDOM } from 'jsdom';
 
 function isHistory(target: any): boolean {
     return target instanceof TermHistory;
@@ -143,5 +144,35 @@ describe('TermHistory Tests', () => {
         const history: TermHistory = new TermHistory(testCommands);
         expect(history.next()).toBe(undefined);
     });
+});
 
+    // ADD EMPTY COMMAND TO HISTORY TESTS
+describe('Empty Command History Tests', () => {
+    let terminal: Terminal;
+    let input: HTMLInputElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById('terminal-input') as HTMLInputElement;
+        terminal = new Terminal(input);
+        terminal.init();
+    });
+
+    it('should not add an empty command to history when addEmptyCommandToHistory is disabled', () => {
+        terminal.options.addEmptyCommandToHistory = false;
+        terminal.updateInput('');
+        const event = new dom.window.KeyboardEvent('keydown', { key: 'Enter' });
+        input.dispatchEvent(event);
+        expect(terminal.history.items.length).toBe(0);
+    });
+
+    it('should add an empty command to history when addEmptyCommandToHistory is enabled', () => {
+        terminal.options.addEmptyCommandToHistory = true;
+        terminal.updateInput('');
+        const event = new dom.window.KeyboardEvent('keydown', { key: 'Enter' });
+        input.dispatchEvent(event);
+        expect(terminal.history.items.length).toBe(1);
+    });
 });
