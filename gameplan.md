@@ -25,7 +25,7 @@
 - [x] not converting ts private vs js private
   - [x] convert # event to ts private
   - [x] look into differences, benefits other than compatibility
-- [ ] add validation that -v options only have one char (return an error saying "expected -test to only have one character")
+- [x] add validation that -v options only have one char (return an error saying "expected -test to only have one character")
 - [x] change exitobject output type to any, correct all references in code
 
 ### Features:
@@ -112,6 +112,7 @@
     - [ ] how options are passed (-, --)
     - [ ] how strings are passed ("", '', ``)
     - [ ] how vars are passed ($)
+- [ ] document command structure
 
 ### Dist
 - [ ] publish to npm
