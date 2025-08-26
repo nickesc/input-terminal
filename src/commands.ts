@@ -46,9 +46,18 @@ export class ArgsOptions {
         }
     }
 
+    private isAlphanumeric(input: string): boolean {
+        return /^[A-Za-z0-9]+$/.test(input);
+    }
+
     private string2opt(string: string): void {
         const key: string = string.split("=")[0] || "";
         const value: string = string.split("=").slice(1).join("=");
+
+        if (!this.isAlphanumeric(key)){
+            console.error(`Invalid option: ${string}`);
+            return;
+        }
 
         if (key && value){
             Object.assign(this._options, {[key]: {value:this.castStringToValue(value)}});
@@ -65,14 +74,14 @@ export class ArgsOptions {
             if (item.startsWith("--")){
                 this.string2opt(item.slice(2));
             } else if (item.startsWith("-")){
-                if (item[1] === "="){
-                    this.string2opt(item.slice(2));
-                } else if (item.length > 2 && !item.includes("=")){
+                if (item[2] === "="){
+                    this.string2opt(item.slice(1));
+                } else if (!item.includes("=")){
                     for(const char of item.slice(1)){
                         this.string2opt(char);
                     }
                 } else {
-                    throw new Error(`Invalid option: ${item}.`);
+                    console.error(`Invalid option: ${item}.`);
                 }
             } else {
                 this._args.push(this.castStringToValue(item));
