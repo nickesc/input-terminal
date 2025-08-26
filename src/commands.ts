@@ -65,7 +65,15 @@ export class ArgsOptions {
             if (item.startsWith("--")){
                 this.string2opt(item.slice(2));
             } else if (item.startsWith("-")){
-                this.string2opt(item.slice(1));
+                if (item[1] === "="){
+                    this.string2opt(item.slice(2));
+                } else if (item.length > 2 && !item.includes("=")){
+                    for(const char of item.slice(1)){
+                        this.string2opt(char);
+                    }
+                } else {
+                    throw new Error(`Invalid option: ${item}.`);
+                }
             } else {
                 this._args.push(this.castStringToValue(item));
             }
