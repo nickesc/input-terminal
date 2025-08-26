@@ -63,8 +63,6 @@ export class ArgsOptions {
             Object.assign(this._options, {[key]: {value:this.castStringToValue(value)}});
         } else if (key){
             Object.assign(this._options, {[key]: {value:undefined}});
-        } else {
-            console.error(`Unable to parse option: ${string}`);
         }
     }
 
