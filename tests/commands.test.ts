@@ -41,6 +41,13 @@ describe('Command Parse Tests', () => {
         const parsedInput = command.parseInput(input);
         expect(parsedInput.options).toEqual({});
     });
+    it('should log error for invalid short option with assignment not at index 2',  () => {
+        const command: Command = new Command("test", () => {return});
+        const input: string[] = ["test", "-ab=c"];
+        const parsedInput: ArgsOptions = command.parseInput(input);
+        expect(parsedInput.options).toEqual({});
+        expect(parsedInput.args).toEqual([]);
+    });
 });
 
 describe('Command Run Tests', () => {

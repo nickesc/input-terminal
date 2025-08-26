@@ -32,6 +32,7 @@ Install `input-terminal` via NPM:
 npm i input-terminal
 ```
 
+
 Import the `Terminal` and `Command` classes in your TypeScript or JavaScript file:
 
 ```ts
