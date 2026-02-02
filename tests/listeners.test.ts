@@ -410,7 +410,7 @@ describe("ListenerAction Method Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input, {installBuiltins: false});
+        terminal = new Terminal(input, undefined, {installBuiltins: false});
         terminal.init();
     });
 

@@ -211,7 +211,7 @@ describe("Terminal Install Built-Ins Tests", () => {
         expect(term.bin.list.length).toEqual(built_ins.length);
     });
     it("should install built-ins when enabled via constructor options", () => {
-        term = new Terminal(input, {installBuiltins: true});
+        term = new Terminal(input, undefined, {installBuiltins: true});
         term.init();
         expect(term.bin.list.length).toEqual(built_ins.length);
     });
