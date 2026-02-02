@@ -1,5 +1,5 @@
 import {Command} from "./commands.ts";
-import {echo} from "./built-ins/echo.ts";
+import * as builtIns from "./built-ins/index.ts";
 import {alert} from "./built-ins/alert.ts";
 import {result} from "./built-ins/result.ts";
 import {man} from "./built-ins/man.ts";
@@ -19,7 +19,7 @@ import {commands} from "./built-ins/commands.ts";
  * @type {Command[]}
  * @category Terminal Components
  */
-export const built_ins: Command[] = [echo, alert, result, man, commands, return_];
+export const built_ins: Command[] = Object.values(builtIns);
 
 /**
  * Manages the list of commands that can be executed by a terminal.
