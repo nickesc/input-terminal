@@ -163,11 +163,9 @@ export class TermListeners {
 
     /**
      * Attaches listeners to the terminal's input element.
-     * @param {string} [previousKey="ArrowUp"] - the key used to select the previous command; defaults to `ArrowUp`
-     * @param {string} [nextKey="ArrowDown"] - the key used to select the next command; defaults to `ArrowDown`
      * @returns {void}
      */
-    public attachInputListeners(previousKey: string = "ArrowUp", nextKey: string = "ArrowDown"): void {
+    public attachInputListeners(): void {
         this._terminal.input.addEventListener("keydown", (event: KeyboardEvent) => {
             this._handleKeyboardEvent(event);
         });
