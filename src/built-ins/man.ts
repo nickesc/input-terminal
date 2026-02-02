@@ -8,17 +8,20 @@ import {Command} from "../commands.ts";
  */
 const man: Command = new Command("man", (args, options, terminal) => {
     if (args.length === 0) {
-        terminal.stderr(`man: Error: No command provided.\n\n${man.manual}`);
-        return {};
+        const output = `man: Error: No command provided.\n\n${man.manual}`;
+        terminal.stderr(output);
+        return output;
     }
 
     const targetCommand: Command | undefined = terminal.bin.find(args[0] as string);
     if (targetCommand) {
-        terminal.stdout(targetCommand.manual || targetCommand.key);
-        return {};
+        const output = targetCommand.manual || targetCommand.key;
+        terminal.stdout(output);
+        return output;
     } else {
-        terminal.stderr(`Command "${args[0]}" not found`);
-        return {};
+        const output = `Command "${args[0]}" not found`;
+        terminal.stderr(output);
+        return output;
     }
 });
 

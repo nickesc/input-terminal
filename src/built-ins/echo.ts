@@ -7,8 +7,9 @@ import {Command} from "../commands.ts";
  * @type {Command}
  */
 const echo: Command = new Command("echo", (args, options, terminal) => {
-    terminal.stdout(args.join(" "));
-    return {};
+    const output: string = args.join(" ");
+    terminal.stdout(output);
+    return output;
 });
 
 echo.manual = `echo [arguments]
