@@ -1,4 +1,4 @@
-import { Command } from "../commands.ts";
+import {Command} from "../commands.ts";
 
 /**
  * The `man` command. Returns the command's manual/help text.
@@ -12,7 +12,7 @@ const man: Command = new Command("man", (args, options, terminal) => {
     }
 
     const targetCommand: Command | undefined = terminal.bin.find(args[0] as string);
-    if (targetCommand){
+    if (targetCommand) {
         return targetCommand.manual || targetCommand.key;
     } else {
         return `Command "${args[0]}" not found`;
@@ -25,4 +25,4 @@ Returns the manual for the specified command.
 
 If the command does not have a defined manual, it will return the command's key.`;
 
-export { man };
+export {man};

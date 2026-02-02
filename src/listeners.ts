@@ -1,11 +1,11 @@
-import type { ExitObject, Terminal } from './input-terminal';
+import type {ExitObject, Terminal} from "./input-terminal";
 
 /**
  * Handles keyboard and selection events for the terminal.
  * @category Terminal Components
  */
 export class TermListeners {
-    private _terminal: Terminal
+    private _terminal: Terminal;
     private _predictionIndex: number = 0;
     private _autocompletePredictions: string[] | undefined = undefined;
 
@@ -27,15 +27,15 @@ export class TermListeners {
         const previous: ExitObject | null | undefined = this._terminal.history.previous();
         const newInput: string | undefined = previous?.rawInput;
 
-        if (!this._terminal.options.showDuplicateCommands && newInput !== undefined){
-            if (newInput === this._terminal.getInputValue()){
+        if (!this._terminal.options.showDuplicateCommands && newInput !== undefined) {
+            if (newInput === this._terminal.getInputValue()) {
                 this.previousListenerAction(new Event(""));
                 return;
             }
         }
 
-        if (previous !== null){
-            this._terminal.updateInput(newInput)
+        if (previous !== null) {
+            this._terminal.updateInput(newInput);
         }
     }
 
@@ -46,18 +46,18 @@ export class TermListeners {
      */
     public nextListenerAction(event: Event): void {
         event.preventDefault();
-        const next: ExitObject | undefined = this._terminal.history.next()
+        const next: ExitObject | undefined = this._terminal.history.next();
         const newInput: string | undefined = next?.rawInput;
 
-        if (!this._terminal.options.showDuplicateCommands){
-            if (newInput === this._terminal.getInputValue()){
+        if (!this._terminal.options.showDuplicateCommands) {
+            if (newInput === this._terminal.getInputValue()) {
                 this.nextListenerAction(new Event(""));
                 return;
             }
         }
 
         if (next !== undefined) {
-            this._terminal.updateInput(next.rawInput)
+            this._terminal.updateInput(next.rawInput);
         } else {
             this._terminal.updateInput();
         }
@@ -105,7 +105,6 @@ export class TermListeners {
     }
 
     private _handleKeyboardEvent(event: KeyboardEvent): void {
-
         let deleteChunk: boolean = false;
 
         switch (event.key) {
@@ -123,11 +122,16 @@ export class TermListeners {
                 break;
             case "Backspace":
             case "Delete":
-                if (this._terminal.input.selectionStart !== this._terminal.input.selectionEnd){
+                if (this._terminal.input.selectionStart !== this._terminal.input.selectionEnd) {
                     deleteChunk = true;
                 }
             case "ArrowLeft":
-                if (this._terminal.input.selectionStart !== null && this._terminal.input.selectionStart <= (`${this._terminal.options.preprompt}${this._terminal.options.prompt}`).length && !deleteChunk) {
+                if (
+                    this._terminal.input.selectionStart !== null &&
+                    this._terminal.input.selectionStart <=
+                        `${this._terminal.options.preprompt}${this._terminal.options.prompt}`.length &&
+                    !deleteChunk
+                ) {
                     event.preventDefault();
                 }
             default:
@@ -135,9 +139,7 @@ export class TermListeners {
                 this._autocompletePredictions = undefined;
                 break;
         }
-
     }
-
 
     private _handleSelectionEvent(event: Event): void {
         const promptLength: number = (this._terminal.options.preprompt + this._terminal.options.prompt).length;
@@ -145,10 +147,11 @@ export class TermListeners {
         let end: number | null = this._terminal.input.selectionEnd;
         const direction = this._terminal.input.selectionDirection;
 
-        if (start === end) { end = null };
+        if (start === end) {
+            end = null;
+        }
 
         if (start !== null && start < promptLength) {
-
             if (end !== null && end <= promptLength) {
                 this._terminal.input.setSelectionRange(promptLength, promptLength);
             } else if (end !== null) {
@@ -167,10 +170,10 @@ export class TermListeners {
      */
     public attachInputListeners(previousKey: string = "ArrowUp", nextKey: string = "ArrowDown"): void {
         this._terminal.input.addEventListener("keydown", (event: KeyboardEvent) => {
-            this._handleKeyboardEvent(event)
+            this._handleKeyboardEvent(event);
         });
         this._terminal.input.addEventListener("selectionchange", (event: Event) => {
-            this._handleSelectionEvent(event)
-        })
+            this._handleSelectionEvent(event);
+        });
     }
 }

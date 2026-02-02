@@ -1,4 +1,4 @@
-import { Command } from "../commands.ts";
+import {Command} from "../commands.ts";
 
 /**
  * The `alert` command. Creates a browser alert with the provided arguments.
@@ -16,4 +16,4 @@ Creates a browser alert with the provided arguments.
 
 If no arguments are provided, it will create an alert with an empty string.`;
 
-export { alert };
+export {alert};

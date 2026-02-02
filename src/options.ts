@@ -3,7 +3,6 @@
  * @category Terminal Components
  */
 export class TermOptions {
-
     /**
      * The key used to select the previous command.
      * @type {string}

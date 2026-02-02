@@ -1,0 +1,39 @@
+{
+  "arrowParens": "always",
+  "bracketSpacing": false,
+  "endOfLine": "lf",
+  "printWidth": 120,
+  "proseWrap": "preserve",
+  "quoteProps": "as-needed",
+  "semi": true,
+  "singleQuote": false,
+  "jsxSingleQuote": false,
+  "tabWidth": 4,
+  "trailingComma": "all",
+  "useTabs": false,
+  "embeddedLanguageFormatting": "auto",
+  "objectWrap": "preserve",
+  "bracketSameLine": false,
+  "singleAttributePerLine": false,
+  "htmlWhitespaceSensitivity": "css",
+  "parser": "typescript",
+  "overrides": [
+    {
+      "files": [
+        "*.txt",
+        "*.md",
+        "*.json",
+        "*.yml",
+        "*.yaml",
+        "*.toml",
+        "*.xml",
+        "*.html",
+        "*.csv",
+        "*.tsv"
+      ],
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}

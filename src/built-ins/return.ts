@@ -1,4 +1,4 @@
-import { Command } from "../commands.ts";
+import {Command} from "../commands.ts";
 
 /**
  * The `return` command. Returns an empty object.
@@ -12,4 +12,4 @@ return_.manual = `return
 
 Returns an empty object.`;
 
-export { return_ };
+export {return_};
