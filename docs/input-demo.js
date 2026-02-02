@@ -9,7 +9,7 @@ const nextButton = document.getElementById("next");
 const previousButton = document.getElementById("previous");
 const returnButton = document.getElementById("return");
 const actionSlug = document.getElementById("action-slug");
-const outputCommand = null;
+const outputCommand = document.getElementById("output-command");
 const outputCode = document.getElementById("output-code");
 
 const empty = new Command("", (args, options, terminal) => {
@@ -78,21 +78,16 @@ function changeTheme(themeString) {
     themeDropdown.dispatchEvent(new Event("change"));
 }
 
-/* terminal.addEventListener("inputTerminalExecuted", (e) => {
-    if (e.detail.exitCode === 0){
-        if (["string", "number", "boolean"].includes(typeof e.detail.output)){
-            output.innerText = e.detail.output;
-        } else {
-            output.innerText = JSON.stringify(e.detail.output);
-        }
+terminal.addEventListener("inputTerminalExecuted", (e) => {
+    if (e.detail.exitCode === 0) {
         outputCommand.innerText = e.detail.command.key;
         outputCode.innerText = e.detail.exitCode;
     } else {
-        output.innerText = e.detail.error;
+        //output.innerText = e.detail.error;
         outputCommand.innerText = "error";
         outputCode.innerText = e.detail.exitCode;
     }
-}); */
+});
 
 autocompleteButton.addEventListener("click", () => {
     terminal.listeners.autocompleteListenerAction(new Event("keydown"));
