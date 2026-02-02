@@ -21,7 +21,7 @@ export const built_ins: Command[] = Object.values(builtIns);
  * @category Terminal Components
  */
 export class TermBin {
-    private _list: Command[] = [];
+    private _commands: Map<string, Command> = new Map();
     private _emptyCommand: Command = new Command("", (args, options, terminal) => {
         return {};
     });
@@ -31,7 +31,7 @@ export class TermBin {
      * @type {Command[]}
      */
     public get list(): Command[] {
-        return this._list;
+        return Array.from(this._commands.values());
     }
 
     /**
@@ -40,10 +40,8 @@ export class TermBin {
      * @throws {Error} if any command in the list has a key that already exists
      */
     public set list(commands: Command[]) {
-        this._list = [];
-        for (let command of commands) {
-            this.add(command);
-        }
+        this._commands.clear();
+        this.add(commands);
     }
 
     /**
@@ -67,7 +65,7 @@ export class TermBin {
      */
     constructor(commands?: Command[]) {
         if (commands) {
-            this.list = commands;
+            this.add(commands);
         }
     }
 
@@ -76,7 +74,7 @@ export class TermBin {
      * @returns {string[]} a list of the keys of all commands in the terminal's bin
      */
     public getCommandKeys(): string[] {
-        return this._list.map((command) => command.key);
+        return Array.from(this._commands.keys());
     }
 
     /**
@@ -88,7 +86,7 @@ export class TermBin {
         if (!commandKey) {
             return undefined;
         }
-        return this.list.find((command) => command.key === commandKey);
+        return this._commands.get(commandKey);
     }
 
     /**
@@ -98,18 +96,16 @@ export class TermBin {
      * @throws an error if a command with the same key already exists
      */
     public add(commands: Command | Command[]): number {
-        if (commands instanceof Command) {
-            commands = [commands];
-        }
+        const toAdd = Array.isArray(commands) ? commands : [commands];
 
-        commands.map((command) => {
-            if (this.find(command.key)) {
+        for (const command of toAdd) {
+            if (this._commands.has(command.key)) {
                 throw new Error(`Command with key "${command.key}" already exists`);
             }
-            this._list.push(command);
-        });
+            this._commands.set(command.key, command);
+        }
 
-        return this._list.length;
+        return this._commands.size;
     }
 
     /**
@@ -118,11 +114,10 @@ export class TermBin {
      * @returns {Command | undefined} the removed command; `undefined` if the command is not found
      */
     public remove(command: Command): Command | undefined {
-        if (this._list.includes(command)) {
-            this._list.splice(this._list.indexOf(command), 1);
+        if (this._commands.has(command.key) && this._commands.get(command.key) === command) {
+            this._commands.delete(command.key);
             return command;
-        } else {
-            return undefined;
         }
+        return undefined;
     }
 }
