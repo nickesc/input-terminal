@@ -369,7 +369,7 @@ describe("Custom Key Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input, customOptions);
+        terminal = new Terminal(input, undefined, customOptions);
         terminal.history.push(historyCommand);
         terminal.bin.list = [built_ins[0]];
         terminal.init();
