@@ -10,12 +10,16 @@ export class TermHistory {
      * Get the items in the history.
      * @type {ExitObject[]}
      */
-    get items() { return this._items; }
+    get items() {
+        return this._items;
+    }
     /**
      * Set the items in the history.
      * @type {ExitObject[]}
      */
-    set items(commandList) { this._items = commandList; }
+    set items(commandList) {
+        this._items = commandList;
+    }
     /**
      * @param {ExitObject[]} [history] - an optional history of commands to initialize the terminal with
      */

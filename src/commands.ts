@@ -65,8 +65,7 @@ export class ArgsOptions {
         const value: string = string.split("=").slice(1).join("=");
 
         if (!this.isAlphanumeric(key)) {
-            console.error(`Invalid option: ${string}`);
-            return;
+            throw new Error(`Invalid option: ${string}`);
         }
 
         if (key && value) {
@@ -89,7 +88,7 @@ export class ArgsOptions {
                         this.string2opt(char);
                     }
                 } else {
-                    console.error(`Invalid option: ${item}.`);
+                    throw new Error(`Invalid option: ${item}.`);
                 }
             } else {
                 this._args.push(this.castStringToValue(item));
@@ -173,15 +172,15 @@ export class Command {
     public run(userInput: string[], rawInput: string, term: Terminal): ExitObject {
         let returnValue: object;
         let exitCode: number;
-
-        const parsedInput: ArgsOptions = this.parseInput(userInput);
+        let parsedInput: ArgsOptions;
 
         try {
+            parsedInput = this.parseInput(userInput);
             returnValue = this._action(parsedInput.args, parsedInput.options, term);
             exitCode = 0;
         } catch (error) {
+            term.stderr(error);
             returnValue = {error: error};
-            console.error(error);
             exitCode = 1;
         }
         const exitReply: ExitObject = new ExitObject(

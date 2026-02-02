@@ -1,4 +1,4 @@
-import { ExitObject } from './commands.ts';
+import { ExitObject } from "./commands.ts";
 /**
  * Manages the terminal's history of commands.
  * @category Terminal Components

@@ -113,7 +113,10 @@ export class TermListeners {
                     deleteChunk = true;
                 }
             case "ArrowLeft":
-                if (this._terminal.input.selectionStart !== null && this._terminal.input.selectionStart <= (`${this._terminal.options.preprompt}${this._terminal.options.prompt}`).length && !deleteChunk) {
+                if (this._terminal.input.selectionStart !== null &&
+                    this._terminal.input.selectionStart <=
+                        `${this._terminal.options.preprompt}${this._terminal.options.prompt}`.length &&
+                    !deleteChunk) {
                     event.preventDefault();
                 }
             default:
@@ -130,7 +133,6 @@ export class TermListeners {
         if (start === end) {
             end = null;
         }
-        ;
         if (start !== null && start < promptLength) {
             if (end !== null && end <= promptLength) {
                 this._terminal.input.setSelectionRange(promptLength, promptLength);

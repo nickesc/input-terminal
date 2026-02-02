@@ -1,4 +1,4 @@
-import type { Terminal } from './input-terminal';
+import type { Terminal } from "./input-terminal";
 /**
  * Handles keyboard and selection events for the terminal.
  * @category Terminal Components

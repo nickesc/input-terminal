@@ -1,8 +1,10 @@
-import { Command, ExitObject, ArgsOptions } from './commands.ts';
-import { TermHistory } from './history.ts';
-import { TermListeners } from './listeners.ts';
-import { TermOptions } from './options.ts';
-import { TermBin, built_ins } from './bin.ts';
+import { Command, ExitObject, ArgsOptions } from "./commands.ts";
+import type { Options } from "./commands.ts";
+import { TermHistory } from "./history.ts";
+import { TermListeners } from "./listeners.ts";
+import { TermOptions } from "./options.ts";
+import { TermBin, built_ins } from "./bin.ts";
+import { TermOutput } from "./output.ts";
 /**
  * @license MIT
  * @author nickesc
@@ -16,9 +18,10 @@ import { TermBin, built_ins } from './bin.ts';
  * ```typescript
  * import { Terminal, Command } from "input-terminal";
  * const input = document.getElementById("terminal") as HTMLInputElement;
- * const terminal = new Terminal(input, { prompt: ">> " });
+ * const output = document.getElementById("output") as HTMLElement;
+ * const terminal = new Terminal(input, output, { prompt: ">> " });
  * terminal.bin.add(new Command("echo", (args, options, terminal) => {
- *     console.log(args);
+ *     terminal.stdout(args.join(" "));
  *     return {};
  * }));
  * terminal.init();
@@ -27,17 +30,21 @@ import { TermBin, built_ins } from './bin.ts';
 export declare class Terminal extends EventTarget {
     private _listeners;
     private _started;
+    private _outputElement;
+    private _currentStdoutLog;
+    private _currentStderrLog;
     private emitExecutedEvent;
+    private clearOutputLogs;
     /**
      * The input element that the terminal is attached to.
      * @type {HTMLInputElement}
      */
     input: HTMLInputElement;
     /**
-     * The element that the terminal should output text to.
-     * @type {HTMLElement}
+     * The output manager for the terminal.
+     * @type {TermOutput}
      */
-    output: HTMLElement | undefined;
+    output: TermOutput | undefined;
     /**
      * The history of commands that have been executed.
      * @type {TermHistory}
@@ -64,12 +71,35 @@ export declare class Terminal extends EventTarget {
      */
     get started(): boolean;
     /**
+     * Emit data to stdout. Dispatches a "stdout" event and logs the data.
+     * @param {any} data - the data to emit
+     * @returns {void}
+     */
+    stdout(data: any): void;
+    /**
+     * Emit data to stderr. Dispatches a "stderr" event and logs the data.
+     * @param {any} data - the data to emit
+     * @returns {void}
+     */
+    stderr(data: any): void;
+    /**
+     * Get a copy of the current stdout log.
+     * @returns {any[]} the stdout log
+     */
+    getStdoutLog(): any[];
+    /**
+     * Get a copy of the current stderr log.
+     * @returns {any[]} the stderr log
+     */
+    getStderrLog(): any[];
+    /**
      * @param {HTMLInputElement} input - input element to turn into a terminal
+     * @param {HTMLElement} [output] - optional output element to render stdout/stderr to
      * @param {object} options - terminal configuration
      * @param {ExitObject[]} commandHistory - history of commands that have been executed
      * @param {Command[]} commandList - list of commands that can be executed by the user
      */
-    constructor(input: HTMLInputElement, options?: object, commandHistory?: ExitObject[], commandList?: Command[]);
+    constructor(input: HTMLInputElement, output?: HTMLElement, options?: object, commandHistory?: ExitObject[], commandList?: Command[]);
     /**
      * Initializes the terminal. Attaches input listeners and updates the input.
      * @returns {void}
@@ -110,4 +140,5 @@ export declare class Terminal extends EventTarget {
      */
     executeCommand(input: string): ExitObject;
 }
-export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, built_ins };
+export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, TermOutput, built_ins };
+export type { Options };

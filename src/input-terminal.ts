@@ -294,7 +294,7 @@ export class Terminal extends EventTarget {
             }
         } else {
             const errText: string = `Command ${userInput[0]} not found`;
-            console.error(errText);
+            this.stderr(errText);
             exitObject = new ExitObject(
                 userInput,
                 input,

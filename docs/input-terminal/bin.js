@@ -24,12 +24,16 @@ export const built_ins = [echo, alert, result, man, return_];
  */
 export class TermBin {
     _list = [];
-    _emptyCommand = new Command("", (args, options, terminal) => { return {}; });
+    _emptyCommand = new Command("", (args, options, terminal) => {
+        return {};
+    });
     /**
      * Get the list of commands in the terminal's bin.
      * @type {Command[]}
      */
-    get list() { return this._list; }
+    get list() {
+        return this._list;
+    }
     /**
      * Set the list of commands in the terminal's bin.
      * @type {Command[]}
@@ -45,12 +49,16 @@ export class TermBin {
      * Get the command that is executed when empty input is provided.
      * @type {Command}
      */
-    get emptyCommand() { return this._emptyCommand; }
+    get emptyCommand() {
+        return this._emptyCommand;
+    }
     /**
      * Set the command that is executed when empty input is provided.
      * @type {Command}
      */
-    set emptyCommand(command) { this._emptyCommand = command; }
+    set emptyCommand(command) {
+        this._emptyCommand = command;
+    }
     /**
      * @param {Command[]} [commands] - an optional list of commands to initialize the terminal with
      */
@@ -64,7 +72,7 @@ export class TermBin {
      * @returns {string[]} a list of the keys of all commands in the terminal's bin
      */
     getCommandKeys() {
-        return this._list.map(command => command.key);
+        return this._list.map((command) => command.key);
     }
     /**
      * Finds a command by its key in the terminal's bin.
@@ -75,8 +83,7 @@ export class TermBin {
         if (!commandKey) {
             return undefined;
         }
-        ;
-        return this.list.find(command => command.key === commandKey);
+        return this.list.find((command) => command.key === commandKey);
     }
     /**
      * Adds a command (or list of commands) to the terminal's bin.
@@ -88,7 +95,7 @@ export class TermBin {
         if (commands instanceof Command) {
             commands = [commands];
         }
-        commands.map(command => {
+        commands.map((command) => {
             if (this.find(command.key)) {
                 throw new Error(`Command with key "${command.key}" already exists`);
             }
