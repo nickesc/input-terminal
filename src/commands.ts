@@ -45,9 +45,16 @@ export class ArgsOptions {
     }
 
     private castStringToValue(string: string): string | number | boolean {
-        if (typeof Number(string) === "number" && !isNaN(Number(string))) {
-            return Number(string);
-        } else if (string === "true") {
+        if (string.trim() === "") {
+            return string;
+        }
+
+        const num = Number(string);
+        if (!isNaN(num)) {
+            return num;
+        }
+
+        if (string === "true") {
             return true;
         } else if (string === "false") {
             return false;
