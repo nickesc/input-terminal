@@ -1,7 +1,6 @@
-import { Terminal, ExitObject, Command, built_ins } from './input-terminal/input-terminal.js';
+import {Terminal, ExitObject, Command, built_ins} from "./input-terminal/input-terminal.js";
 
-let output = document.getElementById("output");
-let terminal = new Terminal(document.getElementById("termd"));
+let terminal = new Terminal(document.getElementById("termd"), document.getElementById("output"));
 let slugTimeout = null;
 let slugTransitionTimeout = null;
 
@@ -10,7 +9,7 @@ const nextButton = document.getElementById("next");
 const previousButton = document.getElementById("previous");
 const returnButton = document.getElementById("return");
 const actionSlug = document.getElementById("action-slug");
-const outputCommand = document.getElementById("output-command");
+const outputCommand = null;
 const outputCode = document.getElementById("output-code");
 
 const empty = new Command("", (args, options, terminal) => {
@@ -19,14 +18,12 @@ const empty = new Command("", (args, options, terminal) => {
 });
 
 const changeThemeCommand = new Command("theme", (args, options, terminal) => {
-
-
-    if (["light", "dark", "os"].includes(args[0])){
+    if (["light", "dark", "os"].includes(args[0])) {
         changeTheme(args[0]);
         return `Theme changed to ${args[0]}`;
-    } else if (options.list || options.l){
+    } else if (options.list || options.l) {
         return {themes: ["light", "dark", "os"]};
-    } else if (args.length === 0){
+    } else if (args.length === 0) {
         return `${document.getElementById("tsd-theme").value}`;
     } else {
         return `Invalid theme. Please use 'light', 'dark', or 'os'.`;
@@ -43,14 +40,14 @@ const historyList = [
     new ExitObject(["man", "echo"], "man echo", built_ins.man, 0, {}),
     new ExitObject(["result"], "result", built_ins.result, 0, {exit: terminal.getLastExitObject()}),
     new ExitObject(["return"], "return", built_ins.return, 0, {args: ["test"], options: {}}),
-    new ExitObject(["echo this is a test"], "echo this is a test", built_ins.echo, 0, {output: "this is a test"})
-]
+    new ExitObject(["echo this is a test"], "echo this is a test", built_ins.echo, 0, {output: "this is a test"}),
+];
 
-function updateActionSlug(action){
-    if (slugTimeout){
+function updateActionSlug(action) {
+    if (slugTimeout) {
         clearTimeout(slugTimeout);
     }
-    if (slugTransitionTimeout){
+    if (slugTransitionTimeout) {
         clearTimeout(slugTransitionTimeout);
     }
 
@@ -81,7 +78,7 @@ function changeTheme(themeString) {
     themeDropdown.dispatchEvent(new Event("change"));
 }
 
-terminal.addEventListener("inputTerminalExecuted", (e) => {
+/* terminal.addEventListener("inputTerminalExecuted", (e) => {
     if (e.detail.exitCode === 0){
         if (["string", "number", "boolean"].includes(typeof e.detail.output)){
             output.innerText = e.detail.output;
@@ -95,7 +92,7 @@ terminal.addEventListener("inputTerminalExecuted", (e) => {
         outputCommand.innerText = "error";
         outputCode.innerText = e.detail.exitCode;
     }
-});
+}); */
 
 autocompleteButton.addEventListener("click", () => {
     terminal.listeners.autocompleteListenerAction(new Event("keydown"));
@@ -119,11 +116,8 @@ returnButton.addEventListener("click", () => {
 
 terminal.bin.emptyCommand = empty;
 
-terminal.history.push(historyList)
+terminal.history.push(historyList);
 
 terminal.bin.add(changeThemeCommand);
 
-
 terminal.init();
-
-
