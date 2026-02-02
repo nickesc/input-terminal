@@ -1,6 +1,10 @@
 import {Terminal} from "./input-terminal.ts";
 
-type Options = Record<
+/**
+ * The structure for the object used to store the options for a command. Each key is an option name, and the value is an object with a `value` property.
+ * @category Command Components
+ */
+export type Options = Record<
     string,
     {
         value: string | number | boolean;
@@ -61,8 +65,7 @@ export class ArgsOptions {
         const value: string = string.split("=").slice(1).join("=");
 
         if (!this.isAlphanumeric(key)) {
-            console.error(`Invalid option: ${string}`);
-            return;
+            throw new Error(`Invalid option: ${string}`);
         }
 
         if (key && value) {
@@ -85,7 +88,7 @@ export class ArgsOptions {
                         this.string2opt(char);
                     }
                 } else {
-                    console.error(`Invalid option: ${item}.`);
+                    throw new Error(`Invalid option: ${item}.`);
                 }
             } else {
                 this._args.push(this.castStringToValue(item));
@@ -169,18 +172,26 @@ export class Command {
     public run(userInput: string[], rawInput: string, term: Terminal): ExitObject {
         let returnValue: object;
         let exitCode: number;
-
-        const parsedInput: ArgsOptions = this.parseInput(userInput);
+        let parsedInput: ArgsOptions;
 
         try {
+            parsedInput = this.parseInput(userInput);
             returnValue = this._action(parsedInput.args, parsedInput.options, term);
             exitCode = 0;
         } catch (error) {
+            term.stderr(error);
             returnValue = {error: error};
-            console.error(error);
             exitCode = 1;
         }
-        const exitReply: ExitObject = new ExitObject(userInput, rawInput, this, exitCode, returnValue);
+        const exitReply: ExitObject = new ExitObject(
+            userInput,
+            rawInput,
+            this,
+            exitCode,
+            returnValue,
+            term.getStdoutLog(),
+            term.getStderrLog(),
+        );
         return exitReply;
     }
 }
@@ -195,6 +206,8 @@ export class ExitObject {
     private _userInput: string[];
     private _rawInput: string;
     private _output: any;
+    private _stdoutLog: any[];
+    private _stderrLog: any[];
 
     /**
      * Get the command that was executed.
@@ -245,18 +258,46 @@ export class ExitObject {
     }
 
     /**
+     * Get the stdout log of the execution.
+     * @type {any[]}
+     */
+    public get stdoutLog(): any[] {
+        return this._stdoutLog;
+    }
+
+    /**
+     * Get the stderr log of the execution.
+     * @type {any[]}
+     */
+    public get stderrLog(): any[] {
+        return this._stderrLog;
+    }
+
+    /**
      * @param {string[]} userInput - the input array that was used to execute the command
      * @param {string} rawInput - the raw input that was used to execute the command
      * @param {Command | undefined} command - the command that was executed; `undefined` if the command is not found
      * @param {number} exitCode - the exit code of the command
      * @param {object} output - the output of the command
+     * @param {any[]} stdoutLog - the stdout log of the command
+     * @param {any[]} stderrLog - the stderr log of the command
      */
-    constructor(userInput: string[], rawInput: string, command: Command | undefined, exitCode: number, output: any) {
+    constructor(
+        userInput: string[],
+        rawInput: string,
+        command: Command | undefined,
+        exitCode: number,
+        output: any,
+        stdoutLog: any[] = [],
+        stderrLog: any[] = [],
+    ) {
         this._command = command;
         this._timestamp = Date.now();
         this._exitCode = exitCode;
         this._userInput = userInput;
         this._rawInput = rawInput;
         this._output = output;
+        this._stdoutLog = stdoutLog;
+        this._stderrLog = stderrLog;
     }
 }

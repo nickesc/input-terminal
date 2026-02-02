@@ -1,8 +1,10 @@
 import {Command, ExitObject, ArgsOptions} from "./commands.ts";
+import type {Options} from "./commands.ts";
 import {TermHistory} from "./history.ts";
 import {TermListeners} from "./listeners.ts";
 import {TermOptions} from "./options.ts";
 import {TermBin, built_ins} from "./bin.ts";
+import {TermOutput} from "./output.ts";
 
 /**
  * @license MIT
@@ -18,9 +20,10 @@ import {TermBin, built_ins} from "./bin.ts";
  * ```typescript
  * import { Terminal, Command } from "input-terminal";
  * const input = document.getElementById("terminal") as HTMLInputElement;
- * const terminal = new Terminal(input, { prompt: ">> " });
+ * const output = document.getElementById("output") as HTMLElement;
+ * const terminal = new Terminal(input, output, { prompt: ">> " });
  * terminal.bin.add(new Command("echo", (args, options, terminal) => {
- *     console.log(args);
+ *     terminal.stdout(args.join(" "));
  *     return {};
  * }));
  * terminal.init();
@@ -29,9 +32,17 @@ import {TermBin, built_ins} from "./bin.ts";
 export class Terminal extends EventTarget {
     private _listeners: TermListeners;
     private _started: boolean = false;
+    private _outputElement: HTMLElement | undefined;
+    private _currentStdoutLog: any[] = [];
+    private _currentStderrLog: any[] = [];
 
     private emitExecutedEvent(exitObject: ExitObject): void {
         this.dispatchEvent(new CustomEvent("inputTerminalExecuted", {detail: exitObject}));
+    }
+
+    private clearOutputLogs(): void {
+        this._currentStdoutLog = [];
+        this._currentStderrLog = [];
     }
 
     /**
@@ -41,10 +52,10 @@ export class Terminal extends EventTarget {
     public input: HTMLInputElement;
 
     /**
-     * The element that the terminal should output text to.
-     * @type {HTMLElement}
+     * The output manager for the terminal.
+     * @type {TermOutput}
      */
-    public output: HTMLElement | undefined = undefined;
+    public output: TermOutput | undefined = undefined;
 
     /**
      * The history of commands that have been executed.
@@ -81,19 +92,66 @@ export class Terminal extends EventTarget {
     }
 
     /**
+     * Emit data to stdout. Dispatches a "stdout" event and logs the data.
+     * @param {any} data - the data to emit
+     * @returns {void}
+     */
+    public stdout(data: any): void {
+        this._currentStdoutLog.push(data);
+        this.dispatchEvent(
+            new CustomEvent("stdout", {
+                detail: {data, timestamp: Date.now()},
+            }),
+        );
+    }
+
+    /**
+     * Emit data to stderr. Dispatches a "stderr" event and logs the data.
+     * @param {any} data - the data to emit
+     * @returns {void}
+     */
+    public stderr(data: any): void {
+        this._currentStderrLog.push(data);
+        this.dispatchEvent(
+            new CustomEvent("stderr", {
+                detail: {data, timestamp: Date.now()},
+            }),
+        );
+    }
+
+    /**
+     * Get a copy of the current stdout log.
+     * @returns {any[]} the stdout log
+     */
+    public getStdoutLog(): any[] {
+        return [...this._currentStdoutLog];
+    }
+
+    /**
+     * Get a copy of the current stderr log.
+     * @returns {any[]} the stderr log
+     */
+    public getStderrLog(): any[] {
+        return [...this._currentStderrLog];
+    }
+
+    /**
      * @param {HTMLInputElement} input - input element to turn into a terminal
+     * @param {HTMLElement} [output] - optional output element to render stdout/stderr to
      * @param {object} options - terminal configuration
      * @param {ExitObject[]} commandHistory - history of commands that have been executed
      * @param {Command[]} commandList - list of commands that can be executed by the user
      */
     constructor(
         input: HTMLInputElement,
+        output?: HTMLElement,
         options: object = {},
         commandHistory: ExitObject[] = [],
         commandList: Command[] = [],
     ) {
         super();
         this.input = input;
+        this._outputElement = output;
         this.history = new TermHistory(commandHistory);
         this.bin = new TermBin(commandList);
         this.options = new TermOptions(options);
@@ -109,6 +167,13 @@ export class Terminal extends EventTarget {
             if (this.options.installBuiltins) {
                 this.bin.list = [...this.bin.list, ...built_ins];
             }
+
+            // Create TermOutput if output element was provided
+            if (this._outputElement) {
+                this.output = new TermOutput(this._outputElement, this);
+                this.output.attach();
+            }
+
             this._listeners.attachInputListeners();
             this.updateInput();
             this._started = true;
@@ -213,6 +278,8 @@ export class Terminal extends EventTarget {
      * @returns {ExitObject} The ExitObject returned by the execution
      */
     public executeCommand(input: string): ExitObject {
+        this.clearOutputLogs();
+
         const userInput: string[] = this.getInputArray(input.trim());
         const command: Command | undefined = this.bin.find(userInput[0]);
         let addToHistory: boolean = true;
@@ -227,10 +294,16 @@ export class Terminal extends EventTarget {
             }
         } else {
             const errText: string = `Command ${userInput[0]} not found`;
-            console.error(errText);
-            exitObject = new ExitObject(userInput, input, undefined, 1, {
-                error: errText,
-            });
+            this.stderr(errText);
+            exitObject = new ExitObject(
+                userInput,
+                input,
+                undefined,
+                1,
+                {error: errText},
+                this.getStdoutLog(),
+                this.getStderrLog(),
+            );
         }
 
         if (addToHistory) {
@@ -244,4 +317,5 @@ export class Terminal extends EventTarget {
     }
 }
 
-export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, built_ins};
+export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, TermOutput, built_ins};
+export type {Options};
