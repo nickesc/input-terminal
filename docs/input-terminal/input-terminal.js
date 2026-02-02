@@ -259,7 +259,7 @@ export class Terminal extends EventTarget {
         }
         else {
             const errText = `Command ${userInput[0]} not found`;
-            console.error(errText);
+            this.stderr(errText);
             exitObject = new ExitObject(userInput, input, undefined, 1, { error: errText }, this.getStdoutLog(), this.getStderrLog());
         }
         if (addToHistory) {

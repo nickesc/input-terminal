@@ -49,8 +49,7 @@ export class ArgsOptions {
         const key = string.split("=")[0] || "";
         const value = string.split("=").slice(1).join("=");
         if (!this.isAlphanumeric(key)) {
-            console.error(`Invalid option: ${string}`);
-            return;
+            throw new Error(`Invalid option: ${string}`);
         }
         if (key && value) {
             Object.assign(this._options, { [key]: { value: this.castStringToValue(value) } });
@@ -75,7 +74,7 @@ export class ArgsOptions {
                     }
                 }
                 else {
-                    console.error(`Invalid option: ${item}.`);
+                    throw new Error(`Invalid option: ${item}.`);
                 }
             }
             else {
@@ -150,14 +149,15 @@ export class Command {
     run(userInput, rawInput, term) {
         let returnValue;
         let exitCode;
-        const parsedInput = this.parseInput(userInput);
+        let parsedInput;
         try {
+            parsedInput = this.parseInput(userInput);
             returnValue = this._action(parsedInput.args, parsedInput.options, term);
             exitCode = 0;
         }
         catch (error) {
+            term.stderr(error);
             returnValue = { error: error };
-            console.error(error);
             exitCode = 1;
         }
         const exitReply = new ExitObject(userInput, rawInput, this, exitCode, returnValue, term.getStdoutLog(), term.getStderrLog());
