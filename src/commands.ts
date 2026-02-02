@@ -56,15 +56,15 @@ export class ArgsOptions {
         }
     }
 
-    private isAlphanumeric(input: string): boolean {
-        return /^[A-Za-z0-9]+$/.test(input);
+    private isValidOptionKey(input: string): boolean {
+        return /^[A-Za-z0-9_-]+$/.test(input);
     }
 
     private string2opt(string: string): void {
         const key: string = string.split("=")[0] || "";
         const value: string = string.split("=").slice(1).join("=");
 
-        if (!this.isAlphanumeric(key)) {
+        if (!this.isValidOptionKey(key)) {
             throw new Error(`Invalid option: ${string}`);
         }
 
