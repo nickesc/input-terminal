@@ -1,6 +1,10 @@
 import {Terminal} from "./input-terminal.ts";
 
-type Options = Record<
+/**
+ * The structure for the object used to store the options for a command. Each key is an option name, and the value is an object with a `value` property.
+ * @category Command Components
+ */
+export type Options = Record<
     string,
     {
         value: string | number | boolean;

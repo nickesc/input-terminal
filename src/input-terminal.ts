@@ -1,4 +1,5 @@
 import {Command, ExitObject, ArgsOptions} from "./commands.ts";
+import type {Options} from "./commands.ts";
 import {TermHistory} from "./history.ts";
 import {TermListeners} from "./listeners.ts";
 import {TermOptions} from "./options.ts";
@@ -317,3 +318,4 @@ export class Terminal extends EventTarget {
 }
 
 export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, TermOutput, built_ins};
+export type {Options};
