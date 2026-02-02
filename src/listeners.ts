@@ -99,7 +99,7 @@ export class TermListeners {
      */
     public returnListenerAction(event: Event): void {
         event.preventDefault();
-        const promptLen: number = this._terminal.options.preprompt.length + this._terminal.options.prompt.length;
+        const promptLen: number = this._terminal.getFullPrompt().length;
         this._terminal.executeCommand(this._terminal.input.value.slice(promptLen));
         this._terminal.updateInput();
     }
@@ -128,8 +128,7 @@ export class TermListeners {
             case "ArrowLeft":
                 if (
                     this._terminal.input.selectionStart !== null &&
-                    this._terminal.input.selectionStart <=
-                        `${this._terminal.options.preprompt}${this._terminal.options.prompt}`.length &&
+                    this._terminal.input.selectionStart <= this._terminal.getFullPrompt().length &&
                     !deleteChunk
                 ) {
                     event.preventDefault();
@@ -142,7 +141,7 @@ export class TermListeners {
     }
 
     private _handleSelectionEvent(event: Event): void {
-        const promptLength: number = (this._terminal.options.preprompt + this._terminal.options.prompt).length;
+        const promptLength: number = this._terminal.getFullPrompt().length;
         const start: number | null = this._terminal.input.selectionStart;
         let end: number | null = this._terminal.input.selectionEnd;
         const direction = this._terminal.input.selectionDirection;

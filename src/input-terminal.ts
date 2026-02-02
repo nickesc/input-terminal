@@ -159,6 +159,14 @@ export class Terminal extends EventTarget {
     }
 
     /**
+     * Get the full terminal prompt.
+     * @returns {string} the full terminal prompt (preprompt + prompt)
+     */
+    public getFullPrompt(): string {
+        return this.options.preprompt + this.options.prompt;
+    }
+
+    /**
      * Initializes the terminal. Attaches input listeners and updates the input.
      * @returns {void}
      */
@@ -186,7 +194,7 @@ export class Terminal extends EventTarget {
      * @returns {void}
      */
     public updateInput(userInput?: string): void {
-        this.input.value = this.options.preprompt + this.options.prompt + (userInput || "");
+        this.input.value = this.getFullPrompt() + (userInput || "");
     }
 
     /**
@@ -194,7 +202,7 @@ export class Terminal extends EventTarget {
      * @returns {string} The string in the input, not including the preprompt and prompt
      */
     public getInputValue(): string {
-        return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
+        return this.input.value.slice(this.getFullPrompt().length);
     }
 
     /**
