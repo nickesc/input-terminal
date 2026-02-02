@@ -78,20 +78,24 @@ export class ArgsOptions {
     private init(): void {
         for (let i = 1; i < this._userInput.length; i++) {
             const item: string = this._userInput[i]!;
-            if (item.startsWith("--")) {
-                this.string2opt(item.slice(2));
-            } else if (item.startsWith("-")) {
-                if (item[2] === "=") {
-                    this.string2opt(item.slice(1));
-                } else if (!item.includes("=")) {
-                    for (const char of item.slice(1)) {
-                        this.string2opt(char);
+            try {
+                if (item.startsWith("--")) {
+                    this.string2opt(item.slice(2));
+                } else if (item.startsWith("-")) {
+                    if (item[2] === "=") {
+                        this.string2opt(item.slice(1));
+                    } else if (!item.includes("=")) {
+                        for (const char of item.slice(1)) {
+                            this.string2opt(char);
+                        }
+                    } else {
+                        throw new Error(`Invalid option: ${item}.`);
                     }
                 } else {
-                    throw new Error(`Invalid option: ${item}.`);
+                    this._args.push(this.castStringToValue(item));
                 }
-            } else {
-                this._args.push(this.castStringToValue(item));
+            } catch (error) {
+                // Silently fail and continue
             }
         }
     }
