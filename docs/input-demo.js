@@ -20,13 +20,13 @@ const empty = new Command("", (args, options, terminal) => {
 const changeThemeCommand = new Command("theme", (args, options, terminal) => {
     if (["light", "dark", "os"].includes(args[0])) {
         changeTheme(args[0]);
-        return `Theme changed to ${args[0]}`;
+        terminal.stdout(`Theme changed to ${args[0]}`);
     } else if (options.list || options.l) {
-        return {themes: ["light", "dark", "os"]};
+        terminal.stdout(JSON.stringify({themes: ["light", "dark", "os"]}));
     } else if (args.length === 0) {
-        return `${document.getElementById("tsd-theme").value}`;
+        terminal.stdout(`${document.getElementById("tsd-theme").value}`);
     } else {
-        return `Invalid theme. Please use 'light', 'dark', or 'os'.`;
+        terminal.stderr(`Invalid theme. Please use 'light', 'dark', or 'os'.`);
     }
 });
 
