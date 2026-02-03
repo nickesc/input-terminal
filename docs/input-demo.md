@@ -38,8 +38,10 @@ title: Demo
 #### Built-in Commands
 
 - `alert`
+- `clear`
 - `commands`
 - `echo`
+- `history`
 - `man`
 - `result`
 - `return`
