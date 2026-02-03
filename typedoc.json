@@ -1,5 +1,5 @@
 {
-  "projectDocuments": ["README.md", "docs/input-demo.md"],
+  "projectDocuments": ["README.md", "docs/usage.md", "docs/input-demo.md"],
   "plugin": ["typedoc-github-theme"],
   "out": "docs/",
   "cleanOutputDir": false,
