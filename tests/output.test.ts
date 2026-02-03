@@ -145,11 +145,11 @@ describe("Terminal stdout/stderr Log Tests", () => {
         expect(exit.stderrLog).toEqual([]);
     });
 
-    it("should have empty logs for unknown commands", () => {
+    it("should print an error to stderr for unknown commands", () => {
         const exit = term.executeCommand("unknown");
 
         expect(exit.stdoutLog).toEqual([]);
-        expect(exit.stderrLog).toEqual([]);
+        expect(exit.stderrLog).not.toEqual([]);
     });
 
     it("should return a copy of logs via getStdoutLog and getStderrLog", () => {

@@ -21,7 +21,7 @@ describe("echo command tests", () => {
         expect(exit.command).toBe(echo);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["echo", "test"]);
-        expect(exit.output).toEqual({});
+        expect(exit.output).toEqual("test");
         expect(exit.stdoutLog).toEqual(["test"]);
     });
 
@@ -30,7 +30,7 @@ describe("echo command tests", () => {
         expect(exit.command).toBe(echo);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["echo", "test", "test2", "test3"]);
-        expect(exit.output).toEqual({});
+        expect(exit.output).toEqual("test test2 test3");
         expect(exit.stdoutLog).toEqual(["test test2 test3"]);
     });
 
@@ -39,7 +39,7 @@ describe("echo command tests", () => {
         expect(exit.command).toBe(echo);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["echo"]);
-        expect(exit.output).toEqual({});
+        expect(exit.output).toEqual("");
         expect(exit.stdoutLog).toEqual([""]);
     });
 });

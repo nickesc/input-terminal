@@ -31,7 +31,7 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result"]);
-        expect(isExitObject(exit.output.exit)).toBe(true);
+        expect(isExitObject(exit.output)).toBe(true);
     });
 
     it("should run the result command with arguments", () => {
@@ -39,7 +39,7 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result", "x"]);
-        expect(isExitObject(exit.output.exit)).toBe(true);
+        expect(isExitObject(exit.output)).toBe(true);
     });
 
     it("should have manual page", () => {
@@ -52,8 +52,8 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result", "-l"]);
-        expect(isExitObject(exit.output.exit)).toBe(true);
-        expect(exit.output.exit.command).toEqual(result);
+        expect(isExitObject(exit.output)).toBe(true);
+        expect(exit.output.command).toEqual(result);
     });
 
     it("should return the first command's exit object", () => {
@@ -61,8 +61,8 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result", "-f"]);
-        expect(isExitObject(exit.output.exit)).toBe(true);
-        expect(exit.output.exit.command).toEqual(return_);
+        expect(isExitObject(exit.output)).toBe(true);
+        expect(exit.output.command).toEqual(return_);
     });
 
     it("should return the command at the given index", () => {
@@ -70,8 +70,8 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result", "-i=1"]);
-        expect(isExitObject(exit.output.exit)).toBe(true);
-        expect(exit.output.exit.command).toEqual(echo);
+        expect(isExitObject(exit.output)).toBe(true);
+        expect(exit.output.command).toEqual(echo);
     });
 
     it("should return an error for an out-of-bounds index", () => {
@@ -79,8 +79,8 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result", "--index=100"]);
-        expect(isExitObject(exit.output.exit)).toBe(false);
-        expect(exit.output.exit.error).toEqual("Invalid index");
+        expect(isExitObject(exit.output)).toBe(false);
+        expect(exit.output.error).toEqual("Invalid index");
     });
 
     it("should return an error for an invalid index (string)", () => {
@@ -88,8 +88,8 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result", "--index=a"]);
-        expect(isExitObject(exit.output.exit)).toBe(false);
-        expect(exit.output.exit.error).toEqual("Invalid index");
+        expect(isExitObject(exit.output)).toBe(false);
+        expect(exit.output.error).toEqual("Invalid index");
     });
 
     it("should return an error for an invalid index (empty string)", () => {
@@ -97,8 +97,8 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result", "--index="]);
-        expect(isExitObject(exit.output.exit)).toBe(false);
-        expect(exit.output.exit.error).toEqual("Invalid index");
+        expect(isExitObject(exit.output)).toBe(false);
+        expect(exit.output.error).toEqual("Invalid index");
     });
 
     it("should return an error for no index value", () => {
@@ -106,7 +106,7 @@ describe("result command tests", () => {
         expect(exit.command).toBe(result);
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["result", "--index"]);
-        expect(isExitObject(exit.output.exit)).toBe(false);
-        expect(exit.output.exit.error).toEqual("Invalid index");
+        expect(isExitObject(exit.output)).toBe(false);
+        expect(exit.output.error).toEqual("Invalid index");
     });
 });
