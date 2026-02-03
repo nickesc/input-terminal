@@ -114,15 +114,6 @@ describe("Command Manual Tests", () => {
         command.manual = "test manual";
         expect(command.manual).toEqual("test manual");
     });
-    it("should throw an error if the manual is set after it has been set", () => {
-        const command: Command = new Command("test", () => {
-            return;
-        });
-        command.manual = "test manual";
-        expect(() => {
-            command.manual = "test manual 2";
-        }).toThrow();
-    });
 });
 
 describe("ExitObject Tests", () => {

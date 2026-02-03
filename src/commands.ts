@@ -145,11 +145,7 @@ export class Command {
      * @param {string} manual - the manual for the command
      */
     public set manual(manual: string) {
-        if (this._manual === undefined) {
-            this._manual = manual;
-        } else {
-            throw new Error("Manual cannot be reassigned after it has been set");
-        }
+        this._manual = manual;
     }
 
     /**
