@@ -1,6 +1,10 @@
-import { Terminal } from './input-terminal.ts';
-type Options = Record<string, {
-    value: (string | number | boolean);
+import { Terminal } from "./input-terminal.ts";
+/**
+ * The structure for the object used to store the options for a command. Each key is an option name, and the value is an object with a `value` property.
+ * @category Command Components
+ */
+export type Options = Record<string, {
+    value: string | number | boolean;
 }>;
 /**
  * Manages and stores the arguments and options for a command.
@@ -25,7 +29,7 @@ export declare class ArgsOptions {
      */
     constructor(userInput: string[]);
     private castStringToValue;
-    private isAlphanumeric;
+    private isValidOptionKey;
     private string2opt;
     private init;
 }
@@ -86,6 +90,8 @@ export declare class ExitObject {
     private _userInput;
     private _rawInput;
     private _output;
+    private _stdoutLog;
+    private _stderrLog;
     /**
      * Get the command that was executed.
      * @type {Command | undefined}
@@ -117,12 +123,23 @@ export declare class ExitObject {
      */
     get output(): any;
     /**
+     * Get the stdout log of the execution.
+     * @type {any[]}
+     */
+    get stdoutLog(): any[];
+    /**
+     * Get the stderr log of the execution.
+     * @type {any[]}
+     */
+    get stderrLog(): any[];
+    /**
      * @param {string[]} userInput - the input array that was used to execute the command
      * @param {string} rawInput - the raw input that was used to execute the command
      * @param {Command | undefined} command - the command that was executed; `undefined` if the command is not found
      * @param {number} exitCode - the exit code of the command
      * @param {object} output - the output of the command
+     * @param {any[]} stdoutLog - the stdout log of the command
+     * @param {any[]} stderrLog - the stderr log of the command
      */
-    constructor(userInput: string[], rawInput: string, command: Command | undefined, exitCode: number, output: any);
+    constructor(userInput: string[], rawInput: string, command: Command | undefined, exitCode: number, output: any, stdoutLog?: any[], stderrLog?: any[]);
 }
-export {};

@@ -88,7 +88,7 @@ export class TermListeners {
      */
     returnListenerAction(event) {
         event.preventDefault();
-        const promptLen = this._terminal.options.preprompt.length + this._terminal.options.prompt.length;
+        const promptLen = this._terminal.getFullPrompt().length;
         this._terminal.executeCommand(this._terminal.input.value.slice(promptLen));
         this._terminal.updateInput();
     }
@@ -113,7 +113,9 @@ export class TermListeners {
                     deleteChunk = true;
                 }
             case "ArrowLeft":
-                if (this._terminal.input.selectionStart !== null && this._terminal.input.selectionStart <= (`${this._terminal.options.preprompt}${this._terminal.options.prompt}`).length && !deleteChunk) {
+                if (this._terminal.input.selectionStart !== null &&
+                    this._terminal.input.selectionStart <= this._terminal.getFullPrompt().length &&
+                    !deleteChunk) {
                     event.preventDefault();
                 }
             default:
@@ -123,14 +125,13 @@ export class TermListeners {
         }
     }
     _handleSelectionEvent(event) {
-        const promptLength = (this._terminal.options.preprompt + this._terminal.options.prompt).length;
+        const promptLength = this._terminal.getFullPrompt().length;
         const start = this._terminal.input.selectionStart;
         let end = this._terminal.input.selectionEnd;
         const direction = this._terminal.input.selectionDirection;
         if (start === end) {
             end = null;
         }
-        ;
         if (start !== null && start < promptLength) {
             if (end !== null && end <= promptLength) {
                 this._terminal.input.setSelectionRange(promptLength, promptLength);
@@ -145,11 +146,9 @@ export class TermListeners {
     }
     /**
      * Attaches listeners to the terminal's input element.
-     * @param {string} [previousKey="ArrowUp"] - the key used to select the previous command; defaults to `ArrowUp`
-     * @param {string} [nextKey="ArrowDown"] - the key used to select the next command; defaults to `ArrowDown`
      * @returns {void}
      */
-    attachInputListeners(previousKey = "ArrowUp", nextKey = "ArrowDown") {
+    attachInputListeners() {
         this._terminal.input.addEventListener("keydown", (event) => {
             this._handleKeyboardEvent(event);
         });

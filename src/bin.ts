@@ -1,10 +1,5 @@
-import { Command } from "./commands.ts";
-import { echo } from "./built-ins/echo.ts";
-import { alert } from "./built-ins/alert.ts";
-import { result } from "./built-ins/result.ts";
-import { man } from "./built-ins/man.ts";
-import { return_ } from "./built-ins/return.ts";
-
+import {Command} from "./commands.ts";
+import * as builtIns from "./built-ins/index.ts";
 
 /**
  * A list of built-in commands that can be executed by a terminal.
@@ -19,21 +14,25 @@ import { return_ } from "./built-ins/return.ts";
  * @type {Command[]}
  * @category Terminal Components
  */
-export const built_ins: Command[] = [echo, alert, result, man, return_];
+export const built_ins: Command[] = Object.values(builtIns);
 
 /**
  * Manages the list of commands that can be executed by a terminal.
  * @category Terminal Components
  */
-export class TermBin{
-    private _list: Command[] = [];
-    private _emptyCommand: Command = new Command("", (args, options, terminal) => { return {}; });
+export class TermBin {
+    private _commands: Map<string, Command> = new Map();
+    private _emptyCommand: Command = new Command("", (args, options, terminal) => {
+        return {};
+    });
 
     /**
      * Get the list of commands in the terminal's bin.
      * @type {Command[]}
      */
-    public get list(): Command[] { return this._list; }
+    public get list(): Command[] {
+        return Array.from(this._commands.values());
+    }
 
     /**
      * Set the list of commands in the terminal's bin.
@@ -41,28 +40,32 @@ export class TermBin{
      * @throws {Error} if any command in the list has a key that already exists
      */
     public set list(commands: Command[]) {
-        this._list = [];
-        for (let command of commands){ this.add(command); }
+        this._commands.clear();
+        this.add(commands);
     }
 
     /**
      * Get the command that is executed when empty input is provided.
      * @type {Command}
      */
-    public get emptyCommand(): Command { return this._emptyCommand; }
+    public get emptyCommand(): Command {
+        return this._emptyCommand;
+    }
 
     /**
      * Set the command that is executed when empty input is provided.
      * @type {Command}
      */
-    public set emptyCommand(command: Command) { this._emptyCommand = command; }
+    public set emptyCommand(command: Command) {
+        this._emptyCommand = command;
+    }
 
     /**
      * @param {Command[]} [commands] - an optional list of commands to initialize the terminal with
      */
     constructor(commands?: Command[]) {
-        if (commands){
-            this.list = commands;
+        if (commands) {
+            this.add(commands);
         }
     }
 
@@ -71,7 +74,7 @@ export class TermBin{
      * @returns {string[]} a list of the keys of all commands in the terminal's bin
      */
     public getCommandKeys(): string[] {
-        return this._list.map(command => command.key);
+        return Array.from(this._commands.keys());
     }
 
     /**
@@ -80,8 +83,10 @@ export class TermBin{
      * @returns {Command | undefined} the command with the given key; `undefined` if the command is not found or if no key is provided
      */
     public find(commandKey?: string): Command | undefined {
-        if (!commandKey){return undefined;};
-        return this.list.find(command => command.key === commandKey);
+        if (!commandKey) {
+            return undefined;
+        }
+        return this._commands.get(commandKey);
     }
 
     /**
@@ -91,18 +96,16 @@ export class TermBin{
      * @throws an error if a command with the same key already exists
      */
     public add(commands: Command | Command[]): number {
-        if (commands instanceof Command){
-            commands = [commands];
-        }
+        const toAdd = Array.isArray(commands) ? commands : [commands];
 
-        commands.map(command => {
-            if (this.find(command.key)) {
+        for (const command of toAdd) {
+            if (this._commands.has(command.key)) {
                 throw new Error(`Command with key "${command.key}" already exists`);
             }
-            this._list.push(command);
-        });
+            this._commands.set(command.key, command);
+        }
 
-        return this._list.length;
+        return this._commands.size;
     }
 
     /**
@@ -111,11 +114,10 @@ export class TermBin{
      * @returns {Command | undefined} the removed command; `undefined` if the command is not found
      */
     public remove(command: Command): Command | undefined {
-        if (this._list.includes(command)){
-            this._list.splice(this._list.indexOf(command), 1);
+        if (this._commands.has(command.key) && this._commands.get(command.key) === command) {
+            this._commands.delete(command.key);
             return command;
-        } else {
-            return undefined;
         }
+        return undefined;
     }
 }

@@ -1,7 +1,7 @@
-import { Terminal, ExitObject } from '../../src/input-terminal';
-import { alert } from '../../src/built-ins/alert';
-import { JSDOM } from 'jsdom';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {Terminal, ExitObject} from "../../src/input-terminal";
+import {alert} from "../../src/built-ins/alert";
+import {JSDOM} from "jsdom";
+import {describe, it, expect, beforeEach, vi} from "vitest";
 
 describe("alert command tests", () => {
     let term: Terminal;
@@ -12,10 +12,10 @@ describe("alert command tests", () => {
     beforeEach(() => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
-        input = document.getElementById('terminal-input') as HTMLInputElement;
-        alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+        input = document.getElementById("terminal-input") as HTMLInputElement;
+        alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
         term = new Terminal(input);
-        term.init()
+        term.init();
     });
 
     it("should run the alert command", () => {
@@ -24,5 +24,10 @@ describe("alert command tests", () => {
         expect(exit.exitCode).toEqual(0);
         expect(exit.userInput).toEqual(["alert", "test"]);
         expect(alertSpy).toHaveBeenCalledWith("test");
-    })
+    });
+
+    it("should have manual page", () => {
+        expect(alert.manual).toBeDefined();
+        expect(alert.manual?.length).toBeGreaterThan(0);
+    });
 });

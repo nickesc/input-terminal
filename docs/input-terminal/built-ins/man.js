@@ -7,14 +7,20 @@ import { Command } from "../commands.js";
  */
 const man = new Command("man", (args, options, terminal) => {
     if (args.length === 0) {
-        return `man: Error: No command provided.\n\n${man.manual}`;
+        const output = `man: Error: No command provided.\n\n${man.manual}`;
+        terminal.stderr(output);
+        return output;
     }
     const targetCommand = terminal.bin.find(args[0]);
     if (targetCommand) {
-        return targetCommand.manual || targetCommand.key;
+        const output = targetCommand.manual || targetCommand.key;
+        terminal.stdout(output);
+        return output;
     }
     else {
-        return `Command "${args[0]}" not found`;
+        const output = `Command "${args[0]}" not found`;
+        terminal.stderr(output);
+        return output;
     }
 });
 man.manual = `man [command]

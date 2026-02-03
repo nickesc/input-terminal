@@ -36,13 +36,16 @@ title: Demo
 ### Commands
 
 #### Built-in Commands
+
+- `alert`
+- `commands`
 - `echo`
 - `man`
 - `result`
 - `return`
-- `alert`
 
 #### Custom Commands
+
 - `theme`
 
 Type the above commands into the terminal to execute them. Their output will be displayed in the output section.
@@ -50,6 +53,7 @@ Type the above commands into the terminal to execute them. Their output will be 
 <br>
 
 ### Controls
+
 Controls can be input with a keyboard, or using the buttons below the terminal interface.
 
 Key | Action

@@ -1,11 +1,10 @@
-import { ExitObject } from './commands.ts';
+import {ExitObject} from "./commands.ts";
 
 /**
  * Manages the terminal's history of commands.
  * @category Terminal Components
  */
 export class TermHistory {
-
     private _index: number | undefined;
     private _items: ExitObject[];
 
@@ -13,13 +12,17 @@ export class TermHistory {
      * Get the items in the history.
      * @type {ExitObject[]}
      */
-    public get items(): ExitObject[] { return this._items; }
+    public get items(): ExitObject[] {
+        return this._items;
+    }
 
     /**
      * Set the items in the history.
      * @type {ExitObject[]}
      */
-    public set items(commandList: ExitObject[]) { this._items = commandList; }
+    public set items(commandList: ExitObject[]) {
+        this._items = commandList;
+    }
 
     /**
      * @param {ExitObject[]} [history] - an optional history of commands to initialize the terminal with
@@ -41,7 +44,7 @@ export class TermHistory {
      * @returns {ExitObject | undefined} the item at the current index in the terminal's history; if no item is active, returns `undefined`
      */
     public current(): ExitObject | undefined {
-        if (this._index != undefined){
+        if (this._index != undefined) {
             return this._items[this._index];
         }
         return undefined;
@@ -52,8 +55,11 @@ export class TermHistory {
      * @returns {ExitObject | undefined} the popped item; if the history is empty, returns `undefined`
      */
     public pop(): ExitObject | undefined {
-        if (this._index == 0){this._index = undefined;}
-        else if (this._index != undefined){this._index--;}
+        if (this._index == 0) {
+            this._index = undefined;
+        } else if (this._index != undefined) {
+            this._index--;
+        }
 
         return this._items.shift();
     }
@@ -64,11 +70,13 @@ export class TermHistory {
      * @returns {number} the new length of the history
      */
     public push(exitObjects: ExitObject | ExitObject[]): number {
-        if (exitObjects instanceof ExitObject){
+        if (exitObjects instanceof ExitObject) {
             exitObjects = [exitObjects];
         }
 
-        if (this._index != undefined){this._index++;}
+        if (this._index != undefined) {
+            this._index++;
+        }
 
         return this._items.unshift(...exitObjects);
     }
@@ -78,10 +86,10 @@ export class TermHistory {
      * @returns {ExitObject | null | undefined} the previous item in the terminal's history; if no items are in the history returns `undefined`, and if it is on the last item in the history returns `null`
      */
     public previous(): ExitObject | null | undefined {
-        if (this._items.length > 0){
+        if (this._items.length > 0) {
             if (this._index == undefined) {
-                this._index = 0
-            } else if (this._index < this._items.length-1){
+                this._index = 0;
+            } else if (this._index < this._items.length - 1) {
                 this._index++;
             } else {
                 return null;
@@ -96,8 +104,7 @@ export class TermHistory {
      * @returns {ExitObject | undefined} the next item in the terminal's history; if no item is available or you are on the first item in the history returns `undefined`
      */
     public next(): ExitObject | undefined {
-
-        if (this._items.length <= 0 || this._index == undefined || this._index <= 0){
+        if (this._items.length <= 0 || this._index == undefined || this._index <= 0) {
             this._index = undefined;
             return undefined;
         }
@@ -105,8 +112,5 @@ export class TermHistory {
         this._index--;
 
         return this._items[this._index];
-
     }
-
 }
-

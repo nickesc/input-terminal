@@ -1,9 +1,5 @@
 import { Command } from "./commands.js";
-import { echo } from "./built-ins/echo.js";
-import { alert } from "./built-ins/alert.js";
-import { result } from "./built-ins/result.js";
-import { man } from "./built-ins/man.js";
-import { return_ } from "./built-ins/return.js";
+import * as builtIns from "./built-ins/index.js";
 /**
  * A list of built-in commands that can be executed by a terminal.
  *
@@ -17,46 +13,52 @@ import { return_ } from "./built-ins/return.js";
  * @type {Command[]}
  * @category Terminal Components
  */
-export const built_ins = [echo, alert, result, man, return_];
+export const built_ins = Object.values(builtIns);
 /**
  * Manages the list of commands that can be executed by a terminal.
  * @category Terminal Components
  */
 export class TermBin {
-    _list = [];
-    _emptyCommand = new Command("", (args, options, terminal) => { return {}; });
+    _commands = new Map();
+    _emptyCommand = new Command("", (args, options, terminal) => {
+        return {};
+    });
     /**
      * Get the list of commands in the terminal's bin.
      * @type {Command[]}
      */
-    get list() { return this._list; }
+    get list() {
+        return Array.from(this._commands.values());
+    }
     /**
      * Set the list of commands in the terminal's bin.
      * @type {Command[]}
      * @throws {Error} if any command in the list has a key that already exists
      */
     set list(commands) {
-        this._list = [];
-        for (let command of commands) {
-            this.add(command);
-        }
+        this._commands.clear();
+        this.add(commands);
     }
     /**
      * Get the command that is executed when empty input is provided.
      * @type {Command}
      */
-    get emptyCommand() { return this._emptyCommand; }
+    get emptyCommand() {
+        return this._emptyCommand;
+    }
     /**
      * Set the command that is executed when empty input is provided.
      * @type {Command}
      */
-    set emptyCommand(command) { this._emptyCommand = command; }
+    set emptyCommand(command) {
+        this._emptyCommand = command;
+    }
     /**
      * @param {Command[]} [commands] - an optional list of commands to initialize the terminal with
      */
     constructor(commands) {
         if (commands) {
-            this.list = commands;
+            this.add(commands);
         }
     }
     /**
@@ -64,7 +66,7 @@ export class TermBin {
      * @returns {string[]} a list of the keys of all commands in the terminal's bin
      */
     getCommandKeys() {
-        return this._list.map(command => command.key);
+        return Array.from(this._commands.keys());
     }
     /**
      * Finds a command by its key in the terminal's bin.
@@ -75,8 +77,7 @@ export class TermBin {
         if (!commandKey) {
             return undefined;
         }
-        ;
-        return this.list.find(command => command.key === commandKey);
+        return this._commands.get(commandKey);
     }
     /**
      * Adds a command (or list of commands) to the terminal's bin.
@@ -85,16 +86,14 @@ export class TermBin {
      * @throws an error if a command with the same key already exists
      */
     add(commands) {
-        if (commands instanceof Command) {
-            commands = [commands];
-        }
-        commands.map(command => {
-            if (this.find(command.key)) {
+        const toAdd = Array.isArray(commands) ? commands : [commands];
+        for (const command of toAdd) {
+            if (this._commands.has(command.key)) {
                 throw new Error(`Command with key "${command.key}" already exists`);
             }
-            this._list.push(command);
-        });
-        return this._list.length;
+            this._commands.set(command.key, command);
+        }
+        return this._commands.size;
     }
     /**
      * Removes a command from the terminal's command list.
@@ -102,12 +101,10 @@ export class TermBin {
      * @returns {Command | undefined} the removed command; `undefined` if the command is not found
      */
     remove(command) {
-        if (this._list.includes(command)) {
-            this._list.splice(this._list.indexOf(command), 1);
+        if (this._commands.has(command.key) && this._commands.get(command.key) === command) {
+            this._commands.delete(command.key);
             return command;
         }
-        else {
-            return undefined;
-        }
+        return undefined;
     }
 }

@@ -1,4 +1,4 @@
-import type { Terminal } from './input-terminal';
+import type { Terminal } from "./input-terminal";
 /**
  * Handles keyboard and selection events for the terminal.
  * @category Terminal Components
@@ -39,9 +39,7 @@ export declare class TermListeners {
     private _handleSelectionEvent;
     /**
      * Attaches listeners to the terminal's input element.
-     * @param {string} [previousKey="ArrowUp"] - the key used to select the previous command; defaults to `ArrowUp`
-     * @param {string} [nextKey="ArrowDown"] - the key used to select the next command; defaults to `ArrowDown`
      * @returns {void}
      */
-    attachInputListeners(previousKey?: string, nextKey?: string): void;
+    attachInputListeners(): void;
 }

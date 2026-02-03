@@ -5,10 +5,12 @@ import { Command } from "../commands.js";
  */
 const result = new Command("result", (args, options, terminal) => {
     if (options.first || options.f) {
-        return { exit: terminal.history.items[terminal.history.items.length - 1] };
+        terminal.stdout(terminal.history.items[terminal.history.items.length - 1]);
+        return terminal.history.items[terminal.history.items.length - 1];
     }
     else if (options.last || options.l) {
-        return { exit: terminal.getLastExitObject() };
+        terminal.stdout(terminal.getLastExitObject());
+        return terminal.getLastExitObject();
     }
     else if (options.index || options.i) {
         let index;
@@ -20,11 +22,14 @@ const result = new Command("result", (args, options, terminal) => {
             index = -1;
         }
         if (index < 0 || index >= terminal.history.items.length) {
-            return { exit: { error: "Invalid index" } };
+            terminal.stderr("Invalid index");
+            return { error: "Invalid index" };
         }
-        return { exit: terminal.history.items[index] };
+        terminal.stdout(terminal.history.items[index]);
+        return terminal.history.items[index];
     }
-    return { exit: terminal.getLastExitObject() };
+    terminal.stdout(terminal.getLastExitObject());
+    return terminal.getLastExitObject();
 });
 result.manual = `result [--first|-f] [--last|-l] [--index|-i]
 

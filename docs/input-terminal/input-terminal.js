@@ -3,6 +3,7 @@ import { TermHistory } from "./history.js";
 import { TermListeners } from "./listeners.js";
 import { TermOptions } from "./options.js";
 import { TermBin, built_ins } from "./bin.js";
+import { TermOutput } from "./output.js";
 /**
  * @license MIT
  * @author nickesc
@@ -16,9 +17,10 @@ import { TermBin, built_ins } from "./bin.js";
  * ```typescript
  * import { Terminal, Command } from "input-terminal";
  * const input = document.getElementById("terminal") as HTMLInputElement;
- * const terminal = new Terminal(input, { prompt: ">> " });
+ * const output = document.getElementById("output") as HTMLElement;
+ * const terminal = new Terminal(input, output, { prompt: ">> " });
  * terminal.bin.add(new Command("echo", (args, options, terminal) => {
- *     console.log(args);
+ *     terminal.stdout(args.join(" "));
  *     return {};
  * }));
  * terminal.init();
@@ -27,8 +29,15 @@ import { TermBin, built_ins } from "./bin.js";
 export class Terminal extends EventTarget {
     _listeners;
     _started = false;
+    _outputElement;
+    _currentStdoutLog = [];
+    _currentStderrLog = [];
     emitExecutedEvent(exitObject) {
         this.dispatchEvent(new CustomEvent("inputTerminalExecuted", { detail: exitObject }));
+    }
+    clearOutputLogs() {
+        this._currentStdoutLog = [];
+        this._currentStderrLog = [];
     }
     /**
      * The input element that the terminal is attached to.
@@ -36,8 +45,8 @@ export class Terminal extends EventTarget {
      */
     input;
     /**
-     * The element that the terminal should output text to.
-     * @type {HTMLElement}
+     * The output manager for the terminal.
+     * @type {TermOutput}
      */
     output = undefined;
     /**
@@ -59,25 +68,74 @@ export class Terminal extends EventTarget {
      * Get the listeners for the terminal.
      * @type {TermListeners}
      */
-    get listeners() { return this._listeners; }
+    get listeners() {
+        return this._listeners;
+    }
     /**
      * Get whether the terminal has been initialized.
      * @type {boolean}
      */
-    get started() { return this._started; }
+    get started() {
+        return this._started;
+    }
+    /**
+     * Emit data to stdout. Dispatches a "stdout" event and logs the data.
+     * @param {any} data - the data to emit
+     * @returns {void}
+     */
+    stdout(data) {
+        this._currentStdoutLog.push(data);
+        this.dispatchEvent(new CustomEvent("stdout", {
+            detail: { data, timestamp: Date.now() },
+        }));
+    }
+    /**
+     * Emit data to stderr. Dispatches a "stderr" event and logs the data.
+     * @param {any} data - the data to emit
+     * @returns {void}
+     */
+    stderr(data) {
+        this._currentStderrLog.push(data);
+        this.dispatchEvent(new CustomEvent("stderr", {
+            detail: { data, timestamp: Date.now() },
+        }));
+    }
+    /**
+     * Get a copy of the current stdout log.
+     * @returns {any[]} the stdout log
+     */
+    getStdoutLog() {
+        return [...this._currentStdoutLog];
+    }
+    /**
+     * Get a copy of the current stderr log.
+     * @returns {any[]} the stderr log
+     */
+    getStderrLog() {
+        return [...this._currentStderrLog];
+    }
     /**
      * @param {HTMLInputElement} input - input element to turn into a terminal
-     * @param {object} options - terminal configuration
+     * @param {HTMLElement} [output] - optional output element to render stdout/stderr to
+     * @param {TermOptionsConfig} options - terminal configuration
      * @param {ExitObject[]} commandHistory - history of commands that have been executed
      * @param {Command[]} commandList - list of commands that can be executed by the user
      */
-    constructor(input, options = {}, commandHistory = [], commandList = []) {
+    constructor(input, output, options = {}, commandHistory = [], commandList = []) {
         super();
         this.input = input;
+        this._outputElement = output;
         this.history = new TermHistory(commandHistory);
         this.bin = new TermBin(commandList);
         this.options = new TermOptions(options);
         this._listeners = new TermListeners(this);
+    }
+    /**
+     * Get the full terminal prompt.
+     * @returns {string} the full terminal prompt (preprompt + prompt)
+     */
+    getFullPrompt() {
+        return this.options.preprompt + this.options.prompt;
     }
     /**
      * Initializes the terminal. Attaches input listeners and updates the input.
@@ -87,6 +145,11 @@ export class Terminal extends EventTarget {
         if (!this._started) {
             if (this.options.installBuiltins) {
                 this.bin.list = [...this.bin.list, ...built_ins];
+            }
+            // Create TermOutput if output element was provided
+            if (this._outputElement) {
+                this.output = new TermOutput(this._outputElement, this);
+                this.output.attach();
             }
             this._listeners.attachInputListeners();
             this.updateInput();
@@ -99,14 +162,14 @@ export class Terminal extends EventTarget {
      * @returns {void}
      */
     updateInput(userInput) {
-        this.input.value = this.options.preprompt + this.options.prompt + (userInput || "");
+        this.input.value = this.getFullPrompt() + (userInput || "");
     }
     /**
      * Gets the terminal's user input.
      * @returns {string} The string in the input, not including the preprompt and prompt
      */
     getInputValue() {
-        return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
+        return this.input.value.slice(this.getFullPrompt().length);
     }
     /**
      * Gets the command predictions based on the user's input.
@@ -116,7 +179,7 @@ export class Terminal extends EventTarget {
     getPredictions(text) {
         let predictions = [];
         if (text) {
-            const partialMatches = this.bin.getCommandKeys().filter(key => key.startsWith(text));
+            const partialMatches = this.bin.getCommandKeys().filter((key) => key.startsWith(text));
             predictions = partialMatches;
         }
         else {
@@ -187,6 +250,7 @@ export class Terminal extends EventTarget {
      * @returns {ExitObject} The ExitObject returned by the execution
      */
     executeCommand(input) {
+        this.clearOutputLogs();
         const userInput = this.getInputArray(input.trim());
         const command = this.bin.find(userInput[0]);
         let addToHistory = true;
@@ -202,8 +266,8 @@ export class Terminal extends EventTarget {
         }
         else {
             const errText = `Command ${userInput[0]} not found`;
-            console.error(errText);
-            exitObject = new ExitObject(userInput, input, undefined, 1, { error: errText });
+            this.stderr(errText);
+            exitObject = new ExitObject(userInput, input, undefined, 1, { error: errText }, this.getStdoutLog(), this.getStderrLog());
         }
         if (addToHistory) {
             this.history.push(exitObject);
@@ -213,4 +277,4 @@ export class Terminal extends EventTarget {
         return exitObject;
     }
 }
-export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, built_ins };
+export { Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, TermOutput, built_ins };

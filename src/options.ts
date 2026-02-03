@@ -1,67 +1,89 @@
 /**
- * Manages the terminal's configuration.
+ * The configuration for the terminal.
  * @category Terminal Components
  */
-export class TermOptions {
-
+export interface TermOptionsConfig {
     /**
      * The key used to select the previous command.
-     * @type {string}
+     * @default "ArrowUp"
      */
-    public previousKey: string = "ArrowUp";
+    previousKey?: string;
 
     /**
      * The key used to select the next command.
-     * @type {string}
+     * @default "ArrowDown"
      */
-    public nextKey: string = "ArrowDown";
+    nextKey?: string;
 
     /**
      * The key used to enter a command.
-     * @type {string}
+     * @default "Enter"
      */
-    public returnKey: string = "Enter";
+    returnKey?: string;
 
     /**
      * The key used to autocomplete a command.
-     * @type {string}
+     * @default "Tab"
      */
-    public autocompleteKey: string = "Tab";
+    autocompleteKey?: string;
 
     /**
      * Whether the terminal should install built-in commands.
-     * @type {boolean}
+     * @default true
      */
-    public installBuiltins: boolean = true;
+    installBuiltins?: boolean;
 
     /**
      * A line of text that is displayed at the beginning of the command line.
-     * @type {string}
+     * @default "> "
      */
-    public prompt: string = "> ";
+    prompt?: string;
 
     /**
      * A line of text that is displayed before the prompt.
-     * @type {string}
+     * @default ""
      */
-    public preprompt: string = "";
+    preprompt?: string;
 
     /**
      * Whether the terminal should add a command with empty input to history.
-     * @type {boolean}
+     * @default false
      */
-    public addEmptyCommandToHistory: boolean = false;
+    addEmptyCommandToHistory?: boolean;
 
     /**
      * Whether the terminal should add a command with duplicate input (same as the last command's input) to history.
-     * @type {boolean}
+     * @default false
      */
+    showDuplicateCommands?: boolean;
+
+    /**
+     * Any other custom options.
+     */
+    [key: string]: any;
+}
+
+/**
+ * Manages the terminal's configuration.
+ * @category Terminal Components
+ */
+export class TermOptions implements TermOptionsConfig {
+    public previousKey: string = "ArrowUp";
+    public nextKey: string = "ArrowDown";
+    public returnKey: string = "Enter";
+    public autocompleteKey: string = "Tab";
+    public installBuiltins: boolean = true;
+    public prompt: string = "> ";
+    public preprompt: string = "";
+    public addEmptyCommandToHistory: boolean = false;
     public showDuplicateCommands: boolean = false;
 
     /**
-     * @param {object} [options] - an optional configuration to initialize the terminal with
+     * @param {TermOptionsConfig} [options] - an optional configuration to initialize the terminal with
      */
-    constructor(options?: object) {
-        Object.assign(this, options);
+    constructor(options?: TermOptionsConfig) {
+        if (options) {
+            Object.assign(this, options);
+        }
     }
 }
