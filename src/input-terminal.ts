@@ -1,10 +1,11 @@
 import {Command, ExitObject, ArgsOptions} from "./commands.ts";
-import type {Options} from "./commands.ts";
 import {TermHistory} from "./history.ts";
 import {TermListeners} from "./listeners.ts";
 import {TermOptions} from "./options.ts";
 import {TermBin, built_ins} from "./bin.ts";
 import {TermOutput} from "./output.ts";
+import type {Options} from "./commands.ts";
+import type {TermOptionsConfig} from "./options.ts";
 
 /**
  * @license MIT
@@ -138,14 +139,14 @@ export class Terminal extends EventTarget {
     /**
      * @param {HTMLInputElement} input - input element to turn into a terminal
      * @param {HTMLElement} [output] - optional output element to render stdout/stderr to
-     * @param {object} options - terminal configuration
+     * @param {TermOptionsConfig} options - terminal configuration
      * @param {ExitObject[]} commandHistory - history of commands that have been executed
      * @param {Command[]} commandList - list of commands that can be executed by the user
      */
     constructor(
         input: HTMLInputElement,
         output?: HTMLElement,
-        options: object = {},
+        options: TermOptionsConfig = {},
         commandHistory: ExitObject[] = [],
         commandList: Command[] = [],
     ) {
@@ -326,4 +327,4 @@ export class Terminal extends EventTarget {
 }
 
 export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, TermOutput, built_ins};
-export type {Options};
+export type {Options, TermOptionsConfig};
