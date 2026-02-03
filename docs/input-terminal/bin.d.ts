@@ -18,7 +18,7 @@ export declare const built_ins: Command[];
  * @category Terminal Components
  */
 export declare class TermBin {
-    private _list;
+    private _commands;
     private _emptyCommand;
     /**
      * Get the list of commands in the terminal's bin.

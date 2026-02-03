@@ -29,10 +29,14 @@ export class ArgsOptions {
         this.init();
     }
     castStringToValue(string) {
-        if (typeof Number(string) === "number" && !isNaN(Number(string))) {
-            return Number(string);
+        if (string.trim() === "") {
+            return string;
         }
-        else if (string === "true") {
+        const num = Number(string);
+        if (!isNaN(num)) {
+            return num;
+        }
+        if (string === "true") {
             return true;
         }
         else if (string === "false") {
@@ -42,13 +46,13 @@ export class ArgsOptions {
             return string;
         }
     }
-    isAlphanumeric(input) {
-        return /^[A-Za-z0-9]+$/.test(input);
+    isValidOptionKey(input) {
+        return /^[A-Za-z0-9_-]+$/.test(input);
     }
     string2opt(string) {
         const key = string.split("=")[0] || "";
         const value = string.split("=").slice(1).join("=");
-        if (!this.isAlphanumeric(key)) {
+        if (!this.isValidOptionKey(key)) {
             throw new Error(`Invalid option: ${string}`);
         }
         if (key && value) {
@@ -61,24 +65,29 @@ export class ArgsOptions {
     init() {
         for (let i = 1; i < this._userInput.length; i++) {
             const item = this._userInput[i];
-            if (item.startsWith("--")) {
-                this.string2opt(item.slice(2));
-            }
-            else if (item.startsWith("-")) {
-                if (item[2] === "=") {
-                    this.string2opt(item.slice(1));
+            try {
+                if (item.startsWith("--")) {
+                    this.string2opt(item.slice(2));
                 }
-                else if (!item.includes("=")) {
-                    for (const char of item.slice(1)) {
-                        this.string2opt(char);
+                else if (item.startsWith("-")) {
+                    if (item[2] === "=") {
+                        this.string2opt(item.slice(1));
+                    }
+                    else if (!item.includes("=")) {
+                        for (const char of item.slice(1)) {
+                            this.string2opt(char);
+                        }
+                    }
+                    else {
+                        throw new Error(`Invalid option: ${item}.`);
                     }
                 }
                 else {
-                    throw new Error(`Invalid option: ${item}.`);
+                    this._args.push(this.castStringToValue(item));
                 }
             }
-            else {
-                this._args.push(this.castStringToValue(item));
+            catch (error) {
+                // Silently fail and continue
             }
         }
     }
@@ -116,12 +125,7 @@ export class Command {
      * @param {string} manual - the manual for the command
      */
     set manual(manual) {
-        if (this._manual === undefined) {
-            this._manual = manual;
-        }
-        else {
-            throw new Error("Manual cannot be reassigned after it has been set");
-        }
+        this._manual = manual;
     }
     /**
      * @param {string} key - the key used to identify the command

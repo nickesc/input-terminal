@@ -117,7 +117,7 @@ export class Terminal extends EventTarget {
     /**
      * @param {HTMLInputElement} input - input element to turn into a terminal
      * @param {HTMLElement} [output] - optional output element to render stdout/stderr to
-     * @param {object} options - terminal configuration
+     * @param {TermOptionsConfig} options - terminal configuration
      * @param {ExitObject[]} commandHistory - history of commands that have been executed
      * @param {Command[]} commandList - list of commands that can be executed by the user
      */
@@ -129,6 +129,13 @@ export class Terminal extends EventTarget {
         this.bin = new TermBin(commandList);
         this.options = new TermOptions(options);
         this._listeners = new TermListeners(this);
+    }
+    /**
+     * Get the full terminal prompt.
+     * @returns {string} the full terminal prompt (preprompt + prompt)
+     */
+    getFullPrompt() {
+        return this.options.preprompt + this.options.prompt;
     }
     /**
      * Initializes the terminal. Attaches input listeners and updates the input.
@@ -155,14 +162,14 @@ export class Terminal extends EventTarget {
      * @returns {void}
      */
     updateInput(userInput) {
-        this.input.value = this.options.preprompt + this.options.prompt + (userInput || "");
+        this.input.value = this.getFullPrompt() + (userInput || "");
     }
     /**
      * Gets the terminal's user input.
      * @returns {string} The string in the input, not including the preprompt and prompt
      */
     getInputValue() {
-        return this.input.value.slice(`${this.options.preprompt}${this.options.prompt}`.length);
+        return this.input.value.slice(this.getFullPrompt().length);
     }
     /**
      * Gets the command predictions based on the user's input.

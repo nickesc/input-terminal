@@ -6,8 +6,9 @@ import { Command } from "../commands.js";
  * @type {Command}
  */
 const echo = new Command("echo", (args, options, terminal) => {
-    terminal.stdout(args.join(" "));
-    return {};
+    const output = args.join(" ");
+    terminal.stdout(output);
+    return output;
 });
 echo.manual = `echo [arguments]
 

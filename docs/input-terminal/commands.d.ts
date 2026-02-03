@@ -29,7 +29,7 @@ export declare class ArgsOptions {
      */
     constructor(userInput: string[]);
     private castStringToValue;
-    private isAlphanumeric;
+    private isValidOptionKey;
     private string2opt;
     private init;
 }
