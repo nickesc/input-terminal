@@ -9,4 +9,8 @@ const commands: Command = new Command("commands", (args, options, terminal) => {
     return {commands: terminal.bin.getCommandKeys()};
 });
 
+commands.manual = `commands
+
+Prints and returns a list of all available commands.`;
+
 export {commands};
