@@ -1,9 +1,15 @@
 {
   "name": "input-terminal",
-  "version": "0.5.1",
-  "description": "",
-  "keywords": [],
-  "homepage": "https://github.com/nickesc/input-terminal#readme",
+  "version": "0.6.0",
+  "description": "Turn any HTMLInputElement into a terminal interface.",
+  "keywords": [
+    "terminal",
+    "input",
+    "command",
+    "browser",
+    "dom"
+  ],
+  "homepage": "https://nickesc.github.io/input-terminal/",
   "bugs": {
     "url": "https://github.com/nickesc/input-terminal/issues"
   },
@@ -12,10 +18,16 @@
     "url": "git+https://github.com/nickesc/input-terminal.git"
   },
   "license": "MIT",
-  "author": "N. Escobar <nick@nescobar.media> (https://nickesc.github.io/)",
+  "author": "N. Escobar <nick@nickesc.io> (https://nickesc.github.io/)",
   "type": "module",
   "main": "build/input-terminal.js",
   "types": "build/input-terminal.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/input-terminal.d.ts",
+      "default": "./build/input-terminal.js"
+    }
+  },
   "directories": {
     "test": "tests"
   },
