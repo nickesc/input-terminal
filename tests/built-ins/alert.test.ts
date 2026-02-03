@@ -25,4 +25,9 @@ describe("alert command tests", () => {
         expect(exit.userInput).toEqual(["alert", "test"]);
         expect(alertSpy).toHaveBeenCalledWith("test");
     });
+
+    it("should have manual page", () => {
+        expect(alert.manual).toBeDefined();
+        expect(alert.manual?.length).toBeGreaterThan(0);
+    });
 });

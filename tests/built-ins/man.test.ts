@@ -53,4 +53,9 @@ describe("man command tests", () => {
         expect(exit.userInput).toEqual(["man", "noman"]);
         expect(exit.output).toEqual("noman");
     });
+
+    it("should have manual page", () => {
+        expect(man.manual).toBeDefined();
+        expect(man.manual?.length).toBeGreaterThan(0);
+    });
 });

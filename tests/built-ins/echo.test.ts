@@ -42,4 +42,9 @@ describe("echo command tests", () => {
         expect(exit.output).toEqual("");
         expect(exit.stdoutLog).toEqual([""]);
     });
+
+    it("should have manual page", () => {
+        expect(echo.manual).toBeDefined();
+        expect(echo.manual?.length).toBeGreaterThan(0);
+    });
 });

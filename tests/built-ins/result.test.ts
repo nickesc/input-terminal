@@ -109,4 +109,9 @@ describe("result command tests", () => {
         expect(isExitObject(exit.output)).toBe(false);
         expect(exit.output.error).toEqual("Invalid index");
     });
+
+    it("should have manual page", () => {
+        expect(result.manual).toBeDefined();
+        expect(result.manual?.length).toBeGreaterThan(0);
+    });
 });
