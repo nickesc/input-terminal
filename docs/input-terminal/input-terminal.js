@@ -29,6 +29,7 @@ import { TermOutput } from "./output.js";
 export class Terminal extends EventTarget {
     _listeners;
     _started = false;
+    _builtInsInstalled = false;
     _outputElement;
     _currentStdoutLog = [];
     _currentStderrLog = [];
@@ -143,17 +144,30 @@ export class Terminal extends EventTarget {
      */
     init() {
         if (!this._started) {
-            if (this.options.installBuiltins) {
+            if (this.options.installBuiltins && !this._builtInsInstalled) {
                 this.bin.list = [...this.bin.list, ...built_ins];
+                this._builtInsInstalled = true;
             }
             // Create TermOutput if output element was provided
-            if (this._outputElement) {
+            if (this._outputElement && !this.output) {
                 this.output = new TermOutput(this._outputElement, this);
-                this.output.attach();
             }
+            this.output?.attach();
             this._listeners.attachInputListeners();
             this.updateInput();
             this._started = true;
+        }
+    }
+    /**
+     * Destroys the terminal instance. Detaches input and output listeners and marks the terminal as not started.
+     * This does not clear command history, registered commands, input text, or output contents.
+     * @returns {void}
+     */
+    destroy() {
+        if (this._started) {
+            this._listeners.detachInputListeners();
+            this.output?.detach();
+            this._started = false;
         }
     }
     /**

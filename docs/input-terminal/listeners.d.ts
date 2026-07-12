@@ -7,6 +7,9 @@ export declare class TermListeners {
     private _terminal;
     private _predictionIndex;
     private _autocompletePredictions;
+    private _attached;
+    private _boundHandleKeyboardEvent;
+    private _boundHandleSelectionEvent;
     /**
      * @param {Terminal} terminal - the terminal to attach listeners to
      */
@@ -42,4 +45,9 @@ export declare class TermListeners {
      * @returns {void}
      */
     attachInputListeners(): void;
+    /**
+     * Detaches listeners from the terminal's input element.
+     * @returns {void}
+     */
+    detachInputListeners(): void;
 }
