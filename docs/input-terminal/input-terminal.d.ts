@@ -31,6 +31,7 @@ import type { TermOptionsConfig } from "./options.ts";
 export declare class Terminal extends EventTarget {
     private _listeners;
     private _started;
+    private _builtInsInstalled;
     private _outputElement;
     private _currentStdoutLog;
     private _currentStderrLog;
@@ -111,6 +112,12 @@ export declare class Terminal extends EventTarget {
      * @returns {void}
      */
     init(): void;
+    /**
+     * Destroys the terminal instance. Detaches input and output listeners and marks the terminal as not started.
+     * This does not clear command history, registered commands, input text, or output contents.
+     * @returns {void}
+     */
+    destroy(): void;
     /**
      * Updates the terminal's user input value.
      * @param {string} [userInput] - the value to update the input with; clears the input if no value is provided

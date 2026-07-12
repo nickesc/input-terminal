@@ -33,6 +33,7 @@ import type {TermOptionsConfig} from "./options.ts";
 export class Terminal extends EventTarget {
     private _listeners: TermListeners;
     private _started: boolean = false;
+    private _builtInsInstalled: boolean = false;
     private _outputElement: HTMLElement | undefined;
     private _currentStdoutLog: any[] = [];
     private _currentStderrLog: any[] = [];
@@ -173,19 +174,33 @@ export class Terminal extends EventTarget {
      */
     public init(): void {
         if (!this._started) {
-            if (this.options.installBuiltins) {
+            if (this.options.installBuiltins && !this._builtInsInstalled) {
                 this.bin.list = [...this.bin.list, ...built_ins];
+                this._builtInsInstalled = true;
             }
 
             // Create TermOutput if output element was provided
-            if (this._outputElement) {
+            if (this._outputElement && !this.output) {
                 this.output = new TermOutput(this._outputElement, this);
-                this.output.attach();
             }
 
+            this.output?.attach();
             this._listeners.attachInputListeners();
             this.updateInput();
             this._started = true;
+        }
+    }
+
+    /**
+     * Destroys the terminal instance. Detaches input and output listeners and marks the terminal as not started.
+     * This does not clear command history, registered commands, input text, or output contents.
+     * @returns {void}
+     */
+    public destroy(): void {
+        if (this._started) {
+            this._listeners.detachInputListeners();
+            this.output?.detach();
+            this._started = false;
         }
     }
 

@@ -59,7 +59,20 @@ terminal.bin.add(new Command("hello", (args, options, terminal) => {
 terminal.init();
 ```
 
-Call `terminal.init()` to attach input listeners and initialize the input as an terminal.
+Call `terminal.init()` to attach input listeners and initialize the input as a terminal.
+
+### Destroying the Terminal
+
+Call `terminal.destroy()` when you want to stop the terminal without discarding its state. This detaches input and output listeners and marks the terminal as not started. It does **not** clear command history, registered commands, input text, or output contents.
+
+```typescript
+terminal.destroy();
+
+// Later, re-attach listeners and resume
+terminal.init();
+```
+
+After `destroy()`, you can call `init()` again to reattach listeners. Built-in commands are only installed once, so re-initializing will not duplicate them.
 
 ### With Output Element
 
