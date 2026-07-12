@@ -35,12 +35,13 @@
     "test": "vitest run --reporter=verbose",
     "test:watch": "vitest --reporter=verbose",
     "coverage": "vitest run --coverage",
-    "docs": "typedoc && npm run build:site && npm run site:assets && npm run capsule",
+    "build": "npx tsc",
+    "prepack": "npm run build",
+    "build:site": "npx tsc -p tsconfig.docs.json",
     "site:assets": "cp docs/input-demo.js site/input-demo.js && cp -R docs/fonts site/fonts",
     "capsule": "node scripts/capsule.mjs",
-    "build": "npx tsc",
-    "build:docs": "npm run build && npm run docs",
-    "build:site": "npx tsc -p tsconfig.docs.json"
+    "docs": "typedoc && npm run build:site && npm run site:assets && npm run capsule",
+    "build:docs": "npm run build && npm run docs"
   },
   "files": [
     "build/**/*",
