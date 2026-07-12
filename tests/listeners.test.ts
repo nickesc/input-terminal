@@ -156,6 +156,23 @@ describe("Return Key Handling", () => {
         input.dispatchEvent(event);
         expect(terminal.getInputValue()).toBe("");
     });
+
+    it("should stop handling return key after destroy", () => {
+        terminal.updateInput("return");
+        terminal.destroy();
+        const event = new dom.window.KeyboardEvent("keydown", {key: "Enter"});
+        input.dispatchEvent(event);
+        expect(terminal.getInputValue()).toBe("return");
+    });
+
+    it("should handle return key after reinitializing from destroy", () => {
+        terminal.updateInput("return");
+        terminal.destroy();
+        terminal.init();
+        const event = new dom.window.KeyboardEvent("keydown", {key: "Enter"});
+        input.dispatchEvent(event);
+        expect(terminal.getInputValue()).toBe("");
+    });
 });
 
 describe("Autocomplete", () => {
