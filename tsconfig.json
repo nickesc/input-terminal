@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     /* Base Options: */
+    "rootDir": "./src",
     "outDir": "build",
     "target": "es2022",
     "module": "es2022",
-    "moduleResolution": "node10",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
@@ -20,7 +21,7 @@
     //"noUnusedParameters": true,
 
     /* If your code runs in the DOM: */
-    "lib": ["es6", "dom", "dom.iterable"],
+    "lib": ["es2022", "dom", "dom.iterable"],
   },
   "exclude": [
     "tests",
