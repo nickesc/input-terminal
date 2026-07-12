@@ -32,7 +32,6 @@ Install `input-terminal` via NPM:
 npm i input-terminal
 ```
 
-
 Import the `Terminal` and `Command` classes in your TypeScript or JavaScript file:
 
 ```ts
@@ -65,6 +64,8 @@ terminal.init();
 ## Reference
 
 For full documentation of the module and its methods, please see the [Documentation](https://nickesc.github.io/input-terminal).
+
+[![ghpages](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/documentation/ghpages_vector.svg)](https://nickesc.github.io/input-terminal)
 
 ## License
 
