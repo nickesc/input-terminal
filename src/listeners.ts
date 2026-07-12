@@ -8,12 +8,17 @@ export class TermListeners {
     private _terminal: Terminal;
     private _predictionIndex: number = 0;
     private _autocompletePredictions: string[] | undefined = undefined;
+    private _attached: boolean = false;
+    private _boundHandleKeyboardEvent: (event: KeyboardEvent) => void;
+    private _boundHandleSelectionEvent: (event: Event) => void;
 
     /**
      * @param {Terminal} terminal - the terminal to attach listeners to
      */
     constructor(terminal: Terminal) {
         this._terminal = terminal;
+        this._boundHandleKeyboardEvent = this._handleKeyboardEvent.bind(this);
+        this._boundHandleSelectionEvent = this._handleSelectionEvent.bind(this);
     }
 
     /**
@@ -166,11 +171,24 @@ export class TermListeners {
      * @returns {void}
      */
     public attachInputListeners(): void {
-        this._terminal.input.addEventListener("keydown", (event: KeyboardEvent) => {
-            this._handleKeyboardEvent(event);
-        });
-        this._terminal.input.addEventListener("selectionchange", (event: Event) => {
-            this._handleSelectionEvent(event);
-        });
+        if (!this._attached) {
+            this._terminal.input.addEventListener("keydown", this._boundHandleKeyboardEvent);
+            this._terminal.input.addEventListener("selectionchange", this._boundHandleSelectionEvent);
+            this._attached = true;
+        }
+    }
+
+    /**
+     * Detaches listeners from the terminal's input element.
+     * @returns {void}
+     */
+    public detachInputListeners(): void {
+        if (this._attached) {
+            this._terminal.input.removeEventListener("keydown", this._boundHandleKeyboardEvent);
+            this._terminal.input.removeEventListener("selectionchange", this._boundHandleSelectionEvent);
+            this._predictionIndex = 0;
+            this._autocompletePredictions = undefined;
+            this._attached = false;
+        }
     }
 }

@@ -41,6 +41,18 @@ describe("Terminal Initialization Tests", () => {
     it("should initialize with a listener manager", () => {
         expect(term.listeners).toBeDefined();
     });
+    it("should destroy and mark itself not started", () => {
+        term.init();
+        term.destroy();
+        expect(term.started).toBe(false);
+    });
+    it("should initialize again after destroy without duplicating built-ins", () => {
+        term.init();
+        term.destroy();
+        term.init();
+        expect(term.started).toBe(true);
+        expect(term.bin.list.length).toEqual(built_ins.length);
+    });
 });
 
 describe("Terminal Input Tests", () => {
