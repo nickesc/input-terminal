@@ -6,7 +6,7 @@
     <a href="https://www.npmjs.com/package/input-terminal"><img alt="NPM: npmjs.com/package/input-terminal" src="https://img.shields.io/npm/v/input-terminal?style=for-the-badge&logo=npm&logoColor=white&label=npm&color=%23C12127&labelColor=%23505050"></a>
   </div>
   <br>
-  <img src="docs/icon.svg" width="128">
+  <img src="docs/icon.svg" width="128" alt="input-terminal">
   <h3 align="center">
     <code>input-terminal</code>
   </h3>
