@@ -1,6 +1,6 @@
 {
   "name": "input-terminal",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Turn any HTMLInputElement into a terminal interface.",
   "keywords": [
     "terminal",
