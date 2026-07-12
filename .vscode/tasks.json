@@ -5,7 +5,7 @@
             "label": "serve-docs",
             "type": "shell",
             "command": "npx",
-            "args": ["-y", "http-server", "docs", "-p", "8080", "-o"],
+            "args": ["-y", "http-server", "site", "-p", "8080", "-o"],
             "group": "build",
             "presentation": {
                 "echo": true,
