@@ -27,7 +27,8 @@
     "tests",
     "node_modules",
     "build",
-    "docs"
+    "docs",
+    "site"
   ],
   "include": [
     "src"

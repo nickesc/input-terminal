@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, existsSync, unlinkSync } from "node:fs";
 import { Resvg } from "@resvg/resvg-js";
 
 const input = "docs/icon.svg";
-const output = "docs/capsule.png";
+const output = "site/capsule.png";
 
 if (existsSync(output)) {
   unlinkSync(output);
