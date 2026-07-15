@@ -230,6 +230,22 @@ export class Terminal extends EventTarget {
     }
 
     /**
+     * Applies partial option updates. Prompt changes preserve unfinished input and redraw initialized terminals.
+     * @param {Partial<TermOptions>} options - the options to update
+     * @returns {void}
+     */
+    public updateOptions(options: Partial<TermOptions>): void {
+        const promptChanged = Object.hasOwn(options, "prompt") || Object.hasOwn(options, "preprompt");
+        const userInput = this._started && promptChanged ? this.getInputValue() : undefined;
+
+        this._options = Object.freeze({...this._options, ...options});
+
+        if (userInput !== undefined) {
+            this.updateInput(userInput);
+        }
+    }
+
+    /**
      * Gets the command predictions based on the user's input.
      * @param {string} [text] - The text to get predictions for; if no text is provided, all commands are returned
      * @returns {string[]} The predictions for the terminal's user input
