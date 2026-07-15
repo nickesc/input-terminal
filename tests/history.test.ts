@@ -176,7 +176,7 @@ describe("TermHistory Empty Command History Tests", () => {
     });
 
     it("should not add an empty command to history when addEmptyCommandToHistory is disabled", () => {
-        terminal.options.addEmptyCommandToHistory = false;
+        terminal.updateOptions({addEmptyCommandToHistory: false});
         terminal.updateInput("");
         const event = new dom.window.KeyboardEvent("keydown", {key: "Enter"});
         input.dispatchEvent(event);
@@ -184,7 +184,7 @@ describe("TermHistory Empty Command History Tests", () => {
     });
 
     it("should add an empty command to history when addEmptyCommandToHistory is enabled", () => {
-        terminal.options.addEmptyCommandToHistory = true;
+        terminal.updateOptions({addEmptyCommandToHistory: true});
         terminal.updateInput("");
         const event = new dom.window.KeyboardEvent("keydown", {key: "Enter"});
         input.dispatchEvent(event);
