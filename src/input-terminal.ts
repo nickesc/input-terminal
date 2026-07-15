@@ -1,11 +1,11 @@
 import {Command, ExitObject, ArgsOptions} from "./commands.ts";
 import {TermHistory} from "./history.ts";
 import {TermListeners} from "./listeners.ts";
-import {TermOptions} from "./options.ts";
+import {defaultTermOptions} from "./options.ts";
 import {TermBin, built_ins} from "./bin.ts";
 import {TermOutput} from "./output.ts";
 import type {Options} from "./commands.ts";
-import type {TermOptionsConfig} from "./options.ts";
+import type {TermOptions} from "./options.ts";
 
 /**
  * @license MIT
@@ -75,7 +75,15 @@ export class Terminal extends EventTarget {
      * The options for the terminal.
      * @type {TermOptions}
      */
-    public options: TermOptions;
+    private _options: TermOptions;
+
+    /**
+     * Get the terminal's current options.
+     * @type {TermOptions}
+     */
+    public get options(): TermOptions {
+        return this._options;
+    }
 
     /**
      * Get the listeners for the terminal.
@@ -140,14 +148,14 @@ export class Terminal extends EventTarget {
     /**
      * @param {HTMLInputElement} input - input element to turn into a terminal
      * @param {HTMLElement} [output] - optional output element to render stdout/stderr to
-     * @param {TermOptionsConfig} options - terminal configuration
+     * @param {Partial<TermOptions>} options - terminal configuration
      * @param {ExitObject[]} commandHistory - history of commands that have been executed
      * @param {Command[]} commandList - list of commands that can be executed by the user
      */
     constructor(
         input: HTMLInputElement,
         output?: HTMLElement,
-        options: TermOptionsConfig = {},
+        options: Partial<TermOptions> = {},
         commandHistory: ExitObject[] = [],
         commandList: Command[] = [],
     ) {
@@ -156,7 +164,7 @@ export class Terminal extends EventTarget {
         this._outputElement = output;
         this.history = new TermHistory(commandHistory);
         this.bin = new TermBin(commandList);
-        this.options = new TermOptions(options);
+        this._options = Object.freeze({...defaultTermOptions, ...options});
         this._listeners = new TermListeners(this);
     }
 
@@ -341,5 +349,5 @@ export class Terminal extends EventTarget {
     }
 }
 
-export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, TermOutput, built_ins};
-export type {Options, TermOptionsConfig};
+export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermListeners, TermOutput, built_ins};
+export type {Options, TermOptions};
