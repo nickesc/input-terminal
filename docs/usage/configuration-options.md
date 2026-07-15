@@ -20,6 +20,17 @@ const terminal = new Terminal(input, output, {
 });
 ```
 
+Options are exposed as a readonly object. Use `updateOptions()` to change them after construction:
+
+```typescript
+terminal.updateOptions({
+  prompt: "$ ",
+  preprompt: "[admin] "
+});
+```
+
+When an initialized terminal's `prompt` or `preprompt` changes, `updateOptions()` preserves any unfinished input and redraws it with the new full prompt. Pass related changes in one call so they are applied together.
+
 ### Available Options
 
 | Option | Type | Default | Description |
