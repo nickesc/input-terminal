@@ -24,6 +24,30 @@ class RecordingOutputAdapter implements OutputAdapter {
     }
 }
 
+class ThrowingOutputAdapter implements OutputAdapter {
+    public operations: RecordedOutputOperation[] = [];
+    private readonly error: unknown;
+
+    constructor(error: unknown) {
+        this.error = error;
+    }
+
+    public stdout(data: unknown, metadata: OutputMetadata): void {
+        this.operations.push({metadata, operation: "stdout", data});
+        throw this.error;
+    }
+
+    public stderr(data: unknown, metadata: OutputMetadata): void {
+        this.operations.push({metadata, operation: "stderr", data});
+        throw this.error;
+    }
+
+    public clear(metadata: OutputMetadata): void {
+        this.operations.push({metadata, operation: "clear"});
+        throw this.error;
+    }
+}
+
 describe("Terminal stdout/stderr Event Tests", () => {
     let term: Terminal;
     let input: HTMLInputElement;
@@ -213,6 +237,99 @@ describe("Terminal Output Adapter Routing Tests", () => {
 
         expect(term.output).toBe(output);
         expect(output.operations).toHaveLength(1);
+    });
+});
+
+describe("Terminal Output Adapter Failure Tests", () => {
+    let input: HTMLInputElement;
+
+    beforeEach(() => {
+        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById("terminal-input") as HTMLInputElement;
+    });
+
+    it("should emit each normal event before outputerror with the same metadata", () => {
+        const failure = {reason: "adapter failed"};
+        const output = new ThrowingOutputAdapter(failure);
+        const term = new Terminal({input, output});
+        const events: CustomEvent[] = [];
+        const listener = (event: Event) => events.push(event as CustomEvent);
+        term.addEventListener("stdout", listener);
+        term.addEventListener("stderr", listener);
+        term.addEventListener("clear", listener);
+        term.addEventListener("outputerror", listener);
+        const stdoutValue = {channel: "stdout"};
+        const stderrValue = {channel: "stderr"};
+
+        expect(() => term.stdout(stdoutValue)).not.toThrow();
+        expect(() => term.stderr(stderrValue)).not.toThrow();
+        expect(() => term.clearOutput()).not.toThrow();
+
+        expect(events.map((event) => event.type)).toEqual([
+            "stdout",
+            "outputerror",
+            "stderr",
+            "outputerror",
+            "clear",
+            "outputerror",
+        ]);
+
+        const normalEvents = [events[0]!, events[2]!, events[4]!];
+        const errorEvents = [events[1]!, events[3]!, events[5]!];
+        expect(normalEvents.map((event) => event.detail.metadata.sequence)).toEqual([1, 2, 3]);
+        expect(errorEvents.map((event) => event.detail.metadata.sequence)).toEqual([1, 2, 3]);
+
+        for (const [index, event] of normalEvents.entries()) {
+            expect(errorEvents[index]?.detail.metadata).toBe(event.detail.metadata);
+            expect(output.operations[index]?.metadata).toBe(event.detail.metadata);
+            expect(errorEvents[index]?.detail.error).toBe(failure);
+        }
+
+        expect(errorEvents[0]?.detail.operation).toBe("stdout");
+        expect(errorEvents[0]?.detail.data).toBe(stdoutValue);
+        expect(errorEvents[1]?.detail.operation).toBe("stderr");
+        expect(errorEvents[1]?.detail.data).toBe(stderrValue);
+        expect(errorEvents[2]?.detail.operation).toBe("clear");
+        expect(errorEvents[2]?.detail).not.toHaveProperty("data");
+    });
+
+    it("should handle undefined errors and retry the adapter on later operations", () => {
+        const output = new ThrowingOutputAdapter(undefined);
+        const term = new Terminal({input, output});
+        const errors: CustomEvent[] = [];
+        term.addEventListener("outputerror", (event) => errors.push(event as CustomEvent));
+
+        term.stdout("first");
+        term.stdout("second");
+
+        expect(output.operations.map((operation) => operation.operation)).toEqual(["stdout", "stdout"]);
+        expect(errors).toHaveLength(2);
+        expect(errors[0]?.detail.error).toBeUndefined();
+        expect(errors[1]?.detail.error).toBeUndefined();
+    });
+
+    it("should not change command results or add adapter failures to stderr", () => {
+        const failure = new Error("adapter failed");
+        const output = new ThrowingOutputAdapter(failure);
+        const term = new Terminal({input, output});
+        const errors: CustomEvent[] = [];
+        term.addEventListener("outputerror", (event) => errors.push(event as CustomEvent));
+        term.bin.add(
+            new Command("test", (args, options, terminal) => {
+                terminal.stdout("command output");
+                return {completed: true};
+            }),
+        );
+
+        const result = term.executeCommand("test");
+
+        expect(result.exitCode).toBe(0);
+        expect(result.output).toEqual({completed: true});
+        expect(result.stdoutLog).toEqual(["command output"]);
+        expect(result.stderrLog).toEqual([]);
+        expect(errors).toHaveLength(1);
+        expect(errors[0]?.detail.error).toBe(failure);
     });
 });
 

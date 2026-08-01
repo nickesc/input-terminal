@@ -17,6 +17,7 @@ const eventType = {
     stdout: "stdout",
     stderr: "stderr",
     clear: "clear",
+    outputError: "outputerror",
 } as const;
 
 /**
@@ -141,10 +142,29 @@ export class Terminal extends EventTarget {
     public stdout(data: any): void {
         const metadata = this.createOutputMetadata();
         const detail: OutputEventDetail = {metadata, data};
+        let adapterFailure: {error: unknown} | undefined;
 
         this._currentStdoutLog.push(data);
-        this.output?.stdout(data, metadata);
+
+        if (this.output) {
+            try {
+                this.output.stdout(data, metadata);
+            } catch (error) {
+                adapterFailure = {error};
+            }
+        }
+
         this.dispatchEvent(new CustomEvent(eventType.stdout, {detail}));
+
+        if (adapterFailure) {
+            const errorDetail: OutputErrorDetail = {
+                metadata,
+                operation: eventType.stdout,
+                data,
+                error: adapterFailure.error,
+            };
+            this.dispatchEvent(new CustomEvent(eventType.outputError, {detail: errorDetail}));
+        }
     }
 
     /**
@@ -155,10 +175,29 @@ export class Terminal extends EventTarget {
     public stderr(data: any): void {
         const metadata = this.createOutputMetadata();
         const detail: OutputEventDetail = {metadata, data};
+        let adapterFailure: {error: unknown} | undefined;
 
         this._currentStderrLog.push(data);
-        this.output?.stderr(data, metadata);
+
+        if (this.output) {
+            try {
+                this.output.stderr(data, metadata);
+            } catch (error) {
+                adapterFailure = {error};
+            }
+        }
+
         this.dispatchEvent(new CustomEvent(eventType.stderr, {detail}));
+
+        if (adapterFailure) {
+            const errorDetail: OutputErrorDetail = {
+                metadata,
+                operation: eventType.stderr,
+                data,
+                error: adapterFailure.error,
+            };
+            this.dispatchEvent(new CustomEvent(eventType.outputError, {detail: errorDetail}));
+        }
     }
 
     /**
@@ -168,9 +207,26 @@ export class Terminal extends EventTarget {
     public clearOutput(): void {
         const metadata = this.createOutputMetadata();
         const detail: ClearEventDetail = {metadata};
+        let adapterFailure: {error: unknown} | undefined;
 
-        this.output?.clear(metadata);
+        if (this.output) {
+            try {
+                this.output.clear(metadata);
+            } catch (error) {
+                adapterFailure = {error};
+            }
+        }
+
         this.dispatchEvent(new CustomEvent(eventType.clear, {detail}));
+
+        if (adapterFailure) {
+            const errorDetail: OutputErrorDetail = {
+                metadata,
+                operation: eventType.clear,
+                error: adapterFailure.error,
+            };
+            this.dispatchEvent(new CustomEvent(eventType.outputError, {detail: errorDetail}));
+        }
     }
 
     /**
