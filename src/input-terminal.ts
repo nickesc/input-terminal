@@ -6,6 +6,13 @@ import {TermBin, built_ins} from "./bin.ts";
 import {TermOutput} from "./output.ts";
 import type {Options} from "./commands.ts";
 import type {TermOptions} from "./options.ts";
+import type {
+    OutputAdapter,
+    OutputMetadata,
+    OutputEventDetail,
+    ClearEventDetail,
+    OutputErrorDetail,
+} from "./output-adapter.ts";
 
 /**
  * @license MIT
@@ -366,4 +373,12 @@ export class Terminal extends EventTarget {
 }
 
 export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermListeners, TermOutput, built_ins};
-export type {Options, TermOptions};
+export type {
+    Options,
+    TermOptions,
+    OutputAdapter,
+    OutputMetadata,
+    OutputEventDetail,
+    ClearEventDetail,
+    OutputErrorDetail,
+};
