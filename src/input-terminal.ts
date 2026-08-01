@@ -14,6 +14,11 @@ import type {
     OutputErrorDetail,
 } from "./output-adapter.ts";
 
+const eventType = {
+    stdout: "stdout",
+    stderr: "stderr",
+} as const;
+
 /**
  * @license MIT
  * @author nickesc
@@ -54,8 +59,16 @@ export class Terminal extends EventTarget {
     private _started: boolean = false;
     private _builtInsInstalled: boolean = false;
     private _outputElement: HTMLElement | undefined;
+    private _outputSequence: number = 0;
     private _currentStdoutLog: any[] = [];
     private _currentStderrLog: any[] = [];
+
+    private createOutputMetadata(): OutputMetadata {
+        return Object.freeze({
+            sequence: ++this._outputSequence,
+            timestamp: Date.now(),
+        });
+    }
 
     private emitExecutedEvent(exitObject: ExitObject): void {
         this.dispatchEvent(new CustomEvent("inputTerminalExecuted", {detail: exitObject}));
@@ -126,12 +139,11 @@ export class Terminal extends EventTarget {
      * @returns {void}
      */
     public stdout(data: any): void {
+        const metadata = this.createOutputMetadata();
+        const detail: OutputEventDetail = {metadata, data};
+
         this._currentStdoutLog.push(data);
-        this.dispatchEvent(
-            new CustomEvent("stdout", {
-                detail: {data, timestamp: Date.now()},
-            }),
-        );
+        this.dispatchEvent(new CustomEvent(eventType.stdout, {detail}));
     }
 
     /**
@@ -140,12 +152,11 @@ export class Terminal extends EventTarget {
      * @returns {void}
      */
     public stderr(data: any): void {
+        const metadata = this.createOutputMetadata();
+        const detail: OutputEventDetail = {metadata, data};
+
         this._currentStderrLog.push(data);
-        this.dispatchEvent(
-            new CustomEvent("stderr", {
-                detail: {data, timestamp: Date.now()},
-            }),
-        );
+        this.dispatchEvent(new CustomEvent(eventType.stderr, {detail}));
     }
 
     /**

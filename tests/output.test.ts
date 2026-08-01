@@ -23,7 +23,8 @@ describe("Terminal stdout/stderr Event Tests", () => {
         expect(listener).toHaveBeenCalledTimes(1);
         const event = listener.mock.calls[0][0] as CustomEvent;
         expect(event.detail.data).toBe("test output");
-        expect(event.detail.timestamp).toBeDefined();
+        expect(event.detail.metadata.sequence).toBe(1);
+        expect(event.detail.metadata.timestamp).toEqual(expect.any(Number));
     });
 
     it("should emit stderr event with correct data", () => {
@@ -35,7 +36,8 @@ describe("Terminal stdout/stderr Event Tests", () => {
         expect(listener).toHaveBeenCalledTimes(1);
         const event = listener.mock.calls[0][0] as CustomEvent;
         expect(event.detail.data).toBe("error output");
-        expect(event.detail.timestamp).toBeDefined();
+        expect(event.detail.metadata.sequence).toBe(1);
+        expect(event.detail.metadata.timestamp).toEqual(expect.any(Number));
     });
 
     it("should emit stdout events with different data types", () => {
@@ -52,6 +54,62 @@ describe("Terminal stdout/stderr Event Tests", () => {
         expect((listener.mock.calls[1][0] as CustomEvent).detail.data).toBe(123);
         expect((listener.mock.calls[2][0] as CustomEvent).detail.data).toEqual({key: "value"});
         expect((listener.mock.calls[3][0] as CustomEvent).detail.data).toBe(true);
+    });
+
+    it("should sequence stdout and stderr from one terminal-wide counter", () => {
+        const events: CustomEvent[] = [];
+        const listener = (event: Event) => events.push(event as CustomEvent);
+        term.addEventListener("stdout", listener);
+        term.addEventListener("stderr", listener);
+
+        term.stdout("first");
+        term.stderr("second");
+        term.stdout("third");
+
+        expect(events.map((event) => event.detail.metadata.sequence)).toEqual([1, 2, 3]);
+    });
+
+    it("should capture Date.now when each operation begins", () => {
+        const dispatchEvent = vi.spyOn(term, "dispatchEvent").mockReturnValue(true);
+        const now = vi.spyOn(Date, "now").mockReturnValue(1_000);
+
+        term.stdout("first");
+        now.mockReturnValue(2_000);
+        term.stderr("second");
+
+        const stdoutEvent = dispatchEvent.mock.calls[0][0] as CustomEvent;
+        const stderrEvent = dispatchEvent.mock.calls[1][0] as CustomEvent;
+        const stdoutTimestamp = stdoutEvent.detail.metadata.timestamp;
+        const stderrTimestamp = stderrEvent.detail.metadata.timestamp;
+        now.mockRestore();
+
+        expect(stdoutTimestamp).toBe(1_000);
+        expect(stderrTimestamp).toBe(2_000);
+    });
+
+    it("should freeze output metadata", () => {
+        const listener = vi.fn();
+        term.addEventListener("stdout", listener);
+
+        term.stdout("test");
+
+        const event = listener.mock.calls[0][0] as CustomEvent;
+        expect(Object.isFrozen(event.detail.metadata)).toBe(true);
+    });
+
+    it("should preserve the sequence across destroy and reinitialization", () => {
+        const events: CustomEvent[] = [];
+        const listener = (event: Event) => events.push(event as CustomEvent);
+        term.addEventListener("stdout", listener);
+        term.addEventListener("stderr", listener);
+
+        term.stdout("before");
+        term.init();
+        term.destroy();
+        term.init();
+        term.stderr("after");
+
+        expect(events.map((event) => event.detail.metadata.sequence)).toEqual([1, 2]);
     });
 });
 
@@ -166,6 +224,19 @@ describe("Terminal stdout/stderr Log Tests", () => {
         // Original logs should be unchanged
         expect(term.getStdoutLog()).toEqual(["test"]);
         expect(term.getStderrLog()).toEqual(["error"]);
+    });
+
+    it("should update logs before output listeners run", () => {
+        const stdoutLogDuringEvent: unknown[][] = [];
+        const stderrLogDuringEvent: unknown[][] = [];
+        term.addEventListener("stdout", () => stdoutLogDuringEvent.push(term.getStdoutLog()));
+        term.addEventListener("stderr", () => stderrLogDuringEvent.push(term.getStderrLog()));
+
+        term.stdout("normal");
+        term.stderr("error");
+
+        expect(stdoutLogDuringEvent).toEqual([["normal"]]);
+        expect(stderrLogDuringEvent).toEqual([["error"]]);
     });
 });
 
