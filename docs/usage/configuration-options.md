@@ -20,6 +20,17 @@ const terminal = new Terminal(input, output, {
 });
 ```
 
+Options are exposed as a readonly object. Use `updateOptions()` to change them after construction:
+
+```typescript
+terminal.updateOptions({
+  prompt: "$ ",
+  preprompt: "[admin] "
+});
+```
+
+When an initialized terminal's `prompt` or `preprompt` changes, `updateOptions()` preserves any unfinished input and redraws it with the new full prompt. Pass related changes in one call so they are applied together.
+
 ### Available Options
 
 | Option | Type | Default | Description |
@@ -47,3 +58,15 @@ const terminal = new Terminal(input, output, {
 // Access later
 console.log(terminal.options.myCustomOption);
 ```
+
+### Runtime Behavior
+
+| Options | When updates take effect |
+|---------|--------------------------|
+| `prompt`, `preprompt` | Immediately. Initialized terminals redraw without losing unfinished input. |
+| `previousKey`, `nextKey`, `returnKey`, `autocompleteKey` | On the next keyboard event. |
+| `addEmptyCommandToHistory`, `showDuplicateCommands` | On the next related command or history action. |
+| `installBuiltins` | On the next initialization. Updating it does not add or remove commands on an initialized terminal. |
+| Custom options | Stored immediately; their consumers determine when behavior changes. |
+
+`terminal.options` is a frozen snapshot. Each `updateOptions()` call replaces it, so code should read `terminal.options` again instead of retaining an older reference.

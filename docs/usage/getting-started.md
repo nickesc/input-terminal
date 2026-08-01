@@ -29,9 +29,9 @@ import {
   ExitObject, 
   TermBin, 
   TermHistory, 
-  TermOptions, 
   TermOutput, 
-  built_ins 
+  built_ins,
+  type TermOptions
 } from "input-terminal";
 ```
 

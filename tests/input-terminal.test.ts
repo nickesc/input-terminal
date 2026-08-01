@@ -187,12 +187,48 @@ describe("Terminal Prompt Tests", () => {
     });
 
     it("should change the prompt", () => {
-        term.options.prompt = ">> ";
+        term.updateOptions({prompt: ">> "});
         expect(term.options.prompt).toEqual(">> ");
     });
     it("should change the preprompt", () => {
-        term.options.preprompt = ">> ";
+        term.updateOptions({preprompt: ">> "});
         expect(term.options.preprompt).toEqual(">> ");
+    });
+    it("should preserve unfinished input when changing to a longer prompt", () => {
+        term.init();
+        term.updateInput("echo unfinished");
+
+        term.updateOptions({prompt: "terminal >> "});
+
+        expect(input.value).toBe("terminal >> echo unfinished");
+        expect(term.getInputValue()).toBe("echo unfinished");
+    });
+    it("should preserve unfinished input when changing to a shorter prompt", () => {
+        term.updateOptions({prompt: "terminal >> "});
+        term.init();
+        term.updateInput("echo unfinished");
+
+        term.updateOptions({prompt: "$ "});
+
+        expect(input.value).toBe("$ echo unfinished");
+        expect(term.getInputValue()).toBe("echo unfinished");
+    });
+    it("should preserve unfinished input when changing the prompt and preprompt together", () => {
+        term.init();
+        term.updateInput("echo unfinished");
+
+        term.updateOptions({prompt: "$ ", preprompt: "[user] "});
+
+        expect(input.value).toBe("[user] $ echo unfinished");
+        expect(term.getInputValue()).toBe("echo unfinished");
+    });
+    it("should not redraw the input before initialization", () => {
+        input.value = "existing value";
+
+        term.updateOptions({prompt: "$ "});
+
+        expect(input.value).toBe("existing value");
+        expect(term.options.prompt).toBe("$ ");
     });
     it("should still grab the correct raw input on exit with a custom prompt", () => {
         term.bin.add(
@@ -200,8 +236,7 @@ describe("Terminal Prompt Tests", () => {
                 return;
             }),
         );
-        term.options.prompt = ">> ";
-        term.options.preprompt = ">> ";
+        term.updateOptions({prompt: ">> ", preprompt: ">> "});
         expect(term.executeCommand("test").rawInput).toEqual("test");
     });
 });
@@ -228,17 +263,17 @@ describe("Terminal Install Built-Ins Tests", () => {
         expect(term.bin.list.length).toEqual(built_ins.length);
     });
     it("should install built-ins if set to true in options", () => {
-        term.options.installBuiltins = true;
+        term.updateOptions({installBuiltins: true});
         term.init();
         expect(term.bin.list.length).toEqual(built_ins.length);
     });
     it("should not install built-ins if set to false in options", () => {
-        term.options.installBuiltins = false;
+        term.updateOptions({installBuiltins: false});
         term.init();
         expect(term.bin.list.length).toEqual(0);
     });
     it("should not install built-ins before initialization", () => {
-        term.options.installBuiltins = true;
+        term.updateOptions({installBuiltins: true});
         expect(term.bin.list.length).toEqual(0);
     });
 });
