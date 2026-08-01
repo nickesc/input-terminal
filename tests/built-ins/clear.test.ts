@@ -22,7 +22,7 @@ describe("clear command tests", () => {
 
     it("should run the clear command", () => {
         output.innerHTML = "<span>test</span>";
-        const clearSpy = vi.spyOn(term.output!, "clear");
+        const clearSpy = vi.spyOn(term, "clearOutput");
         const exit: ExitObject = clear.run(["clear"], "clear", term);
         expect(exit.command).toBe(clear);
         expect(exit.exitCode).toEqual(0);

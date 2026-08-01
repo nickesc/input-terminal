@@ -240,6 +240,85 @@ describe("Terminal stdout/stderr Log Tests", () => {
     });
 });
 
+describe("Terminal Clear Output Tests", () => {
+    let term: Terminal;
+    let input: HTMLInputElement;
+    let output: HTMLElement;
+    let dom: JSDOM;
+
+    beforeEach(() => {
+        dom = new JSDOM(
+            '<!DOCTYPE html><html><body><input type="text" id="terminal-input"><div id="terminal-output"></div></body></html>',
+        );
+        global.document = dom.window.document;
+        input = document.getElementById("terminal-input") as HTMLInputElement;
+        output = document.getElementById("terminal-output") as HTMLElement;
+        term = new Terminal({input, output});
+        term.init();
+    });
+
+    it("should clear rendered output before dispatching the clear event", () => {
+        output.innerHTML = "<span>existing output</span>";
+        const outputDuringEvent: string[] = [];
+        const listener = vi.fn((event: Event) => outputDuringEvent.push(output.innerHTML));
+        term.addEventListener("clear", listener);
+
+        term.clearOutput();
+
+        expect(output.innerHTML).toBe("");
+        expect(outputDuringEvent).toEqual([""]);
+        expect(listener).toHaveBeenCalledTimes(1);
+        const event = listener.mock.calls[0][0] as CustomEvent;
+        expect(event.detail.metadata.sequence).toBe(1);
+        expect(event.detail.metadata.timestamp).toEqual(expect.any(Number));
+        expect(Object.isFrozen(event.detail.metadata)).toBe(true);
+    });
+
+    it("should sequence clear with stdout and stderr without resetting the counter", () => {
+        const events: CustomEvent[] = [];
+        const listener = (event: Event) => events.push(event as CustomEvent);
+        term.addEventListener("stdout", listener);
+        term.addEventListener("stderr", listener);
+        term.addEventListener("clear", listener);
+
+        term.stdout("first");
+        term.stderr("second");
+        term.clearOutput();
+        term.stdout("fourth");
+
+        expect(events.map((event) => event.detail.metadata.sequence)).toEqual([1, 2, 3, 4]);
+    });
+
+    it("should emit and sequence clear without an output element", () => {
+        const headlessTerm = new Terminal({input});
+        const events: CustomEvent[] = [];
+        const listener = (event: Event) => events.push(event as CustomEvent);
+        headlessTerm.addEventListener("clear", listener);
+        headlessTerm.addEventListener("stdout", listener);
+
+        headlessTerm.clearOutput();
+        headlessTerm.stdout("after clear");
+
+        expect(events.map((event) => event.type)).toEqual(["clear", "stdout"]);
+        expect(events.map((event) => event.detail.metadata.sequence)).toEqual([1, 2]);
+    });
+
+    it("should preserve logs, history, and input", () => {
+        const historyEntry = new ExitObject(["previous"], "previous", undefined, 0, {});
+        term.history.push(historyEntry);
+        term.stdout("normal");
+        term.stderr("error");
+        term.updateInput("unfinished input");
+
+        term.clearOutput();
+
+        expect(term.getStdoutLog()).toEqual(["normal"]);
+        expect(term.getStderrLog()).toEqual(["error"]);
+        expect(term.history.items).toEqual([historyEntry]);
+        expect(term.getInputValue()).toBe("unfinished input");
+    });
+});
+
 describe("TermOutput Rendering Tests", () => {
     let term: Terminal;
     let input: HTMLInputElement;

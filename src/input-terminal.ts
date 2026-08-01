@@ -17,6 +17,7 @@ import type {
 const eventType = {
     stdout: "stdout",
     stderr: "stderr",
+    clear: "clear",
 } as const;
 
 /**
@@ -157,6 +158,18 @@ export class Terminal extends EventTarget {
 
         this._currentStderrLog.push(data);
         this.dispatchEvent(new CustomEvent(eventType.stderr, {detail}));
+    }
+
+    /**
+     * Clear rendered output. Dispatches a "clear" event without changing logs or history.
+     * @returns {void}
+     */
+    public clearOutput(): void {
+        const metadata = this.createOutputMetadata();
+        const detail: ClearEventDetail = {metadata};
+
+        this.output?.clear();
+        this.dispatchEvent(new CustomEvent(eventType.clear, {detail}));
     }
 
     /**
