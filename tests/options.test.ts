@@ -23,7 +23,7 @@ describe("Terminal Options Tests", () => {
         const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
     });
 
     it("should construct with default options", () => {
@@ -40,7 +40,7 @@ describe("Terminal Options Tests", () => {
     });
 
     it("should construct with custom options", () => {
-        terminal = new Terminal(input, undefined, customOptions);
+        terminal = new Terminal({input, options: customOptions});
         const options = terminal.options;
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
@@ -58,14 +58,14 @@ describe("Terminal Options Tests", () => {
             previousKey: "PageUp",
             nextKey: "PageDown",
         };
-        terminal = new Terminal(input, undefined, customOptions);
+        terminal = new Terminal({input, options: customOptions});
         const options = terminal.options;
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
         expect(options.returnKey).toEqual("Enter");
     });
     it("should store custom options", () => {
-        terminal = new Terminal(input, undefined, {myCustomOption: "custom value"});
+        terminal = new Terminal({input, options: {myCustomOption: "custom value"}});
         expect(terminal.options.myCustomOption).toEqual("custom value");
     });
 

@@ -11,7 +11,7 @@ describe("Terminal stdout/stderr Event Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should emit stdout event with correct data", () => {
@@ -64,7 +64,7 @@ describe("Terminal stdout/stderr Log Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should capture stdout log during command execution", () => {
@@ -182,7 +182,7 @@ describe("TermOutput Rendering Tests", () => {
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
         output = document.getElementById("terminal-output") as HTMLElement;
-        term = new Terminal(input, output);
+        term = new Terminal({input, output});
         term.init();
     });
 
@@ -264,7 +264,7 @@ describe("TermOutput Control Tests", () => {
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
         output = document.getElementById("terminal-output") as HTMLElement;
-        term = new Terminal(input, output);
+        term = new Terminal({input, output});
         term.init();
     });
 
@@ -319,11 +319,11 @@ describe("Terminal Without Output Element Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
         term.init();
     });
 
-    it("should have undefined output when no output element provided", () => {
+    it("should have undefined output when no output element is provided", () => {
         expect(term.output).toBeUndefined();
     });
 
@@ -350,7 +350,7 @@ describe("Terminal Without Output Element Tests", () => {
     });
 });
 
-describe("Terminal Constructor with Output Tests", () => {
+describe("Terminal Constructor Configuration Tests", () => {
     let dom: JSDOM;
 
     beforeEach(() => {
@@ -360,32 +360,32 @@ describe("Terminal Constructor with Output Tests", () => {
         global.document = dom.window.document;
     });
 
-    it("should accept output as second parameter", () => {
+    it("should accept an output element", () => {
         const input = document.getElementById("terminal-input") as HTMLInputElement;
         const output = document.getElementById("terminal-output") as HTMLElement;
 
-        const term = new Terminal(input, output);
+        const term = new Terminal({input, output});
         term.init();
 
         expect(term.output).toBeInstanceOf(TermOutput);
         expect(term.output?.element).toBe(output);
     });
 
-    it("should accept undefined output with options", () => {
+    it("should accept options without an output element", () => {
         const input = document.getElementById("terminal-input") as HTMLInputElement;
 
-        const term = new Terminal(input, undefined, {prompt: ">> "});
+        const term = new Terminal({input, options: {prompt: ">> "}});
         term.init();
 
         expect(term.output).toBeUndefined();
         expect(term.options.prompt).toBe(">> ");
     });
 
-    it("should accept output with options", () => {
+    it("should accept an output element with options", () => {
         const input = document.getElementById("terminal-input") as HTMLInputElement;
         const output = document.getElementById("terminal-output") as HTMLElement;
 
-        const term = new Terminal(input, output, {prompt: ">> "});
+        const term = new Terminal({input, output, options: {prompt: ">> "}});
         term.init();
 
         expect(term.output).toBeInstanceOf(TermOutput);

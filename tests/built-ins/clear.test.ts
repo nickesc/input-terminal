@@ -16,7 +16,7 @@ describe("clear command tests", () => {
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
         output = document.getElementById("terminal-output") as HTMLElement;
-        term = new Terminal(input, output);
+        term = new Terminal({input, output});
         term.init();
     });
 

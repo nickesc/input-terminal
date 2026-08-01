@@ -11,7 +11,7 @@ describe("TermListeners Construction Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -30,7 +30,7 @@ describe("History Navigation - Previous", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -91,7 +91,7 @@ describe("History Navigation - Next", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -146,7 +146,7 @@ describe("Return Key Handling", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -184,7 +184,7 @@ describe("Autocomplete", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -285,7 +285,7 @@ describe("Prompt Guard", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -323,7 +323,7 @@ describe("Selection Change Handling", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -386,7 +386,7 @@ describe("Custom Key Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input, undefined, customOptions);
+        terminal = new Terminal({input, options: customOptions});
         terminal.history.push(historyCommand);
         terminal.bin.list = [built_ins[0]];
         terminal.init();
@@ -427,7 +427,7 @@ describe("ListenerAction Method Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input, undefined, {installBuiltins: false});
+        terminal = new Terminal({input, options: {installBuiltins: false}});
         terminal.init();
     });
 

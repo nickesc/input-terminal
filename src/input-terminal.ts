@@ -29,7 +29,11 @@ import type {
  * import { Terminal, Command } from "input-terminal";
  * const input = document.getElementById("terminal") as HTMLInputElement;
  * const output = document.getElementById("output") as HTMLElement;
- * const terminal = new Terminal(input, output, { prompt: ">> " });
+ * const terminal = new Terminal({
+ *     input,
+ *     output,
+ *     options: { prompt: ">> " },
+ * });
  * terminal.bin.add(new Command("echo", (args, options, terminal) => {
  *     terminal.stdout(args.join(" "));
  *     return {};
@@ -37,6 +41,14 @@ import type {
  * terminal.init();
  * ```
  */
+export interface TerminalConfig {
+    input: HTMLInputElement;
+    output?: HTMLElement;
+    options?: Partial<TermOptions>;
+    history?: ExitObject[];
+    commands?: Command[];
+}
+
 export class Terminal extends EventTarget {
     private _listeners: TermListeners;
     private _started: boolean = false;
@@ -153,24 +165,14 @@ export class Terminal extends EventTarget {
     }
 
     /**
-     * @param {HTMLInputElement} input - input element to turn into a terminal
-     * @param {HTMLElement} [output] - optional output element to render stdout/stderr to
-     * @param {Partial<TermOptions>} options - terminal configuration
-     * @param {ExitObject[]} commandHistory - history of commands that have been executed
-     * @param {Command[]} commandList - list of commands that can be executed by the user
+     * @param {TerminalConfig} config - terminal configuration
      */
-    constructor(
-        input: HTMLInputElement,
-        output?: HTMLElement,
-        options: Partial<TermOptions> = {},
-        commandHistory: ExitObject[] = [],
-        commandList: Command[] = [],
-    ) {
+    constructor({input, output, options = {}, history = [], commands = []}: TerminalConfig) {
         super();
         this.input = input;
         this._outputElement = output;
-        this.history = new TermHistory(commandHistory);
-        this.bin = new TermBin(commandList);
+        this.history = new TermHistory(history);
+        this.bin = new TermBin(commands);
         this._options = Object.freeze({...defaultTermOptions, ...options});
         this._listeners = new TermListeners(this);
     }
