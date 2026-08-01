@@ -18,6 +18,7 @@ const eventType = {
     stderr: "stderr",
     clear: "clear",
     outputError: "outputerror",
+    executed: "executed",
 } as const;
 
 /**
@@ -72,7 +73,7 @@ export class Terminal extends EventTarget {
     }
 
     private emitExecutedEvent(exitObject: ExitObject): void {
-        this.dispatchEvent(new CustomEvent("inputTerminalExecuted", {detail: exitObject}));
+        this.dispatchEvent(new CustomEvent(eventType.executed, {detail: exitObject}));
     }
 
     private clearOutputLogs(): void {

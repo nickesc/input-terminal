@@ -365,6 +365,39 @@ describe("Terminal Command Execution Tests", () => {
         expect(term.getLastExitObject()).toEqual(exit);
     });
 
+    it("should emit executed with the returned ExitObject", () => {
+        term.bin.add(new Command("test", () => true));
+        const events: CustomEvent<ExitObject>[] = [];
+
+        term.addEventListener("executed", (event) => {
+            events.push(event as CustomEvent<ExitObject>);
+        });
+
+        const exit = term.executeCommand("test");
+
+        expect(events).toHaveLength(1);
+        expect(events[0]?.type).toBe("executed");
+        expect(events[0]?.detail).toBe(exit);
+    });
+
+    it("should emit executed after history is updated and reset", () => {
+        term.bin.add(new Command("test", () => true));
+        term.history.push(new ExitObject(["previous"], "previous", undefined, 0, true));
+        term.history.previous();
+        let historyEntry: ExitObject | undefined;
+        let currentHistoryEntry: ExitObject | undefined;
+
+        term.addEventListener("executed", () => {
+            historyEntry = term.history.items[0];
+            currentHistoryEntry = term.history.current();
+        });
+
+        const exit = term.executeCommand("test");
+
+        expect(historyEntry).toBe(exit);
+        expect(currentHistoryEntry).toBeUndefined();
+    });
+
     it("should pass terminal correctly", () => {
         term.bin.add(
             new Command("test", (args, options, terminal) => {
