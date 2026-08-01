@@ -1,5 +1,6 @@
 import {Terminal, ExitObject} from "../../src/input-terminal";
 import {clear} from "../../src/built-ins/clear";
+import {DOMOutputAdapter} from "../../src/dom/index.ts";
 import {JSDOM} from "jsdom";
 import {describe, it, expect, beforeEach, vi} from "vitest";
 
@@ -16,7 +17,7 @@ describe("clear command tests", () => {
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
         output = document.getElementById("terminal-output") as HTMLElement;
-        term = new Terminal({input, output});
+        term = new Terminal({input, output: new DOMOutputAdapter(output)});
         term.init();
     });
 

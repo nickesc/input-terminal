@@ -1,6 +1,28 @@
-import {Terminal, Command, ExitObject, TermOutput} from "../src/input-terminal";
+import {Terminal, Command, ExitObject} from "../src/input-terminal";
+import {DOMOutputAdapter} from "../src/dom/index.ts";
+import type {OutputAdapter, OutputMetadata} from "../src/input-terminal";
 import {describe, it, expect, beforeEach, vi} from "vitest";
 import {JSDOM} from "jsdom";
+
+type RecordedOutputOperation =
+    | {metadata: OutputMetadata; operation: "stdout" | "stderr"; data: unknown}
+    | {metadata: OutputMetadata; operation: "clear"};
+
+class RecordingOutputAdapter implements OutputAdapter {
+    public operations: RecordedOutputOperation[] = [];
+
+    public stdout(data: unknown, metadata: OutputMetadata): void {
+        this.operations.push({metadata, operation: "stdout", data});
+    }
+
+    public stderr(data: unknown, metadata: OutputMetadata): void {
+        this.operations.push({metadata, operation: "stderr", data});
+    }
+
+    public clear(metadata: OutputMetadata): void {
+        this.operations.push({metadata, operation: "clear"});
+    }
+}
 
 describe("Terminal stdout/stderr Event Tests", () => {
     let term: Terminal;
@@ -110,6 +132,87 @@ describe("Terminal stdout/stderr Event Tests", () => {
         term.stderr("after");
 
         expect(events.map((event) => event.detail.metadata.sequence)).toEqual([1, 2]);
+    });
+});
+
+describe("Terminal Output Adapter Routing Tests", () => {
+    let input: HTMLInputElement;
+
+    beforeEach(() => {
+        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById("terminal-input") as HTMLInputElement;
+    });
+
+    it("should route stdout, stderr, and clear directly to the configured adapter", () => {
+        const output = new RecordingOutputAdapter();
+        const term = new Terminal({input, output});
+        const stdoutValue = {channel: "stdout"};
+        const stderrValue = {channel: "stderr"};
+
+        term.stdout(stdoutValue);
+        term.stderr(stderrValue);
+        term.clearOutput();
+
+        expect(output.operations.map((operation) => operation.operation)).toEqual(["stdout", "stderr", "clear"]);
+        expect((output.operations[0] as {data: unknown}).data).toBe(stdoutValue);
+        expect((output.operations[1] as {data: unknown}).data).toBe(stderrValue);
+        expect(output.operations.map((operation) => operation.metadata.sequence)).toEqual([1, 2, 3]);
+    });
+
+    it("should update logs before the adapter and call the adapter before the event", () => {
+        const order: string[] = [];
+        let term: Terminal;
+        const output: OutputAdapter = {
+            stdout(data, metadata) {
+                expect(term.getStdoutLog()).toEqual(["test"]);
+                order.push("stdout adapter");
+            },
+            stderr(data, metadata) {
+                expect(term.getStderrLog()).toEqual(["error"]);
+                order.push("stderr adapter");
+            },
+            clear(metadata) {},
+        };
+        term = new Terminal({input, output});
+        term.addEventListener("stdout", () => order.push("stdout event"));
+        term.addEventListener("stderr", () => order.push("stderr event"));
+
+        term.stdout("test");
+        term.stderr("error");
+
+        expect(order).toEqual(["stdout adapter", "stdout event", "stderr adapter", "stderr event"]);
+    });
+
+    it("should pass the same metadata object to the adapter and normal event", () => {
+        const output = new RecordingOutputAdapter();
+        const term = new Terminal({input, output});
+        const events: CustomEvent[] = [];
+        const listener = (event: Event) => events.push(event as CustomEvent);
+        term.addEventListener("stdout", listener);
+        term.addEventListener("stderr", listener);
+        term.addEventListener("clear", listener);
+
+        term.stdout("normal");
+        term.stderr("error");
+        term.clearOutput();
+
+        expect(events).toHaveLength(3);
+        for (const [index, event] of events.entries()) {
+            expect(event.detail.metadata).toBe(output.operations[index]?.metadata);
+        }
+    });
+
+    it("should keep the configured adapter across initialization and destruction", () => {
+        const output = new RecordingOutputAdapter();
+        const term = new Terminal({input, output});
+
+        term.init();
+        term.destroy();
+        term.stdout("after destroy");
+
+        expect(term.output).toBe(output);
+        expect(output.operations).toHaveLength(1);
     });
 });
 
@@ -244,6 +347,7 @@ describe("Terminal Clear Output Tests", () => {
     let term: Terminal;
     let input: HTMLInputElement;
     let output: HTMLElement;
+    let outputAdapter: DOMOutputAdapter;
     let dom: JSDOM;
 
     beforeEach(() => {
@@ -253,7 +357,8 @@ describe("Terminal Clear Output Tests", () => {
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
         output = document.getElementById("terminal-output") as HTMLElement;
-        term = new Terminal({input, output});
+        outputAdapter = new DOMOutputAdapter(output);
+        term = new Terminal({input, output: outputAdapter});
         term.init();
     });
 
@@ -289,7 +394,7 @@ describe("Terminal Clear Output Tests", () => {
         expect(events.map((event) => event.detail.metadata.sequence)).toEqual([1, 2, 3, 4]);
     });
 
-    it("should emit and sequence clear without an output element", () => {
+    it("should emit and sequence clear without an output adapter", () => {
         const headlessTerm = new Terminal({input});
         const events: CustomEvent[] = [];
         const listener = (event: Event) => events.push(event as CustomEvent);
@@ -319,148 +424,7 @@ describe("Terminal Clear Output Tests", () => {
     });
 });
 
-describe("TermOutput Rendering Tests", () => {
-    let term: Terminal;
-    let input: HTMLInputElement;
-    let output: HTMLElement;
-    let dom: JSDOM;
-
-    beforeEach(() => {
-        dom = new JSDOM(
-            '<!DOCTYPE html><html><body><input type="text" id="terminal-input"><div id="terminal-output"></div></body></html>',
-        );
-        global.document = dom.window.document;
-        input = document.getElementById("terminal-input") as HTMLInputElement;
-        output = document.getElementById("terminal-output") as HTMLElement;
-        term = new Terminal({input, output});
-        term.init();
-    });
-
-    it("should create TermOutput when output element is provided", () => {
-        expect(term.output).toBeInstanceOf(TermOutput);
-    });
-
-    it("should have TermOutput attached after init", () => {
-        expect(term.output?.attached).toBe(true);
-    });
-
-    it("should render stdout to element with correct class", () => {
-        term.stdout("test output");
-
-        const spans = output.querySelectorAll("span");
-        expect(spans.length).toBe(1);
-        expect(spans[0].className).toBe("input-terminal-stdout");
-        expect(spans[0].textContent).toBe("test output");
-    });
-
-    it("should render stderr to element with correct class", () => {
-        term.stderr("error output");
-
-        const spans = output.querySelectorAll("span");
-        expect(spans.length).toBe(1);
-        expect(spans[0].className).toBe("input-terminal-stderr");
-        expect(spans[0].textContent).toBe("error output");
-    });
-
-    it("should render multiple outputs in order", () => {
-        term.stdout("line 1");
-        term.stderr("error");
-        term.stdout("line 2");
-
-        const spans = output.querySelectorAll("span");
-        expect(spans.length).toBe(3);
-        expect(spans[0].textContent).toBe("line 1");
-        expect(spans[0].className).toBe("input-terminal-stdout");
-        expect(spans[1].textContent).toBe("error");
-        expect(spans[1].className).toBe("input-terminal-stderr");
-        expect(spans[2].textContent).toBe("line 2");
-        expect(spans[2].className).toBe("input-terminal-stdout");
-    });
-
-    it("should render objects as JSON", () => {
-        term.stdout({key: "value", num: 42});
-
-        const spans = output.querySelectorAll("span");
-        expect(spans[0].textContent).toBe('{"key":"value","num":42}');
-    });
-
-    it("should render numbers as strings", () => {
-        term.stdout(42);
-
-        const spans = output.querySelectorAll("span");
-        expect(spans[0].textContent).toBe("42");
-    });
-
-    it("should render booleans as strings", () => {
-        term.stdout(true);
-        term.stdout(false);
-
-        const spans = output.querySelectorAll("span");
-        expect(spans[0].textContent).toBe("true");
-        expect(spans[1].textContent).toBe("false");
-    });
-});
-
-describe("TermOutput Control Tests", () => {
-    let term: Terminal;
-    let input: HTMLInputElement;
-    let output: HTMLElement;
-    let dom: JSDOM;
-
-    beforeEach(() => {
-        dom = new JSDOM(
-            '<!DOCTYPE html><html><body><input type="text" id="terminal-input"><div id="terminal-output"></div></body></html>',
-        );
-        global.document = dom.window.document;
-        input = document.getElementById("terminal-input") as HTMLInputElement;
-        output = document.getElementById("terminal-output") as HTMLElement;
-        term = new Terminal({input, output});
-        term.init();
-    });
-
-    it("should clear output element contents", () => {
-        term.stdout("line 1");
-        term.stdout("line 2");
-
-        expect(output.children.length).toBeGreaterThan(0);
-
-        term.output?.clear();
-
-        expect(output.innerHTML).toBe("");
-    });
-
-    it("should stop rendering after detach", () => {
-        term.output?.detach();
-
-        term.stdout("should not render");
-
-        expect(output.querySelectorAll("span").length).toBe(0);
-    });
-
-    it("should resume rendering after reattach", () => {
-        term.output?.detach();
-        term.stdout("should not render");
-
-        term.output?.attach();
-        term.stdout("should render");
-
-        const spans = output.querySelectorAll("span");
-        expect(spans.length).toBe(1);
-        expect(spans[0].textContent).toBe("should render");
-    });
-
-    it("should report attached status correctly", () => {
-        expect(term.output?.attached).toBe(true);
-
-        term.output?.detach();
-        expect(term.output?.attached).toBe(false);
-
-        term.output?.attach();
-        expect(term.output?.attached).toBe(true);
-    });
-});
-
-describe("Terminal Without Output Element Tests", () => {
+describe("Terminal Without Output Adapter Tests", () => {
     let term: Terminal;
     let input: HTMLInputElement;
     let dom: JSDOM;
@@ -473,11 +437,11 @@ describe("Terminal Without Output Element Tests", () => {
         term.init();
     });
 
-    it("should have undefined output when no output element is provided", () => {
+    it("should have undefined output when no output adapter is provided", () => {
         expect(term.output).toBeUndefined();
     });
 
-    it("should still emit stdout events without output element", () => {
+    it("should still emit stdout events without an output adapter", () => {
         const listener = vi.fn();
         term.addEventListener("stdout", listener);
 
@@ -486,7 +450,7 @@ describe("Terminal Without Output Element Tests", () => {
         expect(listener).toHaveBeenCalledTimes(1);
     });
 
-    it("should still capture logs without output element", () => {
+    it("should still capture logs without an output adapter", () => {
         term.bin.add(
             new Command("test", (args, options, terminal) => {
                 terminal.stdout("output");
@@ -510,18 +474,17 @@ describe("Terminal Constructor Configuration Tests", () => {
         global.document = dom.window.document;
     });
 
-    it("should accept an output element", () => {
+    it("should accept an output adapter", () => {
         const input = document.getElementById("terminal-input") as HTMLInputElement;
-        const output = document.getElementById("terminal-output") as HTMLElement;
+        const output = new RecordingOutputAdapter();
 
         const term = new Terminal({input, output});
         term.init();
 
-        expect(term.output).toBeInstanceOf(TermOutput);
-        expect(term.output?.element).toBe(output);
+        expect(term.output).toBe(output);
     });
 
-    it("should accept options without an output element", () => {
+    it("should accept options without an output adapter", () => {
         const input = document.getElementById("terminal-input") as HTMLInputElement;
 
         const term = new Terminal({input, options: {prompt: ">> "}});
@@ -531,14 +494,14 @@ describe("Terminal Constructor Configuration Tests", () => {
         expect(term.options.prompt).toBe(">> ");
     });
 
-    it("should accept an output element with options", () => {
+    it("should accept an output adapter with options", () => {
         const input = document.getElementById("terminal-input") as HTMLInputElement;
-        const output = document.getElementById("terminal-output") as HTMLElement;
+        const output = new RecordingOutputAdapter();
 
         const term = new Terminal({input, output, options: {prompt: ">> "}});
         term.init();
 
-        expect(term.output).toBeInstanceOf(TermOutput);
+        expect(term.output).toBe(output);
         expect(term.options.prompt).toBe(">> ");
     });
 });

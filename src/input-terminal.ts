@@ -3,7 +3,6 @@ import {TermHistory} from "./history.ts";
 import {TermListeners} from "./listeners.ts";
 import {defaultTermOptions} from "./options.ts";
 import {TermBin, built_ins} from "./bin.ts";
-import {TermOutput} from "./output.ts";
 import type {Options} from "./commands.ts";
 import type {TermOptions} from "./options.ts";
 import type {
@@ -33,11 +32,12 @@ const eventType = {
  * @example
  * ```typescript
  * import { Terminal, Command } from "input-terminal";
+ * import { DOMOutputAdapter } from "input-terminal/dom";
  * const input = document.getElementById("terminal") as HTMLInputElement;
  * const output = document.getElementById("output") as HTMLElement;
  * const terminal = new Terminal({
  *     input,
- *     output,
+ *     output: new DOMOutputAdapter(output),
  *     options: { prompt: ">> " },
  * });
  * terminal.bin.add(new Command("echo", (args, options, terminal) => {
@@ -49,7 +49,7 @@ const eventType = {
  */
 export interface TerminalConfig {
     input: HTMLInputElement;
-    output?: HTMLElement;
+    output?: OutputAdapter;
     options?: Partial<TermOptions>;
     history?: ExitObject[];
     commands?: Command[];
@@ -59,7 +59,6 @@ export class Terminal extends EventTarget {
     private _listeners: TermListeners;
     private _started: boolean = false;
     private _builtInsInstalled: boolean = false;
-    private _outputElement: HTMLElement | undefined;
     private _outputSequence: number = 0;
     private _currentStdoutLog: any[] = [];
     private _currentStderrLog: any[] = [];
@@ -87,10 +86,10 @@ export class Terminal extends EventTarget {
     public input: HTMLInputElement;
 
     /**
-     * The output manager for the terminal.
-     * @type {TermOutput}
+     * The adapter responsible for rendering or recording output.
+     * @type {OutputAdapter | undefined}
      */
-    public output: TermOutput | undefined = undefined;
+    public readonly output: OutputAdapter | undefined;
 
     /**
      * The history of commands that have been executed.
@@ -144,6 +143,7 @@ export class Terminal extends EventTarget {
         const detail: OutputEventDetail = {metadata, data};
 
         this._currentStdoutLog.push(data);
+        this.output?.stdout(data, metadata);
         this.dispatchEvent(new CustomEvent(eventType.stdout, {detail}));
     }
 
@@ -157,6 +157,7 @@ export class Terminal extends EventTarget {
         const detail: OutputEventDetail = {metadata, data};
 
         this._currentStderrLog.push(data);
+        this.output?.stderr(data, metadata);
         this.dispatchEvent(new CustomEvent(eventType.stderr, {detail}));
     }
 
@@ -168,7 +169,7 @@ export class Terminal extends EventTarget {
         const metadata = this.createOutputMetadata();
         const detail: ClearEventDetail = {metadata};
 
-        this.output?.clear();
+        this.output?.clear(metadata);
         this.dispatchEvent(new CustomEvent(eventType.clear, {detail}));
     }
 
@@ -194,7 +195,7 @@ export class Terminal extends EventTarget {
     constructor({input, output, options = {}, history = [], commands = []}: TerminalConfig) {
         super();
         this.input = input;
-        this._outputElement = output;
+        this.output = output;
         this.history = new TermHistory(history);
         this.bin = new TermBin(commands);
         this._options = Object.freeze({...defaultTermOptions, ...options});
@@ -220,12 +221,6 @@ export class Terminal extends EventTarget {
                 this._builtInsInstalled = true;
             }
 
-            // Create TermOutput if output element was provided
-            if (this._outputElement && !this.output) {
-                this.output = new TermOutput(this._outputElement, this);
-            }
-
-            this.output?.attach();
             this._listeners.attachInputListeners();
             this.updateInput();
             this._started = true;
@@ -233,14 +228,13 @@ export class Terminal extends EventTarget {
     }
 
     /**
-     * Destroys the terminal instance. Detaches input and output listeners and marks the terminal as not started.
+     * Destroys the terminal instance. Detaches input listeners and marks the terminal as not started.
      * This does not clear command history, registered commands, input text, or output contents.
      * @returns {void}
      */
     public destroy(): void {
         if (this._started) {
             this._listeners.detachInputListeners();
-            this.output?.detach();
             this._started = false;
         }
     }
@@ -398,7 +392,7 @@ export class Terminal extends EventTarget {
     }
 }
 
-export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermListeners, TermOutput, built_ins};
+export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermListeners, built_ins};
 export type {
     Options,
     TermOptions,
