@@ -23,13 +23,12 @@ import { Terminal, Command } from "input-terminal";
 Or import specific components:
 
 ```typescript
-import { 
-  Terminal, 
-  Command, 
-  ExitObject, 
-  TermBin, 
-  TermHistory, 
-  TermOutput, 
+import {
+  Terminal,
+  Command,
+  ExitObject,
+  TermBin,
+  TermHistory,
   built_ins,
   type TermOptions
 } from "input-terminal";
@@ -49,7 +48,7 @@ Then, create a new `Terminal` instance targeting the element. This creates a fun
 import { Terminal, Command } from "input-terminal";
 
 const input = document.getElementById("terminal") as HTMLInputElement;
-const terminal = new Terminal(input);
+const terminal = new Terminal({ input });
 
 terminal.bin.add(new Command("hello", (args, options, terminal) => {
   terminal.stdout("Hello, World!");
@@ -63,7 +62,7 @@ Call `terminal.init()` to attach input listeners and initialize the input as a t
 
 ### Destroying the Terminal
 
-Call `terminal.destroy()` when you want to stop the terminal without discarding its state. This detaches input and output listeners and marks the terminal as not started. It does **not** clear command history, registered commands, input text, or output contents.
+Call `terminal.destroy()` when you want to stop the terminal without discarding its state. This detaches input listeners and marks the terminal as not started (useful for frameworks like React and Svelte).
 
 ```typescript
 terminal.destroy();
@@ -76,7 +75,7 @@ After `destroy()`, you can call `init()` again to reattach listeners. Built-in c
 
 ### With Output Element
 
-If you want to render output to a DOM element, you can do so by passing the output element to the `Terminal` constructor:
+To render output to a DOM element, create a `DOMOutputAdapter` and pass it in the terminal configuration:
 
 ```html
 <input type="text" id="terminal" />
@@ -84,12 +83,18 @@ If you want to render output to a DOM element, you can do so by passing the outp
 ```
 
 ```typescript
+import { Terminal } from "input-terminal";
+import { DOMOutputAdapter } from "input-terminal/dom";
+
 const input = document.getElementById("terminal") as HTMLInputElement;
 const output = document.getElementById("output") as HTMLElement;
 
-const terminal = new Terminal(input, output);
+const terminal = new Terminal({
+  input,
+  output: new DOMOutputAdapter(output)
+});
 
 terminal.init();
 ```
 
-The terminal will render logs printed via `stdout` and `stderr` to the output element.
+The adapter renders values sent to `stdout` and `stderr`. If you omit the adapter, the terminal remains fully usable without visible output.
