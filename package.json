@@ -26,6 +26,10 @@
     ".": {
       "types": "./build/input-terminal.d.ts",
       "default": "./build/input-terminal.js"
+    },
+    "./dom": {
+      "types": "./build/dom/index.d.ts",
+      "default": "./build/dom/index.js"
     }
   },
   "directories": {
