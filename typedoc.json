@@ -1,10 +1,31 @@
 {
-  "projectDocuments": ["README.md", "docs/usage/getting-started.md", "docs/input-demo.md"],
+  "projectDocuments": [
+    "README.md",
+    "docs/usage/getting-started.md",
+    "docs/usage/output-adapters.md",
+    "docs/input-demo.md"
+  ],
   "plugin": ["typedoc-github-theme"],
   "out": "site/",
   "cleanOutputDir": true,
   "entryPoints": ["src/input-terminal.ts"],
   "customCss": "docs/input-demo.css",
+  "highlightLanguages": [
+    "bash",
+    "console",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "jsonc",
+    "json5",
+    "yaml",
+    "tsx",
+    "jsx",
+    "typescript",
+    "svelte",
+    "vue",
+  ],
   "sort": ["source-order"],
   "navigation": {
     "includeCategories": true

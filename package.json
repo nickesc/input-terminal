@@ -30,6 +30,10 @@
     "./dom": {
       "types": "./build/dom/index.d.ts",
       "default": "./build/dom/index.js"
+    },
+    "./svelte": {
+      "types": "./build/svelte/index.d.ts",
+      "default": "./build/svelte/index.js"
     }
   },
   "directories": {
@@ -55,14 +59,28 @@
     "LICENSE"
   ],
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@sveltejs/vite-plugin-svelte": "^7.2.0",
     "@types/jsdom": "^28.0.3",
     "@vitest/coverage-v8": "^4.1.10",
     "jsdom": "^29.1.1",
-    "@resvg/resvg-js": "^2.6.2",
+    "svelte": "^5.56.8",
     "tsx": "^4.23.0",
     "typedoc": "^0.28.20",
     "typedoc-github-theme": "^0.4.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
+  },
+  "peerDependencies": {
+    "svelte": "^5.7.0"
+  },
+  "peerDependenciesMeta": {
+    "svelte": {
+      "optional": true
+    }
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "fsevents@2.3.3": true
   }
 }
