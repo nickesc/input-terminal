@@ -4,21 +4,28 @@ title: Configuration Options
 
 ## Configuration Options
 
-Pass options to the `Terminal` constructor:
+Pass options in the `Terminal` configuration object:
 
 ```typescript
-const terminal = new Terminal(input, output, {
-  prompt: ">> ",
-  preprompt: "[user] ",
-  previousKey: "ArrowUp",
-  nextKey: "ArrowDown",
-  returnKey: "Enter",
-  autocompleteKey: "Tab",
-  installBuiltins: true,
-  addEmptyCommandToHistory: false,
-  showDuplicateCommands: false
+import { Terminal } from "input-terminal";
+
+const terminal = new Terminal({
+  input,
+  options: {
+    prompt: ">> ",
+    preprompt: "[user] ",
+    previousKey: "ArrowUp",
+    nextKey: "ArrowDown",
+    returnKey: "Enter",
+    autocompleteKey: "Tab",
+    installBuiltins: true,
+    addEmptyCommandToHistory: false,
+    showDuplicateCommands: false
+  }
 });
 ```
+
+The configuration object can also include an output adapter, initial history, and an initial command list. All three are optional.
 
 Options are exposed as a readonly object. Use `updateOptions()` to change them after construction:
 
@@ -50,9 +57,12 @@ When an initialized terminal's `prompt` or `preprompt` changes, `updateOptions()
 You can also add custom properties to options:
 
 ```typescript
-const terminal = new Terminal(input, output, {
-  prompt: "> ",
-  myCustomOption: "custom value"
+const terminal = new Terminal({
+  input,
+  options: {
+    prompt: "> ",
+    myCustomOption: "custom value"
+  }
 });
 
 // Access later

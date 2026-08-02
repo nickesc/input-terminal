@@ -39,7 +39,7 @@ const historyItems = [
   new ExitObject(["echo", "test"], "echo test", built_ins.echo, 0, { output: "test" }),
   new ExitObject(["help"], "help", undefined, 1, { error: "Command not found" }),
 ];
-let terminal = new Terminal(input, output, {}, historyItems);
+const terminal = new Terminal({ input, history: historyItems });
 
 ```
 

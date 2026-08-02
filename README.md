@@ -49,7 +49,7 @@ import { Terminal, Command } from "input-terminal";
 const input = document.getElementById("terminal") as HTMLInputElement;
 
 // Create a new terminal instance
-const terminal = new Terminal(input);
+const terminal = new Terminal({ input });
 
 // Create and add a command
 const say = new Command("say", (args, options, terminal) => {
