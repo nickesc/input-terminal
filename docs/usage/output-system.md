@@ -92,5 +92,5 @@ The built-in `clear` command uses this method. Clearing receives its own metadat
 
 Every stdout, stderr, and clear operation receives:
 
-- `sequence`: index of the operation in the current output log, starting at `1`
+- `sequence`: the operation’s position in the sequence of `stdout`, `stderr`, and `clear` operations for this `Terminal`
 - `timestamp`: the value of `Date.now()` when the operation begins
