@@ -10,6 +10,22 @@
   "cleanOutputDir": true,
   "entryPoints": ["src/input-terminal.ts"],
   "customCss": "docs/input-demo.css",
+  "highlightLanguages": [
+    "bash",
+    "console",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "jsonc",
+    "json5",
+    "yaml",
+    "tsx",
+    "jsx",
+    "typescript",
+    "svelte",
+    "vue",
+  ],
   "sort": ["source-order"],
   "navigation": {
     "includeCategories": true
