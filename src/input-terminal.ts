@@ -75,8 +75,8 @@ export class Terminal extends EventTarget {
     private _started: boolean = false;
     private _builtInsInstalled: boolean = false;
     private _outputSequence: number = 0;
-    private _currentStdoutLog: any[] = [];
-    private _currentStderrLog: any[] = [];
+    private _currentStdoutLog: unknown[] = [];
+    private _currentStderrLog: unknown[] = [];
 
     private createOutputMetadata(): OutputMetadata {
         return Object.freeze({
@@ -150,10 +150,10 @@ export class Terminal extends EventTarget {
 
     /**
      * Emit data to stdout. Dispatches a "stdout" event and logs the data.
-     * @param {any} data - the data to emit
+     * @param {unknown} data - the data to emit
      * @returns {void}
      */
-    public stdout(data: any): void {
+    public stdout(data: unknown): void {
         const metadata = this.createOutputMetadata();
         const detail: OutputEventDetail = {metadata, data};
         let adapterFailure: {error: unknown} | undefined;
@@ -183,10 +183,10 @@ export class Terminal extends EventTarget {
 
     /**
      * Emit data to stderr. Dispatches a "stderr" event and logs the data.
-     * @param {any} data - the data to emit
+     * @param {unknown} data - the data to emit
      * @returns {void}
      */
-    public stderr(data: any): void {
+    public stderr(data: unknown): void {
         const metadata = this.createOutputMetadata();
         const detail: OutputEventDetail = {metadata, data};
         let adapterFailure: {error: unknown} | undefined;
@@ -245,17 +245,17 @@ export class Terminal extends EventTarget {
 
     /**
      * Get a copy of the current stdout log.
-     * @returns {any[]} the stdout log
+     * @returns {unknown[]} the stdout log
      */
-    public getStdoutLog(): any[] {
+    public getStdoutLog(): unknown[] {
         return [...this._currentStdoutLog];
     }
 
     /**
      * Get a copy of the current stderr log.
-     * @returns {any[]} the stderr log
+     * @returns {unknown[]} the stderr log
      */
-    public getStderrLog(): any[] {
+    public getStderrLog(): unknown[] {
         return [...this._currentStderrLog];
     }
 
