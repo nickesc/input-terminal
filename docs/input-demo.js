@@ -1,6 +1,9 @@
 import {Terminal, ExitObject, Command, built_ins} from "./input-terminal/input-terminal.js";
+import {DOMOutputAdapter} from "./input-terminal/dom/index.js";
 
-let terminal = new Terminal(document.getElementById("termd"), document.getElementById("output"));
+const input = document.getElementById("termd");
+const output = document.getElementById("output");
+const terminal = new Terminal({input, output: new DOMOutputAdapter(output)});
 let slugTimeout = null;
 let slugTransitionTimeout = null;
 
@@ -13,7 +16,7 @@ const outputCommand = document.getElementById("output-command");
 const outputCode = document.getElementById("output-code");
 
 const empty = new Command("", (args, options, terminal) => {
-    output.innerText = "";
+    terminal.clearOutput();
     return {};
 });
 
@@ -78,7 +81,7 @@ function changeTheme(themeString) {
     themeDropdown.dispatchEvent(new Event("change"));
 }
 
-terminal.addEventListener("inputTerminalExecuted", (e) => {
+terminal.addEventListener("executed", (e) => {
     if (e.detail.exitCode === 0) {
         outputCommand.innerText = e.detail.command.key;
         outputCode.innerText = e.detail.exitCode;
