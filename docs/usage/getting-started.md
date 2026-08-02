@@ -9,7 +9,6 @@ children:
   - ./history-management.md
   - ./configuration-options.md
   - ./builtin-commands.md
-  - ./css-classes.md
 ---
 
 ## Getting Started
