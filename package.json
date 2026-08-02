@@ -32,7 +32,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "vitest run --reporter=verbose",
+    "test": "vitest run --typecheck.enabled --reporter=verbose",
     "test:watch": "vitest --reporter=verbose",
     "coverage": "vitest run --coverage",
     "build": "npx tsc",

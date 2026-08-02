@@ -21,6 +21,19 @@ const eventType = {
     executed: "executed",
 } as const;
 
+interface TerminalEventMap {
+    [eventType.stdout]: CustomEvent<OutputEventDetail>;
+    [eventType.stderr]: CustomEvent<OutputEventDetail>;
+    [eventType.clear]: CustomEvent<ClearEventDetail>;
+    [eventType.outputError]: CustomEvent<OutputErrorDetail>;
+    [eventType.executed]: CustomEvent<ExitObject>;
+}
+
+type TerminalEventListener<K extends keyof TerminalEventMap> = (
+    this: Terminal,
+    event: TerminalEventMap[K],
+) => void;
+
 /**
  * @license MIT
  * @author nickesc
@@ -257,6 +270,46 @@ export class Terminal extends EventTarget {
         this.bin = new TermBin(commands);
         this._options = Object.freeze({...defaultTermOptions, ...options});
         this._listeners = new TermListeners(this);
+    }
+
+    public override addEventListener<K extends keyof TerminalEventMap>(
+        type: K,
+        listener: TerminalEventListener<K>,
+        options?: boolean | AddEventListenerOptions,
+    ): void;
+
+    public override addEventListener(
+        type: string,
+        listener: EventListenerOrEventListenerObject | null,
+        options?: boolean | AddEventListenerOptions,
+    ): void;
+
+    public override addEventListener(
+        type: string,
+        listener: unknown,
+        options?: boolean | AddEventListenerOptions,
+    ): void {
+        super.addEventListener(type, listener as EventListenerOrEventListenerObject | null, options);
+    }
+
+    public override removeEventListener<K extends keyof TerminalEventMap>(
+        type: K,
+        listener: TerminalEventListener<K>,
+        options?: boolean | EventListenerOptions,
+    ): void;
+
+    public override removeEventListener(
+        type: string,
+        listener: EventListenerOrEventListenerObject | null,
+        options?: boolean | EventListenerOptions,
+    ): void;
+
+    public override removeEventListener(
+        type: string,
+        listener: unknown,
+        options?: boolean | EventListenerOptions,
+    ): void {
+        super.removeEventListener(type, listener as EventListenerOrEventListenerObject | null, options);
     }
 
     /**

@@ -398,6 +398,22 @@ describe("Terminal Command Execution Tests", () => {
         expect(currentHistoryEntry).toBeUndefined();
     });
 
+    it("should stop notifying an executed listener after it is removed", () => {
+        term.bin.add(new Command("test", () => true));
+        let callCount = 0;
+        const listener = (event: CustomEvent<ExitObject>) => {
+            expect(event.detail).toBeInstanceOf(ExitObject);
+            callCount++;
+        };
+
+        term.addEventListener("executed", listener);
+        term.executeCommand("test");
+        term.removeEventListener("executed", listener);
+        term.executeCommand("test");
+
+        expect(callCount).toBe(1);
+    });
+
     it("should pass terminal correctly", () => {
         term.bin.add(
             new Command("test", (args, options, terminal) => {
