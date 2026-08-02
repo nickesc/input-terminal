@@ -213,8 +213,8 @@ export class ExitObject {
     private _userInput: string[];
     private _rawInput: string;
     private _output: any;
-    private _stdoutLog: any[];
-    private _stderrLog: any[];
+    private _stdoutLog: unknown[];
+    private _stderrLog: unknown[];
 
     /**
      * Get the command that was executed.
@@ -266,17 +266,17 @@ export class ExitObject {
 
     /**
      * Get the stdout log of the execution.
-     * @type {any[]}
+     * @type {unknown[]}
      */
-    public get stdoutLog(): any[] {
+    public get stdoutLog(): unknown[] {
         return this._stdoutLog;
     }
 
     /**
      * Get the stderr log of the execution.
-     * @type {any[]}
+     * @type {unknown[]}
      */
-    public get stderrLog(): any[] {
+    public get stderrLog(): unknown[] {
         return this._stderrLog;
     }
 
@@ -286,8 +286,8 @@ export class ExitObject {
      * @param {Command | undefined} command - the command that was executed; `undefined` if the command is not found
      * @param {number} exitCode - the exit code of the command
      * @param {object} output - the output of the command
-     * @param {any[]} stdoutLog - the stdout log of the command
-     * @param {any[]} stderrLog - the stderr log of the command
+     * @param {unknown[]} stdoutLog - the stdout log of the command
+     * @param {unknown[]} stderrLog - the stderr log of the command
      */
     constructor(
         userInput: string[],
@@ -295,8 +295,8 @@ export class ExitObject {
         command: Command | undefined,
         exitCode: number,
         output: any,
-        stdoutLog: any[] = [],
-        stderrLog: any[] = [],
+        stdoutLog: unknown[] = [],
+        stderrLog: unknown[] = [],
     ) {
         this._command = command;
         this._timestamp = Date.now();

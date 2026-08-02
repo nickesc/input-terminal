@@ -77,7 +77,7 @@ describe("Command Run Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should run the command with the correct input", () => {

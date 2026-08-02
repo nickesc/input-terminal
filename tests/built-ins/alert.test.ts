@@ -14,7 +14,7 @@ describe("alert command tests", () => {
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
         alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-        term = new Terminal(input);
+        term = new Terminal({input});
         term.init();
     });
 

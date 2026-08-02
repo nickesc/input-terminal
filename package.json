@@ -26,13 +26,17 @@
     ".": {
       "types": "./build/input-terminal.d.ts",
       "default": "./build/input-terminal.js"
+    },
+    "./dom": {
+      "types": "./build/dom/index.d.ts",
+      "default": "./build/dom/index.js"
     }
   },
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "vitest run --reporter=verbose",
+    "test": "vitest run --typecheck.enabled --reporter=verbose",
     "test:watch": "vitest --reporter=verbose",
     "coverage": "vitest run --coverage",
     "build": "npx tsc",
