@@ -1,11 +1,38 @@
 import {Command, ExitObject, ArgsOptions} from "./commands.ts";
 import {TermHistory} from "./history.ts";
 import {TermListeners} from "./listeners.ts";
-import {TermOptions} from "./options.ts";
+import {defaultTermOptions} from "./options.ts";
 import {TermBin, built_ins} from "./bin.ts";
-import {TermOutput} from "./output.ts";
 import type {Options} from "./commands.ts";
-import type {TermOptionsConfig} from "./options.ts";
+import type {TermOptions} from "./options.ts";
+import type {
+    OutputAdapter,
+    OutputMetadata,
+    OutputEventDetail,
+    ClearEventDetail,
+    OutputErrorDetail,
+} from "./output-adapter.ts";
+
+const eventType = {
+    stdout: "stdout",
+    stderr: "stderr",
+    clear: "clear",
+    outputError: "outputerror",
+    executed: "executed",
+} as const;
+
+interface TerminalEventMap {
+    [eventType.stdout]: CustomEvent<OutputEventDetail>;
+    [eventType.stderr]: CustomEvent<OutputEventDetail>;
+    [eventType.clear]: CustomEvent<ClearEventDetail>;
+    [eventType.outputError]: CustomEvent<OutputErrorDetail>;
+    [eventType.executed]: CustomEvent<ExitObject>;
+}
+
+type TerminalEventListener<K extends keyof TerminalEventMap> = (
+    this: Terminal,
+    event: TerminalEventMap[K],
+) => void;
 
 /**
  * @license MIT
@@ -20,9 +47,14 @@ import type {TermOptionsConfig} from "./options.ts";
  * @example
  * ```typescript
  * import { Terminal, Command } from "input-terminal";
+ * import { DOMOutputAdapter } from "input-terminal/dom";
  * const input = document.getElementById("terminal") as HTMLInputElement;
  * const output = document.getElementById("output") as HTMLElement;
- * const terminal = new Terminal(input, output, { prompt: ">> " });
+ * const terminal = new Terminal({
+ *     input,
+ *     output: new DOMOutputAdapter(output),
+ *     options: { prompt: ">> " },
+ * });
  * terminal.bin.add(new Command("echo", (args, options, terminal) => {
  *     terminal.stdout(args.join(" "));
  *     return {};
@@ -30,16 +62,31 @@ import type {TermOptionsConfig} from "./options.ts";
  * terminal.init();
  * ```
  */
+export interface TerminalConfig {
+    input: HTMLInputElement;
+    output?: OutputAdapter;
+    options?: Partial<TermOptions>;
+    history?: ExitObject[];
+    commands?: Command[];
+}
+
 export class Terminal extends EventTarget {
     private _listeners: TermListeners;
     private _started: boolean = false;
     private _builtInsInstalled: boolean = false;
-    private _outputElement: HTMLElement | undefined;
-    private _currentStdoutLog: any[] = [];
-    private _currentStderrLog: any[] = [];
+    private _outputSequence: number = 0;
+    private _currentStdoutLog: unknown[] = [];
+    private _currentStderrLog: unknown[] = [];
+
+    private createOutputMetadata(): OutputMetadata {
+        return Object.freeze({
+            sequence: ++this._outputSequence,
+            timestamp: Date.now(),
+        });
+    }
 
     private emitExecutedEvent(exitObject: ExitObject): void {
-        this.dispatchEvent(new CustomEvent("inputTerminalExecuted", {detail: exitObject}));
+        this.dispatchEvent(new CustomEvent(eventType.executed, {detail: exitObject}));
     }
 
     private clearOutputLogs(): void {
@@ -54,10 +101,10 @@ export class Terminal extends EventTarget {
     public input: HTMLInputElement;
 
     /**
-     * The output manager for the terminal.
-     * @type {TermOutput}
+     * The adapter responsible for rendering or recording output.
+     * @type {OutputAdapter | undefined}
      */
-    public output: TermOutput | undefined = undefined;
+    public readonly output: OutputAdapter | undefined;
 
     /**
      * The history of commands that have been executed.
@@ -75,7 +122,15 @@ export class Terminal extends EventTarget {
      * The options for the terminal.
      * @type {TermOptions}
      */
-    public options: TermOptions;
+    private _options: TermOptions;
+
+    /**
+     * Get the terminal's current options.
+     * @type {TermOptions}
+     */
+    public get options(): TermOptions {
+        return this._options;
+    }
 
     /**
      * Get the listeners for the terminal.
@@ -95,69 +150,166 @@ export class Terminal extends EventTarget {
 
     /**
      * Emit data to stdout. Dispatches a "stdout" event and logs the data.
-     * @param {any} data - the data to emit
+     * @param {unknown} data - the data to emit
      * @returns {void}
      */
-    public stdout(data: any): void {
+    public stdout(data: unknown): void {
+        const metadata = this.createOutputMetadata();
+        const detail: OutputEventDetail = {metadata, data};
+        let adapterFailure: {error: unknown} | undefined;
+
         this._currentStdoutLog.push(data);
-        this.dispatchEvent(
-            new CustomEvent("stdout", {
-                detail: {data, timestamp: Date.now()},
-            }),
-        );
+
+        if (this.output) {
+            try {
+                this.output.stdout(data, metadata);
+            } catch (error) {
+                adapterFailure = {error};
+            }
+        }
+
+        this.dispatchEvent(new CustomEvent(eventType.stdout, {detail}));
+
+        if (adapterFailure) {
+            const errorDetail: OutputErrorDetail = {
+                metadata,
+                operation: eventType.stdout,
+                data,
+                error: adapterFailure.error,
+            };
+            this.dispatchEvent(new CustomEvent(eventType.outputError, {detail: errorDetail}));
+        }
     }
 
     /**
      * Emit data to stderr. Dispatches a "stderr" event and logs the data.
-     * @param {any} data - the data to emit
+     * @param {unknown} data - the data to emit
      * @returns {void}
      */
-    public stderr(data: any): void {
+    public stderr(data: unknown): void {
+        const metadata = this.createOutputMetadata();
+        const detail: OutputEventDetail = {metadata, data};
+        let adapterFailure: {error: unknown} | undefined;
+
         this._currentStderrLog.push(data);
-        this.dispatchEvent(
-            new CustomEvent("stderr", {
-                detail: {data, timestamp: Date.now()},
-            }),
-        );
+
+        if (this.output) {
+            try {
+                this.output.stderr(data, metadata);
+            } catch (error) {
+                adapterFailure = {error};
+            }
+        }
+
+        this.dispatchEvent(new CustomEvent(eventType.stderr, {detail}));
+
+        if (adapterFailure) {
+            const errorDetail: OutputErrorDetail = {
+                metadata,
+                operation: eventType.stderr,
+                data,
+                error: adapterFailure.error,
+            };
+            this.dispatchEvent(new CustomEvent(eventType.outputError, {detail: errorDetail}));
+        }
+    }
+
+    /**
+     * Clear rendered output. Dispatches a "clear" event without changing logs or history.
+     * @returns {void}
+     */
+    public clearOutput(): void {
+        const metadata = this.createOutputMetadata();
+        const detail: ClearEventDetail = {metadata};
+        let adapterFailure: {error: unknown} | undefined;
+
+        if (this.output) {
+            try {
+                this.output.clear(metadata);
+            } catch (error) {
+                adapterFailure = {error};
+            }
+        }
+
+        this.dispatchEvent(new CustomEvent(eventType.clear, {detail}));
+
+        if (adapterFailure) {
+            const errorDetail: OutputErrorDetail = {
+                metadata,
+                operation: eventType.clear,
+                error: adapterFailure.error,
+            };
+            this.dispatchEvent(new CustomEvent(eventType.outputError, {detail: errorDetail}));
+        }
     }
 
     /**
      * Get a copy of the current stdout log.
-     * @returns {any[]} the stdout log
+     * @returns {unknown[]} the stdout log
      */
-    public getStdoutLog(): any[] {
+    public getStdoutLog(): unknown[] {
         return [...this._currentStdoutLog];
     }
 
     /**
      * Get a copy of the current stderr log.
-     * @returns {any[]} the stderr log
+     * @returns {unknown[]} the stderr log
      */
-    public getStderrLog(): any[] {
+    public getStderrLog(): unknown[] {
         return [...this._currentStderrLog];
     }
 
     /**
-     * @param {HTMLInputElement} input - input element to turn into a terminal
-     * @param {HTMLElement} [output] - optional output element to render stdout/stderr to
-     * @param {TermOptionsConfig} options - terminal configuration
-     * @param {ExitObject[]} commandHistory - history of commands that have been executed
-     * @param {Command[]} commandList - list of commands that can be executed by the user
+     * @param {TerminalConfig} config - terminal configuration
      */
-    constructor(
-        input: HTMLInputElement,
-        output?: HTMLElement,
-        options: TermOptionsConfig = {},
-        commandHistory: ExitObject[] = [],
-        commandList: Command[] = [],
-    ) {
+    constructor({input, output, options = {}, history = [], commands = []}: TerminalConfig) {
         super();
         this.input = input;
-        this._outputElement = output;
-        this.history = new TermHistory(commandHistory);
-        this.bin = new TermBin(commandList);
-        this.options = new TermOptions(options);
+        this.output = output;
+        this.history = new TermHistory(history);
+        this.bin = new TermBin(commands);
+        this._options = Object.freeze({...defaultTermOptions, ...options});
         this._listeners = new TermListeners(this);
+    }
+
+    public override addEventListener<K extends keyof TerminalEventMap>(
+        type: K,
+        listener: TerminalEventListener<K>,
+        options?: boolean | AddEventListenerOptions,
+    ): void;
+
+    public override addEventListener(
+        type: string,
+        listener: EventListenerOrEventListenerObject | null,
+        options?: boolean | AddEventListenerOptions,
+    ): void;
+
+    public override addEventListener(
+        type: string,
+        listener: unknown,
+        options?: boolean | AddEventListenerOptions,
+    ): void {
+        super.addEventListener(type, listener as EventListenerOrEventListenerObject | null, options);
+    }
+
+    public override removeEventListener<K extends keyof TerminalEventMap>(
+        type: K,
+        listener: TerminalEventListener<K>,
+        options?: boolean | EventListenerOptions,
+    ): void;
+
+    public override removeEventListener(
+        type: string,
+        listener: EventListenerOrEventListenerObject | null,
+        options?: boolean | EventListenerOptions,
+    ): void;
+
+    public override removeEventListener(
+        type: string,
+        listener: unknown,
+        options?: boolean | EventListenerOptions,
+    ): void {
+        super.removeEventListener(type, listener as EventListenerOrEventListenerObject | null, options);
     }
 
     /**
@@ -179,12 +331,6 @@ export class Terminal extends EventTarget {
                 this._builtInsInstalled = true;
             }
 
-            // Create TermOutput if output element was provided
-            if (this._outputElement && !this.output) {
-                this.output = new TermOutput(this._outputElement, this);
-            }
-
-            this.output?.attach();
             this._listeners.attachInputListeners();
             this.updateInput();
             this._started = true;
@@ -192,14 +338,13 @@ export class Terminal extends EventTarget {
     }
 
     /**
-     * Destroys the terminal instance. Detaches input and output listeners and marks the terminal as not started.
+     * Destroys the terminal instance. Detaches input listeners and marks the terminal as not started.
      * This does not clear command history, registered commands, input text, or output contents.
      * @returns {void}
      */
     public destroy(): void {
         if (this._started) {
             this._listeners.detachInputListeners();
-            this.output?.detach();
             this._started = false;
         }
     }
@@ -219,6 +364,22 @@ export class Terminal extends EventTarget {
      */
     public getInputValue(): string {
         return this.input.value.slice(this.getFullPrompt().length);
+    }
+
+    /**
+     * Applies partial option updates. Prompt changes preserve unfinished input and redraw initialized terminals.
+     * @param {Partial<TermOptions>} options - the options to update
+     * @returns {void}
+     */
+    public updateOptions(options: Partial<TermOptions>): void {
+        const promptChanged = Object.hasOwn(options, "prompt") || Object.hasOwn(options, "preprompt");
+        const userInput = this._started && promptChanged ? this.getInputValue() : undefined;
+
+        this._options = Object.freeze({...this._options, ...options});
+
+        if (userInput !== undefined) {
+            this.updateInput(userInput);
+        }
     }
 
     /**
@@ -341,5 +502,13 @@ export class Terminal extends EventTarget {
     }
 }
 
-export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermOptions, TermListeners, TermOutput, built_ins};
-export type {Options, TermOptionsConfig};
+export {Command, ArgsOptions, ExitObject, TermBin, TermHistory, TermListeners, built_ins};
+export type {
+    Options,
+    TermOptions,
+    OutputAdapter,
+    OutputMetadata,
+    OutputEventDetail,
+    ClearEventDetail,
+    OutputErrorDetail,
+};

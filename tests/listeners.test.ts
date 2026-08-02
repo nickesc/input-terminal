@@ -1,6 +1,6 @@
 import {describe, it, expect, beforeEach} from "vitest";
 import {JSDOM} from "jsdom";
-import {Terminal, ExitObject, TermOptions, Command, built_ins, TermListeners} from "../src/input-terminal";
+import {Terminal, ExitObject, Command, built_ins, TermListeners} from "../src/input-terminal";
 
 describe("TermListeners Construction Tests", () => {
     let terminal: Terminal;
@@ -11,7 +11,7 @@ describe("TermListeners Construction Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -30,7 +30,7 @@ describe("History Navigation - Previous", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -42,7 +42,7 @@ describe("History Navigation - Previous", () => {
     });
 
     it("should skip duplicate previous commands when showDuplicateCommands is disabled", () => {
-        terminal.options.showDuplicateCommands = false;
+        terminal.updateOptions({showDuplicateCommands: false});
         terminal.history.push(new ExitObject(["test1"], "test1", undefined, 0, "test1"));
         terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
         terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
@@ -53,7 +53,7 @@ describe("History Navigation - Previous", () => {
     });
 
     it("should skip the previous command when the current input is the same as the previous command and showDuplicateCommands is disabled", () => {
-        terminal.options.showDuplicateCommands = false;
+        terminal.updateOptions({showDuplicateCommands: false});
         terminal.history.push(new ExitObject(["test1"], "test1", undefined, 0, "test1"));
         terminal.history.push(new ExitObject(["test2"], "test2", undefined, 0, "test2"));
         terminal.updateInput("test2");
@@ -62,7 +62,7 @@ describe("History Navigation - Previous", () => {
     });
 
     it("should not skip duplicate previous commands when showDuplicateCommands is enabled", () => {
-        terminal.options.showDuplicateCommands = true;
+        terminal.updateOptions({showDuplicateCommands: true});
         terminal.history.push(new ExitObject(["test1"], "test1", undefined, 0, "test1"));
         terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
         terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
@@ -73,7 +73,7 @@ describe("History Navigation - Previous", () => {
     });
 
     it("should not skip the previous command when the current input is the same as the previous command and showDuplicateCommands is enabled", () => {
-        terminal.options.showDuplicateCommands = true;
+        terminal.updateOptions({showDuplicateCommands: true});
         terminal.history.push(new ExitObject(["test1"], "test1", undefined, 0, "test1"));
         terminal.history.push(new ExitObject(["test2"], "test2", undefined, 0, "test2"));
         terminal.updateInput("test2");
@@ -91,7 +91,7 @@ describe("History Navigation - Next", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -110,7 +110,7 @@ describe("History Navigation - Next", () => {
     });
 
     it("should skip duplicate next commands when showDuplicateCommands is disabled", () => {
-        terminal.options.showDuplicateCommands = false;
+        terminal.updateOptions({showDuplicateCommands: false});
         terminal.history.push(new ExitObject(["test1"], "test1", undefined, 0, "test1"));
         terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
         terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
@@ -123,7 +123,7 @@ describe("History Navigation - Next", () => {
     });
 
     it("should not skip duplicate next commands when showDuplicateCommands is enabled", () => {
-        terminal.options.showDuplicateCommands = true;
+        terminal.updateOptions({showDuplicateCommands: true});
         terminal.history.push(new ExitObject(["test1"], "test1", undefined, 0, "test1"));
         terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
         terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
@@ -146,7 +146,7 @@ describe("Return Key Handling", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -184,7 +184,7 @@ describe("Autocomplete", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -285,7 +285,7 @@ describe("Prompt Guard", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -323,7 +323,7 @@ describe("Selection Change Handling", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input);
+        terminal = new Terminal({input});
         terminal.init();
     });
 
@@ -386,7 +386,7 @@ describe("Custom Key Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input, undefined, customOptions);
+        terminal = new Terminal({input, options: customOptions});
         terminal.history.push(historyCommand);
         terminal.bin.list = [built_ins[0]];
         terminal.init();
@@ -427,7 +427,7 @@ describe("ListenerAction Method Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        terminal = new Terminal(input, undefined, {installBuiltins: false});
+        terminal = new Terminal({input, options: {installBuiltins: false}});
         terminal.init();
     });
 

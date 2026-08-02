@@ -17,8 +17,8 @@ Every command execution produces an `ExitObject`.
 | `userInput` | `string[]` | Parsed input array |
 | `rawInput` | `string` | Original input string |
 | `output` | `any` | Return value from command action |
-| `stdoutLog` | `any[]` | All stdout calls during execution |
-| `stderrLog` | `any[]` | All stderr calls during execution |
+| `stdoutLog` | `unknown[]` | Raw values passed to stdout during execution |
+| `stderrLog` | `unknown[]` | Raw values passed to stderr during execution |
 
 ### Accessing Results
 

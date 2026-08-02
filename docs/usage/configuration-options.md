@@ -4,21 +4,39 @@ title: Configuration Options
 
 ## Configuration Options
 
-Pass options to the `Terminal` constructor:
+Pass options in the `Terminal` configuration object:
 
 ```typescript
-const terminal = new Terminal(input, output, {
-  prompt: ">> ",
-  preprompt: "[user] ",
-  previousKey: "ArrowUp",
-  nextKey: "ArrowDown",
-  returnKey: "Enter",
-  autocompleteKey: "Tab",
-  installBuiltins: true,
-  addEmptyCommandToHistory: false,
-  showDuplicateCommands: false
+import { Terminal } from "input-terminal";
+
+const terminal = new Terminal({
+  input,
+  options: {
+    prompt: ">> ",
+    preprompt: "[user] ",
+    previousKey: "ArrowUp",
+    nextKey: "ArrowDown",
+    returnKey: "Enter",
+    autocompleteKey: "Tab",
+    installBuiltins: true,
+    addEmptyCommandToHistory: false,
+    showDuplicateCommands: false
+  }
 });
 ```
+
+The configuration object can also include an output adapter, initial history, and an initial command list. All three are optional.
+
+Options are exposed as a readonly object. Use `updateOptions()` to change them after construction:
+
+```typescript
+terminal.updateOptions({
+  prompt: "$ ",
+  preprompt: "[admin] "
+});
+```
+
+When an initialized terminal's `prompt` or `preprompt` changes, `updateOptions()` preserves any unfinished input and redraws it with the new full prompt. Pass related changes in one call so they are applied together.
 
 ### Available Options
 
@@ -39,11 +57,26 @@ const terminal = new Terminal(input, output, {
 You can also add custom properties to options:
 
 ```typescript
-const terminal = new Terminal(input, output, {
-  prompt: "> ",
-  myCustomOption: "custom value"
+const terminal = new Terminal({
+  input,
+  options: {
+    prompt: "> ",
+    myCustomOption: "custom value"
+  }
 });
 
 // Access later
 console.log(terminal.options.myCustomOption);
 ```
+
+### Runtime Behavior
+
+| Options | When updates take effect |
+|---------|--------------------------|
+| `prompt`, `preprompt` | Immediately. Initialized terminals redraw without losing unfinished input. |
+| `previousKey`, `nextKey`, `returnKey`, `autocompleteKey` | On the next keyboard event. |
+| `addEmptyCommandToHistory`, `showDuplicateCommands` | On the next related command or history action. |
+| `installBuiltins` | On the next initialization. Updating it does not add or remove commands on an initialized terminal. |
+| Custom options | Stored immediately; their consumers determine when behavior changes. |
+
+`terminal.options` is a frozen snapshot. Each `updateOptions()` call replaces it, so code should read `terminal.options` again instead of retaining an older reference.

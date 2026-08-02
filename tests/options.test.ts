@@ -1,7 +1,12 @@
-import {TermOptions} from "../src/input-terminal";
-import {describe, it, expect} from "vitest";
+import {Terminal} from "../src/input-terminal";
+import type {TermOptions} from "../src/input-terminal";
+import {describe, it, expect, beforeEach} from "vitest";
+import {JSDOM} from "jsdom";
 
-describe("TermOptions Construction Tests", () => {
+describe("Terminal Options Tests", () => {
+    let terminal: Terminal;
+    let input: HTMLInputElement;
+
     const customOptions = {
         previousKey: "Up",
         nextKey: "Down",
@@ -14,13 +19,15 @@ describe("TermOptions Construction Tests", () => {
         showDuplicateCommands: true,
     };
 
-    it("should construct a TermOptions object", () => {
-        const options: TermOptions = new TermOptions();
-        expect(options).toBeInstanceOf(TermOptions);
+    beforeEach(() => {
+        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById("terminal-input") as HTMLInputElement;
+        terminal = new Terminal({input});
     });
 
     it("should construct with default options", () => {
-        const options: TermOptions = new TermOptions();
+        const options: TermOptions = terminal.options;
         expect(options.previousKey).toEqual("ArrowUp");
         expect(options.nextKey).toEqual("ArrowDown");
         expect(options.returnKey).toEqual("Enter");
@@ -33,7 +40,8 @@ describe("TermOptions Construction Tests", () => {
     });
 
     it("should construct with custom options", () => {
-        const options: TermOptions = new TermOptions(customOptions);
+        terminal = new Terminal({input, options: customOptions});
+        const options = terminal.options;
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
         expect(options.returnKey).toEqual(customOptions.returnKey);
@@ -50,33 +58,27 @@ describe("TermOptions Construction Tests", () => {
             previousKey: "PageUp",
             nextKey: "PageDown",
         };
-        const options: TermOptions = new TermOptions(customOptions);
+        terminal = new Terminal({input, options: customOptions});
+        const options = terminal.options;
         expect(options.previousKey).toEqual(customOptions.previousKey);
         expect(options.nextKey).toEqual(customOptions.nextKey);
         expect(options.returnKey).toEqual("Enter");
     });
-});
+    it("should store custom options", () => {
+        terminal = new Terminal({input, options: {myCustomOption: "custom value"}});
+        expect(terminal.options.myCustomOption).toEqual("custom value");
+    });
 
-describe("Setting custom options", () => {
-    it("should set custom options", () => {
-        const options: TermOptions = new TermOptions();
-        options.previousKey = "Up";
-        options.nextKey = "Down";
-        options.returnKey = "Return";
-        options.autocompleteKey = "Tabulator";
-        options.preprompt = "preprompt";
-        options.prompt = "prompt";
-        options.installBuiltins = false;
-        options.addEmptyCommandToHistory = true;
-        options.showDuplicateCommands = true;
-        expect(options.previousKey).toEqual("Up");
-        expect(options.nextKey).toEqual("Down");
-        expect(options.returnKey).toEqual("Return");
-        expect(options.autocompleteKey).toEqual("Tabulator");
-        expect(options.preprompt).toEqual("preprompt");
-        expect(options.prompt).toEqual("prompt");
-        expect(options.installBuiltins).toEqual(false);
-        expect(options.addEmptyCommandToHistory).toEqual(true);
-        expect(options.showDuplicateCommands).toEqual(true);
+    it("should expose frozen option snapshots", () => {
+        expect(Object.isFrozen(terminal.options)).toBe(true);
+        expect(() => Object.assign(terminal.options, {prompt: ">> "})).toThrow(TypeError);
+    });
+
+    it("should replace the option snapshot when options are updated", () => {
+        const previousOptions = terminal.options;
+        terminal.updateOptions({prompt: ">> "});
+        expect(terminal.options).not.toBe(previousOptions);
+        expect(previousOptions.prompt).toBe("> ");
+        expect(terminal.options.prompt).toBe(">> ");
     });
 });

@@ -5,7 +5,7 @@ import {Command} from "../commands.ts";
  * @type {Command}
  */
 const clear: Command = new Command("clear", (args, options, terminal) => {
-    terminal.output?.clear();
+    terminal.clearOutput();
     return {};
 });
 

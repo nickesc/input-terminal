@@ -11,11 +11,25 @@ describe("Terminal Construction Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should construct a Terminal object", () => {
         expect(term).toBeInstanceOf(Terminal);
+    });
+
+    it("should construct with command history and commands", () => {
+        const historyEntry = new ExitObject(["previous"], "previous", undefined, 0, {});
+        const command = new Command("configured", () => ({}));
+
+        const configuredTerm = new Terminal({
+            input,
+            history: [historyEntry],
+            commands: [command],
+        });
+
+        expect(configuredTerm.history.items).toEqual([historyEntry]);
+        expect(configuredTerm.bin.list).toEqual([command]);
     });
 });
 
@@ -28,7 +42,7 @@ describe("Terminal Initialization Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should initialize and mark itself started", () => {
@@ -64,7 +78,7 @@ describe("Terminal Input Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should construct with correct input", () => {
@@ -85,7 +99,7 @@ describe("Terminal Prediction Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should return an empty array if no prediction is found", () => {
@@ -115,7 +129,7 @@ describe("Terminal Input Array Parse Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should correctly parse quoted values", () => {
@@ -183,16 +197,52 @@ describe("Terminal Prompt Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should change the prompt", () => {
-        term.options.prompt = ">> ";
+        term.updateOptions({prompt: ">> "});
         expect(term.options.prompt).toEqual(">> ");
     });
     it("should change the preprompt", () => {
-        term.options.preprompt = ">> ";
+        term.updateOptions({preprompt: ">> "});
         expect(term.options.preprompt).toEqual(">> ");
+    });
+    it("should preserve unfinished input when changing to a longer prompt", () => {
+        term.init();
+        term.updateInput("echo unfinished");
+
+        term.updateOptions({prompt: "terminal >> "});
+
+        expect(input.value).toBe("terminal >> echo unfinished");
+        expect(term.getInputValue()).toBe("echo unfinished");
+    });
+    it("should preserve unfinished input when changing to a shorter prompt", () => {
+        term.updateOptions({prompt: "terminal >> "});
+        term.init();
+        term.updateInput("echo unfinished");
+
+        term.updateOptions({prompt: "$ "});
+
+        expect(input.value).toBe("$ echo unfinished");
+        expect(term.getInputValue()).toBe("echo unfinished");
+    });
+    it("should preserve unfinished input when changing the prompt and preprompt together", () => {
+        term.init();
+        term.updateInput("echo unfinished");
+
+        term.updateOptions({prompt: "$ ", preprompt: "[user] "});
+
+        expect(input.value).toBe("[user] $ echo unfinished");
+        expect(term.getInputValue()).toBe("echo unfinished");
+    });
+    it("should not redraw the input before initialization", () => {
+        input.value = "existing value";
+
+        term.updateOptions({prompt: "$ "});
+
+        expect(input.value).toBe("existing value");
+        expect(term.options.prompt).toBe("$ ");
     });
     it("should still grab the correct raw input on exit with a custom prompt", () => {
         term.bin.add(
@@ -200,8 +250,7 @@ describe("Terminal Prompt Tests", () => {
                 return;
             }),
         );
-        term.options.prompt = ">> ";
-        term.options.preprompt = ">> ";
+        term.updateOptions({prompt: ">> ", preprompt: ">> "});
         expect(term.executeCommand("test").rawInput).toEqual("test");
     });
 });
@@ -215,7 +264,7 @@ describe("Terminal Install Built-Ins Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should install built-ins by default", () => {
@@ -223,22 +272,22 @@ describe("Terminal Install Built-Ins Tests", () => {
         expect(term.bin.list.length).toEqual(built_ins.length);
     });
     it("should install built-ins when enabled via constructor options", () => {
-        term = new Terminal(input, undefined, {installBuiltins: true});
+        term = new Terminal({input, options: {installBuiltins: true}});
         term.init();
         expect(term.bin.list.length).toEqual(built_ins.length);
     });
     it("should install built-ins if set to true in options", () => {
-        term.options.installBuiltins = true;
+        term.updateOptions({installBuiltins: true});
         term.init();
         expect(term.bin.list.length).toEqual(built_ins.length);
     });
     it("should not install built-ins if set to false in options", () => {
-        term.options.installBuiltins = false;
+        term.updateOptions({installBuiltins: false});
         term.init();
         expect(term.bin.list.length).toEqual(0);
     });
     it("should not install built-ins before initialization", () => {
-        term.options.installBuiltins = true;
+        term.updateOptions({installBuiltins: true});
         expect(term.bin.list.length).toEqual(0);
     });
 });
@@ -252,7 +301,7 @@ describe("Terminal Command Execution Tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
     });
 
     it("should return an ExitObject after execution", () => {
@@ -314,6 +363,55 @@ describe("Terminal Command Execution Tests", () => {
         );
         const exit = term.executeCommand("test");
         expect(term.getLastExitObject()).toEqual(exit);
+    });
+
+    it("should emit executed with the returned ExitObject", () => {
+        term.bin.add(new Command("test", () => true));
+        const events: CustomEvent<ExitObject>[] = [];
+
+        term.addEventListener("executed", (event) => {
+            events.push(event as CustomEvent<ExitObject>);
+        });
+
+        const exit = term.executeCommand("test");
+
+        expect(events).toHaveLength(1);
+        expect(events[0]?.type).toBe("executed");
+        expect(events[0]?.detail).toBe(exit);
+    });
+
+    it("should emit executed after history is updated and reset", () => {
+        term.bin.add(new Command("test", () => true));
+        term.history.push(new ExitObject(["previous"], "previous", undefined, 0, true));
+        term.history.previous();
+        let historyEntry: ExitObject | undefined;
+        let currentHistoryEntry: ExitObject | undefined;
+
+        term.addEventListener("executed", () => {
+            historyEntry = term.history.items[0];
+            currentHistoryEntry = term.history.current();
+        });
+
+        const exit = term.executeCommand("test");
+
+        expect(historyEntry).toBe(exit);
+        expect(currentHistoryEntry).toBeUndefined();
+    });
+
+    it("should stop notifying an executed listener after it is removed", () => {
+        term.bin.add(new Command("test", () => true));
+        let callCount = 0;
+        const listener = (event: CustomEvent<ExitObject>) => {
+            expect(event.detail).toBeInstanceOf(ExitObject);
+            callCount++;
+        };
+
+        term.addEventListener("executed", listener);
+        term.executeCommand("test");
+        term.removeEventListener("executed", listener);
+        term.executeCommand("test");
+
+        expect(callCount).toBe(1);
     });
 
     it("should pass terminal correctly", () => {

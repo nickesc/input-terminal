@@ -6,7 +6,7 @@
     <a href="https://www.npmjs.com/package/input-terminal"><img alt="NPM: npmjs.com/package/input-terminal" src="https://img.shields.io/npm/v/input-terminal?style=for-the-badge&logo=npm&logoColor=white&label=npm&color=%23C12127&labelColor=%23505050"></a>
   </div>
   <br>
-  <img src="docs/icon.svg" width="128">
+  <img src="docs/icon.svg" width="128" alt="input-terminal">
   <h3 align="center">
     <code>input-terminal</code>
   </h3>
@@ -32,7 +32,6 @@ Install `input-terminal` via NPM:
 npm i input-terminal
 ```
 
-
 Import the `Terminal` and `Command` classes in your TypeScript or JavaScript file:
 
 ```ts
@@ -50,7 +49,7 @@ import { Terminal, Command } from "input-terminal";
 const input = document.getElementById("terminal") as HTMLInputElement;
 
 // Create a new terminal instance
-const terminal = new Terminal(input);
+const terminal = new Terminal({ input });
 
 // Create and add a command
 const say = new Command("say", (args, options, terminal) => {
@@ -65,6 +64,8 @@ terminal.init();
 ## Reference
 
 For full documentation of the module and its methods, please see the [Documentation](https://nickesc.github.io/input-terminal).
+
+[![ghpages](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/documentation/ghpages_vector.svg)](https://nickesc.github.io/input-terminal)
 
 ## License
 

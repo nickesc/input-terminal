@@ -13,7 +13,7 @@ describe("man command tests", () => {
         dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
         global.document = dom.window.document;
         input = document.getElementById("terminal-input") as HTMLInputElement;
-        term = new Terminal(input);
+        term = new Terminal({input});
         term.init();
     });
 
