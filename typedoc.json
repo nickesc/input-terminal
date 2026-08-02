@@ -1,5 +1,10 @@
 {
-  "projectDocuments": ["README.md", "docs/usage/getting-started.md", "docs/input-demo.md"],
+  "projectDocuments": [
+    "README.md",
+    "docs/usage/getting-started.md",
+    "docs/usage/output-adapters.md",
+    "docs/input-demo.md"
+  ],
   "plugin": ["typedoc-github-theme"],
   "out": "site/",
   "cleanOutputDir": true,
