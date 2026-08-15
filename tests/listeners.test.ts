@@ -157,6 +157,18 @@ describe("Return Key Handling", () => {
         expect(terminal.getInputValue()).toBe("");
     });
 
+    it("should print the displayed input when return executes a command", () => {
+        const commands: string[] = [];
+        terminal.updateOptions({preprompt: "[user] ", prompt: "$ ", printCommand: true});
+        terminal.addEventListener("command", (event) => commands.push(event.detail.data));
+        terminal.updateInput("return  ");
+
+        input.dispatchEvent(new dom.window.KeyboardEvent("keydown", {key: "Enter"}));
+
+        expect(commands).toEqual(["[user] $ return  "]);
+        expect(terminal.getInputValue()).toBe("");
+    });
+
     it("should stop handling return key after destroy", () => {
         terminal.updateInput("return");
         terminal.destroy();
