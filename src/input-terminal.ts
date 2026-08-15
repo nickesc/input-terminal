@@ -8,12 +8,14 @@ import type {TermOptions} from "./options.ts";
 import type {
     OutputAdapter,
     OutputMetadata,
+    CommandEventDetail,
     OutputEventDetail,
     ClearEventDetail,
     OutputErrorDetail,
 } from "./output-adapter.ts";
 
 const eventType = {
+    command: "command",
     stdout: "stdout",
     stderr: "stderr",
     clear: "clear",
@@ -22,6 +24,7 @@ const eventType = {
 } as const;
 
 interface TerminalEventMap {
+    [eventType.command]: CustomEvent<CommandEventDetail>;
     [eventType.stdout]: CustomEvent<OutputEventDetail>;
     [eventType.stderr]: CustomEvent<OutputEventDetail>;
     [eventType.clear]: CustomEvent<ClearEventDetail>;
@@ -92,6 +95,32 @@ export class Terminal extends EventTarget {
     private clearOutputLogs(): void {
         this._currentStdoutLog = [];
         this._currentStderrLog = [];
+    }
+
+    private emitCommandOutput(data: string): void {
+        const metadata = this.createOutputMetadata();
+        const detail: CommandEventDetail = {metadata, data};
+        let adapterFailure: {error: unknown} | undefined;
+
+        if (this.output) {
+            try {
+                this.output.command(data, metadata);
+            } catch (error) {
+                adapterFailure = {error};
+            }
+        }
+
+        this.dispatchEvent(new CustomEvent(eventType.command, {detail}));
+
+        if (adapterFailure) {
+            const errorDetail: OutputErrorDetail = {
+                metadata,
+                operation: eventType.command,
+                data,
+                error: adapterFailure.error,
+            };
+            this.dispatchEvent(new CustomEvent(eventType.outputError, {detail: errorDetail}));
+        }
     }
 
     /**
@@ -465,6 +494,10 @@ export class Terminal extends EventTarget {
     public executeCommand(input: string): ExitObject {
         this.clearOutputLogs();
 
+        if (this.options.printCommand) {
+            this.emitCommandOutput(this.getFullPrompt() + input);
+        }
+
         const userInput: string[] = this.getInputArray(input.trim());
         const command: Command | undefined = this.bin.find(userInput[0]);
         let addToHistory: boolean = true;
@@ -508,6 +541,7 @@ export type {
     TermOptions,
     OutputAdapter,
     OutputMetadata,
+    CommandEventDetail,
     OutputEventDetail,
     ClearEventDetail,
     OutputErrorDetail,
