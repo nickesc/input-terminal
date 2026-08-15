@@ -5,11 +5,16 @@ import {describe, it, expect, beforeEach, vi} from "vitest";
 import {JSDOM} from "jsdom";
 
 type RecordedOutputOperation =
+    | {metadata: OutputMetadata; operation: "command"; data: string}
     | {metadata: OutputMetadata; operation: "stdout" | "stderr"; data: unknown}
     | {metadata: OutputMetadata; operation: "clear"};
 
 class RecordingOutputAdapter implements OutputAdapter {
     public operations: RecordedOutputOperation[] = [];
+
+    public command(data: string, metadata: OutputMetadata): void {
+        this.operations.push({metadata, operation: "command", data});
+    }
 
     public stdout(data: unknown, metadata: OutputMetadata): void {
         this.operations.push({metadata, operation: "stdout", data});
@@ -30,6 +35,11 @@ class ThrowingOutputAdapter implements OutputAdapter {
 
     constructor(error: unknown) {
         this.error = error;
+    }
+
+    public command(data: string, metadata: OutputMetadata): void {
+        this.operations.push({metadata, operation: "command", data});
+        throw this.error;
     }
 
     public stdout(data: unknown, metadata: OutputMetadata): void {
@@ -188,6 +198,9 @@ describe("Terminal Output Adapter Routing Tests", () => {
         const order: string[] = [];
         let term: Terminal;
         const output: OutputAdapter = {
+            command(data, metadata) {
+                order.push("command adapter");
+            },
             stdout(data, metadata) {
                 expect(term.getStdoutLog()).toEqual(["test"]);
                 order.push("stdout adapter");
@@ -237,6 +250,97 @@ describe("Terminal Output Adapter Routing Tests", () => {
 
         expect(term.output).toBe(output);
         expect(output.operations).toHaveLength(1);
+    });
+});
+
+describe("Terminal Command Output Tests", () => {
+    let input: HTMLInputElement;
+
+    beforeEach(() => {
+        const dom = new JSDOM('<!DOCTYPE html><html><body><input type="text" id="terminal-input"></body></html>');
+        global.document = dom.window.document;
+        input = document.getElementById("terminal-input") as HTMLInputElement;
+    });
+
+    it("should not print commands by default", () => {
+        const output = new RecordingOutputAdapter();
+        const term = new Terminal({input, output});
+        const listener = vi.fn();
+        term.bin.add(new Command("test", () => ({})));
+        term.addEventListener("command", listener);
+
+        term.executeCommand("test");
+
+        expect(output.operations).toEqual([]);
+        expect(listener).not.toHaveBeenCalled();
+    });
+
+    it("should print the exact full prompt and raw input before command output", () => {
+        const output = new RecordingOutputAdapter();
+        const term = new Terminal({
+            input,
+            output,
+            options: {preprompt: "[user] ", prompt: "$ ", printCommand: true},
+        });
+        const events: CustomEvent[] = [];
+        term.addEventListener("command", (event) => events.push(event));
+        term.bin.add(
+            new Command("test", (args, options, terminal) => {
+                terminal.stdout("command output");
+                return {completed: true};
+            }),
+        );
+        const rawInput = 'test  "quoted value"  ';
+
+        const result = term.executeCommand(rawInput);
+
+        expect(output.operations.map((operation) => operation.operation)).toEqual(["command", "stdout"]);
+        expect(output.operations[0]).toMatchObject({
+            operation: "command",
+            data: '[user] $ test  "quoted value"  ',
+        });
+        expect(output.operations.map((operation) => operation.metadata.sequence)).toEqual([1, 2]);
+        expect(events).toHaveLength(1);
+        expect(events[0]?.detail.data).toBe('[user] $ test  "quoted value"  ');
+        expect(events[0]?.detail.metadata).toBe(output.operations[0]?.metadata);
+        expect(result.output).toEqual({completed: true});
+        expect(result.stdoutLog).toEqual(["command output"]);
+        expect(result.stderrLog).toEqual([]);
+        expect(result.rawInput).toBe(rawInput);
+        expect(term.history.items).toEqual([result]);
+    });
+
+    it("should apply runtime option updates to the next execution", () => {
+        const output = new RecordingOutputAdapter();
+        const term = new Terminal({input, output});
+        term.bin.add(new Command("test", () => ({})));
+
+        term.executeCommand("test");
+        term.updateOptions({printCommand: true});
+        term.executeCommand("test");
+
+        expect(output.operations).toHaveLength(1);
+        expect(output.operations[0]).toMatchObject({operation: "command", data: "> test"});
+    });
+
+    it("should print empty and unknown command executions", () => {
+        const output = new RecordingOutputAdapter();
+        const term = new Terminal({input, output, options: {prompt: "$ ", printCommand: true}});
+
+        const emptyResult = term.executeCommand("");
+        const unknownResult = term.executeCommand("missing  ");
+
+        expect(output.operations.map((operation) => operation.operation)).toEqual([
+            "command",
+            "command",
+            "stderr",
+        ]);
+        expect((output.operations[0] as {data: string}).data).toBe("$ ");
+        expect((output.operations[1] as {data: string}).data).toBe("$ missing  ");
+        expect(emptyResult.stdoutLog).toEqual([]);
+        expect(emptyResult.stderrLog).toEqual([]);
+        expect(unknownResult.stdoutLog).toEqual([]);
+        expect(unknownResult.stderrLog).toEqual(["Command missing not found"]);
     });
 });
 
@@ -292,6 +396,30 @@ describe("Terminal Output Adapter Failure Tests", () => {
         expect(errorEvents[1]?.detail.data).toBe(stderrValue);
         expect(errorEvents[2]?.detail.operation).toBe("clear");
         expect(errorEvents[2]?.detail).not.toHaveProperty("data");
+    });
+
+    it("should emit command before outputerror and continue execution when command rendering fails", () => {
+        const failure = new Error("command adapter failed");
+        const output = new ThrowingOutputAdapter(failure);
+        const term = new Terminal({input, output, options: {printCommand: true}});
+        const events: CustomEvent[] = [];
+        const listener = (event: Event) => events.push(event as CustomEvent);
+        term.addEventListener("command", listener);
+        term.addEventListener("outputerror", listener);
+        term.addEventListener("executed", listener);
+        term.bin.add(new Command("test", () => ({completed: true})));
+
+        const result = term.executeCommand("test");
+
+        expect(events.map((event) => event.type)).toEqual(["command", "outputerror", "executed"]);
+        expect(events[1]?.detail.operation).toBe("command");
+        expect(events[1]?.detail.data).toBe("> test");
+        expect(events[1]?.detail.metadata).toBe(events[0]?.detail.metadata);
+        expect(events[1]?.detail.error).toBe(failure);
+        expect(result.exitCode).toBe(0);
+        expect(result.output).toEqual({completed: true});
+        expect(result.stdoutLog).toEqual([]);
+        expect(result.stderrLog).toEqual([]);
     });
 
     it("should handle undefined errors and retry the adapter on later operations", () => {
@@ -494,6 +622,14 @@ describe("Terminal Clear Output Tests", () => {
         expect(event.detail.metadata.sequence).toBe(1);
         expect(event.detail.metadata.timestamp).toEqual(expect.any(Number));
         expect(Object.isFrozen(event.detail.metadata)).toBe(true);
+    });
+
+    it("should allow a clear command to remove its printed command entry", () => {
+        term.updateOptions({printCommand: true});
+
+        term.executeCommand("clear");
+
+        expect(output.childNodes).toHaveLength(0);
     });
 
     it("should sequence clear with stdout and stderr without resetting the counter", () => {
