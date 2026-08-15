@@ -109,6 +109,17 @@ describe("History Navigation - Next", () => {
         expect(terminal.getInputValue()).toBe("test1");
     });
 
+    it("should restore unfinished input after returning from command history", () => {
+        terminal.history.push(new ExitObject(["test"], "test", undefined, 0, "test"));
+        terminal.updateInput("unfinished input");
+
+        input.dispatchEvent(new dom.window.KeyboardEvent("keydown", {key: "ArrowUp"}));
+        expect(terminal.getInputValue()).toBe("test");
+
+        input.dispatchEvent(new dom.window.KeyboardEvent("keydown", {key: "ArrowDown"}));
+        expect(terminal.getInputValue()).toBe("unfinished input");
+    });
+
     it("should skip duplicate next commands when showDuplicateCommands is disabled", () => {
         terminal.updateOptions({showDuplicateCommands: false});
         terminal.history.push(new ExitObject(["test1"], "test1", undefined, 0, "test1"));
