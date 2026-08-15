@@ -14,7 +14,8 @@ const input = document.getElementById("terminal") as HTMLInputElement;
 const outputElement = document.getElementById("output") as HTMLElement;
 const terminal = new Terminal({
   input,
-  output: new DOMOutputAdapter(outputElement)
+  output: new DOMOutputAdapter(outputElement),
+  options: { printCommand: true }
 });
 
 terminal.init();
@@ -23,6 +24,7 @@ terminal.stdout("This is standard output");
 
 The adapter wraps each value in a `<span>` and assigns a class based on the output operation:
 
+- `input-terminal-command` for the prompt and command
 - `input-terminal-stdout` for stdout
 - `input-terminal-stderr` for stderr
 
