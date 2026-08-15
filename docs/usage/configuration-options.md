@@ -19,6 +19,7 @@ const terminal = new Terminal({
     returnKey: "Enter",
     autocompleteKey: "Tab",
     installBuiltins: true,
+    printCommand: false,
     addEmptyCommandToHistory: false,
     showDuplicateCommands: false
   }
@@ -49,6 +50,7 @@ When an initialized terminal's `prompt` or `preprompt` changes, `updateOptions()
 | `returnKey` | `string` | `"Enter"` | Key to execute command |
 | `autocompleteKey` | `string` | `"Tab"` | Key to trigger autocomplete |
 | `installBuiltins` | `boolean` | `true` | Whether to include built-in commands |
+| `printCommand` | `boolean` | `false` | Whether to print the prompt and command before execution |
 | `addEmptyCommandToHistory` | `boolean` | `false` | Whether empty commands are added to history |
 | `showDuplicateCommands` | `boolean` | `false` | Whether to show duplicate commands when navigating history |
 
@@ -75,6 +77,7 @@ console.log(terminal.options.myCustomOption);
 |---------|--------------------------|
 | `prompt`, `preprompt` | Immediately. Initialized terminals redraw without losing unfinished input. |
 | `previousKey`, `nextKey`, `returnKey`, `autocompleteKey` | On the next keyboard event. |
+| `printCommand` | On the next command execution. |
 | `addEmptyCommandToHistory`, `showDuplicateCommands` | On the next related command or history action. |
 | `installBuiltins` | On the next initialization. Updating it does not add or remove commands on an initialized terminal. |
 | Custom options | Stored immediately; their consumers determine when behavior changes. |

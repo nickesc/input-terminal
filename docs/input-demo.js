@@ -3,7 +3,8 @@ import {DOMOutputAdapter} from "./input-terminal/dom/index.js";
 
 const input = document.getElementById("termd");
 const output = document.getElementById("output");
-const terminal = new Terminal({input, output: new DOMOutputAdapter(output)});
+const terminal = new Terminal({input, output: new DOMOutputAdapter(output), options: {printCommand: true}});
+
 let slugTimeout = null;
 let slugTransitionTimeout = null;
 

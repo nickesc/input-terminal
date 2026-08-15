@@ -11,28 +11,32 @@ describe("SvelteOutputAdapter reactivity", () => {
     it("renders entries added before and after mounting", async () => {
         const adapter = new SvelteOutputAdapter();
         const target = document.createElement("div");
-        adapter.stdout("before mount", metadata(1, 1_754_044_800_123));
+        adapter.command("$ test", metadata(1, 1_754_044_800_012));
+        adapter.stdout("before mount", metadata(2, 1_754_044_800_123));
 
         const component = mount(OutputAdapterFixture, {target, props: {adapter}});
 
         try {
             flushSync();
             expect([...target.querySelectorAll("span")].map((entry) => entry.textContent)).toEqual([
+                "$ test",
                 "before mount",
             ]);
 
             flushSync(() => {
-                adapter.stderr("after mount", metadata(2, 1_754_044_800_456));
+                adapter.stderr("after mount", metadata(3, 1_754_044_800_456));
             });
 
             const entries = [...target.querySelectorAll("span")];
             expect(entries.map((entry) => entry.textContent)).toEqual([
+                "$ test",
                 "before mount",
                 "after mount",
             ]);
-            expect(entries.map((entry) => entry.dataset.operation)).toEqual(["stdout", "stderr"]);
-            expect(entries.map((entry) => entry.dataset.sequence)).toEqual(["1", "2"]);
+            expect(entries.map((entry) => entry.dataset.operation)).toEqual(["command", "stdout", "stderr"]);
+            expect(entries.map((entry) => entry.dataset.sequence)).toEqual(["1", "2", "3"]);
             expect(entries.map((entry) => entry.dataset.timestamp)).toEqual([
+                "1754044800012",
                 "1754044800123",
                 "1754044800456",
             ]);

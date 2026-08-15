@@ -8,7 +8,7 @@ children:
 
 ## Output Adapters
 
-An output adapter renders or records values from `terminal.stdout()`, `terminal.stderr()`, and `terminal.clearOutput()`. Pass one through `TerminalConfig.output`:
+An output adapter renders or records command entries, values from `terminal.stdout()` and `terminal.stderr()`, and `terminal.clearOutput()` operations. Pass one through `TerminalConfig.output`:
 
 ```typescript
 const terminal = new Terminal({ input, output });

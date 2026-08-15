@@ -4,13 +4,13 @@
     --border-rad-1: 5px;
     --border-rad-2: calc(var(--border-rad-1) * 1.4);
 
-    --dark-color-background: #111111aa !important;
+    --dark-color-background: #171717 !important;
     --dark-color-background-secondary: #222222aa !important;
     --dark-color-background-navbar: #030303aa !important;
     --dark-color-background-overlay: #33333366 !important;
     --dark-color-accent: #77777799 !important;
 
-    --light-color-background: #ffffffAA !important;
+    --light-color-background: #f6f8fa !important;
     --light-color-background-secondary: ##f6f8faaa !important;
     --light-color-background-navbar: ##f6f8faaa !important;
     --light-color-background-overlay: #c8d1da66 !important;
