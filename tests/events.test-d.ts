@@ -1,8 +1,21 @@
 import {expectTypeOf, test} from "vitest";
 import {ExitObject, Terminal} from "../src/input-terminal.ts";
-import type {ClearEventDetail, OutputErrorDetail, OutputEventDetail} from "../src/input-terminal.ts";
+import type {
+    ClearEventDetail,
+    CommandEventDetail,
+    OutputErrorDetail,
+    OutputEventDetail,
+} from "../src/input-terminal.ts";
 
 declare const terminal: Terminal;
+
+test("infers command event details", () => {
+    terminal.addEventListener("command", (event) => {
+        expectTypeOf(event).toEqualTypeOf<CustomEvent<CommandEventDetail>>();
+        expectTypeOf(event.detail).toEqualTypeOf<CommandEventDetail>();
+        expectTypeOf(event.detail.data).toEqualTypeOf<string>();
+    });
+});
 
 test("infers stdout event details", () => {
     terminal.addEventListener("stdout", (event) => {
@@ -41,6 +54,9 @@ test("infers and narrows outputerror event details", () => {
             expectTypeOf(event.detail.operation).toEqualTypeOf<"clear">();
             // @ts-expect-error Clear adapter failures do not include output data.
             event.detail.data;
+        } else if (event.detail.operation === "command") {
+            expectTypeOf(event.detail.operation).toEqualTypeOf<"command">();
+            expectTypeOf(event.detail.data).toEqualTypeOf<string>();
         } else {
             expectTypeOf(event.detail.operation).toEqualTypeOf<"stdout" | "stderr">();
             expectTypeOf(event.detail.data).toEqualTypeOf<unknown>();
@@ -55,12 +71,14 @@ test("keeps broad listener signatures for unknown events", () => {
 });
 
 test("accepts matching typed listeners when removing events", () => {
+    const commandListener = (event: CustomEvent<CommandEventDetail>) => void event;
     const outputListener = (event: CustomEvent<OutputEventDetail>) => void event;
     const clearListener = (event: CustomEvent<ClearEventDetail>) => void event;
     const outputErrorListener = (event: CustomEvent<OutputErrorDetail>) => void event;
     const executedListener = (event: CustomEvent<ExitObject>) => void event;
     const customListener: EventListener = (event) => void event;
 
+    terminal.removeEventListener("command", commandListener);
     terminal.removeEventListener("stdout", outputListener);
     terminal.removeEventListener("stderr", outputListener);
     terminal.removeEventListener("clear", clearListener);

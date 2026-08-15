@@ -19,6 +19,17 @@ describe("DOMOutputAdapter", () => {
         adapter = new DOMOutputAdapter(output);
     });
 
+    it("renders commands with their class and metadata", () => {
+        adapter.command("$ echo test", metadata(1, 1_754_044_800_012));
+
+        const span = output.querySelector("span");
+
+        expect(span?.className).toBe("input-terminal-command");
+        expect(span?.textContent).toBe("$ echo test");
+        expect(span?.dataset.sequence).toBe("1");
+        expect(span?.dataset.timestamp).toBe("1754044800012");
+    });
+
     it("renders stdout with its class and metadata", () => {
         adapter.stdout("normal output", metadata(1, 1_754_044_800_123));
 
@@ -42,16 +53,18 @@ describe("DOMOutputAdapter", () => {
     });
 
     it("preserves output order and appends a newline after each value", () => {
-        adapter.stdout("first", metadata(1));
-        adapter.stderr("second", metadata(2));
-        adapter.stdout("third", metadata(3));
+        adapter.command("$ test", metadata(1));
+        adapter.stdout("first", metadata(2));
+        adapter.stderr("second", metadata(3));
+        adapter.stdout("third", metadata(4));
 
         expect([...output.querySelectorAll("span")].map((span) => span.textContent)).toEqual([
+            "$ test",
             "first",
             "second",
             "third",
         ]);
-        expect(output.textContent).toBe("first\nsecond\nthird\n");
+        expect(output.textContent).toBe("$ test\nfirst\nsecond\nthird\n");
     });
 
     it.each([

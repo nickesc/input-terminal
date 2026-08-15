@@ -14,6 +14,7 @@ describe("Terminal Options Tests", () => {
         autocompleteKey: "Tabulator",
         prompt: "prompt",
         preprompt: "preprompt",
+        printCommand: true,
         installBuiltins: false,
         addEmptyCommandToHistory: true,
         showDuplicateCommands: true,
@@ -35,6 +36,7 @@ describe("Terminal Options Tests", () => {
         expect(options.preprompt).toEqual("");
         expect(options.prompt).toEqual("> ");
         expect(options.installBuiltins).toEqual(true);
+        expect(options.printCommand).toEqual(false);
         expect(options.addEmptyCommandToHistory).toEqual(false);
         expect(options.showDuplicateCommands).toEqual(false);
     });
@@ -49,6 +51,7 @@ describe("Terminal Options Tests", () => {
         expect(options.preprompt).toEqual(customOptions.preprompt);
         expect(options.prompt).toEqual(customOptions.prompt);
         expect(options.installBuiltins).toEqual(customOptions.installBuiltins);
+        expect(options.printCommand).toEqual(customOptions.printCommand);
         expect(options.addEmptyCommandToHistory).toEqual(customOptions.addEmptyCommandToHistory);
         expect(options.showDuplicateCommands).toEqual(customOptions.showDuplicateCommands);
     });

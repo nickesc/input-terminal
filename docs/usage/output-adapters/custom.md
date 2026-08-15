@@ -10,13 +10,15 @@ Implement `OutputAdapter` when output belongs in another renderer or data store:
 import { Terminal } from "input-terminal";
 import type { OutputAdapter, OutputMetadata } from "input-terminal";
 
-const entries: Array<{
-  operation: "stdout" | "stderr";
-  data: unknown;
-  metadata: OutputMetadata;
-}> = [];
+const entries: Array<
+  | { operation: "command"; data: string; metadata: OutputMetadata }
+  | { operation: "stdout" | "stderr"; data: unknown; metadata: OutputMetadata }
+> = [];
 
 const output: OutputAdapter = {
+  command(data, metadata) {
+    entries.push({ operation: "command", data, metadata });
+  },
   stdout(data, metadata) {
     entries.push({ operation: "stdout", data, metadata });
   },
@@ -28,7 +30,11 @@ const output: OutputAdapter = {
   }
 };
 
-const terminal = new Terminal({ input, output });
+const terminal = new Terminal({
+  input,
+  output,
+  options: { printCommand: true }
+});
 ```
 
 The terminal passes each raw output value and its frozen metadata object to the adapter. A custom adapter can accept metadata without using it.

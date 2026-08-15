@@ -12,9 +12,19 @@ export interface OutputMetadata {
  * @category Terminal Output
  */
 export interface OutputAdapter {
+    command(data: string, metadata: OutputMetadata): void;
     stdout(data: unknown, metadata: OutputMetadata): void;
     stderr(data: unknown, metadata: OutputMetadata): void;
     clear(metadata: OutputMetadata): void;
+}
+
+/**
+ * The detail emitted with command events.
+ * @category Terminal Output
+ */
+export interface CommandEventDetail {
+    readonly metadata: OutputMetadata;
+    readonly data: string;
 }
 
 /**
@@ -43,6 +53,12 @@ export type OutputErrorDetail =
           readonly metadata: OutputMetadata;
           readonly operation: "stdout" | "stderr";
           readonly data: unknown;
+          readonly error: unknown;
+      }
+    | {
+          readonly metadata: OutputMetadata;
+          readonly operation: "command";
+          readonly data: string;
           readonly error: unknown;
       }
     | {
