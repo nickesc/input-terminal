@@ -6,6 +6,7 @@ import type {ExitObject, Terminal} from "./input-terminal";
  */
 export class TermListeners {
     private _terminal: Terminal;
+    private _historyDraft: string | undefined;
     private _predictionIndex: number = 0;
     private _autocompletePredictions: string[] | undefined = undefined;
     private _attached: boolean = false;
@@ -29,8 +30,14 @@ export class TermListeners {
     public previousListenerAction(event: Event): void {
         event.preventDefault();
 
+        const enteringHistory: boolean = this._terminal.history.current() === undefined;
+        const currentInput: string | undefined = enteringHistory ? this._terminal.getInputValue() : undefined;
         const previous: ExitObject | null | undefined = this._terminal.history.previous();
         const newInput: string | undefined = previous?.rawInput;
+
+        if (enteringHistory && previous !== undefined && previous !== null) {
+            this._historyDraft = currentInput;
+        }
 
         if (!this._terminal.options.showDuplicateCommands && newInput !== undefined) {
             if (newInput === this._terminal.getInputValue()) {
@@ -64,7 +71,8 @@ export class TermListeners {
         if (next !== undefined) {
             this._terminal.updateInput(next.rawInput);
         } else {
-            this._terminal.updateInput();
+            this._terminal.updateInput(this._historyDraft);
+            this._historyDraft = undefined;
         }
     }
 
@@ -107,6 +115,7 @@ export class TermListeners {
         const promptLen: number = this._terminal.getFullPrompt().length;
         this._terminal.executeCommand(this._terminal.input.value.slice(promptLen));
         this._terminal.updateInput();
+        this._historyDraft = undefined;
     }
 
     private _handleKeyboardEvent(event: KeyboardEvent): void {
@@ -188,6 +197,7 @@ export class TermListeners {
             this._terminal.input.removeEventListener("selectionchange", this._boundHandleSelectionEvent);
             this._predictionIndex = 0;
             this._autocompletePredictions = undefined;
+            this._historyDraft = undefined;
             this._attached = false;
         }
     }
