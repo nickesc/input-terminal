@@ -46,6 +46,12 @@ export interface TermOptions {
     readonly preprompt: string;
 
     /**
+     * Whether the terminal should print the full prompt and the user input to the output with each command.
+     * @default false
+     */
+    readonly printCommand: boolean;
+
+    /**
      * Whether the terminal should add a command with empty input to history.
      * @default false
      */
@@ -71,6 +77,7 @@ export const defaultTermOptions: TermOptions = Object.freeze({
     installBuiltins: true,
     prompt: "> ",
     preprompt: "",
+    printCommand: false,
     addEmptyCommandToHistory: false,
     showDuplicateCommands: false,
 });
