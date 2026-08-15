@@ -2,11 +2,11 @@ import {createSubscriber} from "svelte/reactivity";
 import type {OutputAdapter, OutputMetadata} from "../output-adapter.ts";
 
 /**
- * A stdout or stderr entry in a Svelte output adapter.
+ * A command, stdout, or stderr entry in a Svelte output adapter.
  * @category Terminal Output
  */
 export interface SvelteOutputEntry {
-    readonly operation: "stdout" | "stderr";
+    readonly operation: "command" | "stdout" | "stderr";
     readonly data: unknown;
     readonly metadata: OutputMetadata;
 }
@@ -32,6 +32,10 @@ export class SvelteOutputAdapter implements OutputAdapter {
     public get entries(): readonly SvelteOutputEntry[] {
         this._subscribe();
         return this._entries;
+    }
+
+    public command(data: string, metadata: OutputMetadata): void {
+        this.append("command", data, metadata);
     }
 
     public stdout(data: unknown, metadata: OutputMetadata): void {
