@@ -118,6 +118,9 @@ describe("History Navigation - Next", () => {
 
         input.dispatchEvent(new dom.window.KeyboardEvent("keydown", {key: "ArrowDown"}));
         expect(terminal.getInputValue()).toBe("unfinished input");
+
+        input.dispatchEvent(new dom.window.KeyboardEvent("keydown", {key: "ArrowDown"}));
+        expect(terminal.getInputValue()).toBe("unfinished input");
     });
 
     it("should skip duplicate next commands when showDuplicateCommands is disabled", () => {

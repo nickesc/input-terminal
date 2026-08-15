@@ -58,6 +58,7 @@ export class TermListeners {
      */
     public nextListenerAction(event: Event): void {
         event.preventDefault();
+        const leavingHistory: boolean = this._terminal.history.current() !== undefined;
         const next: ExitObject | undefined = this._terminal.history.next();
         const newInput: string | undefined = next?.rawInput;
 
@@ -70,7 +71,7 @@ export class TermListeners {
 
         if (next !== undefined) {
             this._terminal.updateInput(next.rawInput);
-        } else {
+        } else if (leavingHistory) {
             this._terminal.updateInput(this._historyDraft);
             this._historyDraft = undefined;
         }
