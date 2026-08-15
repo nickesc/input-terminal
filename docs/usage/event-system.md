@@ -10,6 +10,7 @@ title: Event System
 
 | Event | Dispatched When | Detail |
 |-------|-----------------|--------|
+| `command` | A command is about to run and `printCommand` is enabled | `{ metadata: OutputMetadata, data: string }` |
 | `stdout` | `terminal.stdout()` is called | `{ metadata: OutputMetadata, data: unknown }` |
 | `stderr` | `terminal.stderr()` is called | `{ metadata: OutputMetadata, data: unknown }` |
 | `clear` | `terminal.clearOutput()` is called | `{ metadata: OutputMetadata }` |
@@ -27,6 +28,10 @@ terminal.addEventListener("executed", (event) => {
   console.log("Command:", exitObject.command?.key);
   console.log("Exit code:", exitObject.exitCode);
   console.log("Output:", exitObject.output);
+});
+
+terminal.addEventListener("command", (event) => {
+  console.log("Entered:", event.detail.data);
 });
 
 terminal.addEventListener("stdout", (event) => {
