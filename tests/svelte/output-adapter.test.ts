@@ -16,15 +16,17 @@ describe("SvelteOutputAdapter", () => {
         expect(adapter.entries).toEqual([]);
     });
 
-    it("records stdout and stderr in call order", () => {
-        adapter.stdout("first", metadata(1));
-        adapter.stderr("second", metadata(2));
-        adapter.stdout("third", metadata(3));
+    it("records commands, stdout, and stderr in call order", () => {
+        adapter.command("$ test", metadata(1));
+        adapter.stdout("first", metadata(2));
+        adapter.stderr("second", metadata(3));
+        adapter.stdout("third", metadata(4));
 
         expect(adapter.entries).toEqual([
-            {operation: "stdout", data: "first", metadata: metadata(1)},
-            {operation: "stderr", data: "second", metadata: metadata(2)},
-            {operation: "stdout", data: "third", metadata: metadata(3)},
+            {operation: "command", data: "$ test", metadata: metadata(1)},
+            {operation: "stdout", data: "first", metadata: metadata(2)},
+            {operation: "stderr", data: "second", metadata: metadata(3)},
+            {operation: "stdout", data: "third", metadata: metadata(4)},
         ]);
     });
 
