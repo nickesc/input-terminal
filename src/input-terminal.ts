@@ -428,9 +428,15 @@ export class Terminal extends EventTarget {
     /**
      * Gets the command predictions based on the user's input.
      * @param {string} [text] - The text to get predictions for; if no text is provided, all commands are returned
+     * @param {number} [cursor] - The cursor position relative to the user input; defaults to the end of the input
      * @returns {string[]} The predictions for the terminal's user input
      */
-    public getPredictions(text?: string): string[] {
+    public getPredictions(text: string = "", cursor: number = text.length): string[] {
+        const providedPredictions = this._completionProvider?.({input: text, cursor, terminal: this});
+        if (providedPredictions !== undefined) {
+            return providedPredictions;
+        }
+
         let predictions: string[] = [];
         if (text) {
             const partialMatches: string[] = this.bin.getCommandKeys().filter((key) => key.startsWith(text));
