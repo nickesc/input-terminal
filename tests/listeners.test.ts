@@ -268,6 +268,49 @@ describe("Autocomplete", () => {
         expect(terminal.getInputValue()).toBe("test1");
     });
 
+    it("should cycle through custom predictions", () => {
+        terminal.destroy();
+        terminal = new Terminal({
+            input,
+            completionProvider: () => ["open GitHub", "open GitLab"],
+        });
+        terminal.init();
+        terminal.updateInput("open Git");
+
+        let event = new dom.window.KeyboardEvent("keydown", {key: "Tab"});
+        input.dispatchEvent(event);
+        expect(terminal.getInputValue()).toBe("open GitHub");
+
+        event = new dom.window.KeyboardEvent("keydown", {key: "Tab"});
+        input.dispatchEvent(event);
+        expect(terminal.getInputValue()).toBe("open GitLab");
+
+        event = new dom.window.KeyboardEvent("keydown", {key: "Tab"});
+        input.dispatchEvent(event);
+        expect(terminal.getInputValue()).toBe("open GitHub");
+    });
+
+    it("should pass the prompt-relative cursor to the custom provider", () => {
+        let receivedCursor: number | undefined;
+        terminal.destroy();
+        terminal = new Terminal({
+            input,
+            options: {preprompt: "[user] ", prompt: "$ "},
+            completionProvider: ({cursor}) => {
+                receivedCursor = cursor;
+                return [];
+            },
+        });
+        terminal.init();
+        terminal.updateInput("open GitHub");
+        input.selectionStart = terminal.getFullPrompt().length + 4;
+        input.selectionEnd = input.selectionStart;
+
+        input.dispatchEvent(new dom.window.KeyboardEvent("keydown", {key: "Tab"}));
+
+        expect(receivedCursor).toBe(4);
+    });
+
     it("should handle autocomplete key with empty input", () => {
         terminal.updateInput("");
         const event = new dom.window.KeyboardEvent("keydown", {key: "Tab"});
