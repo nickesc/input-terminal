@@ -1,4 +1,5 @@
 import {Terminal, Command, ExitObject, built_ins} from "../src/input-terminal";
+import type {CompletionProvider} from "../src/input-terminal";
 import {describe, it, expect, beforeEach} from "vitest";
 import {JSDOM} from "jsdom";
 
@@ -117,6 +118,32 @@ describe("Terminal Prediction Tests", () => {
             }),
         );
         expect(term.getPredictions("test")).toEqual(["test1", "test2"]);
+    });
+
+    it("should return custom predictions with the full input and cursor", () => {
+        const completionProvider: CompletionProvider = ({input: providerInput, cursor, terminal}) => {
+            expect(providerInput).toBe("cd projects/in");
+            expect(cursor).toBe(11);
+            expect(terminal).toBe(term);
+            return ["cd projects/input-terminal"];
+        };
+        term = new Terminal({input, completionProvider});
+
+        expect(term.getPredictions("cd projects/in", 11)).toEqual(["cd projects/input-terminal"]);
+    });
+
+    it("should fall back to command-name predictions when the provider returns undefined", () => {
+        term = new Terminal({input, completionProvider: () => undefined});
+        term.bin.add(new Command("testcmd", () => undefined));
+
+        expect(term.getPredictions("test")).toEqual(["testcmd"]);
+    });
+
+    it("should not fall back when the provider returns no matches", () => {
+        term = new Terminal({input, completionProvider: () => []});
+        term.bin.add(new Command("testcmd", () => undefined));
+
+        expect(term.getPredictions("test")).toEqual([]);
     });
 });
 
