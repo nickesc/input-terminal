@@ -85,7 +85,13 @@ export class TermListeners {
     public autocompleteListenerAction(event: Event): void {
         let autocompleteTriggered: boolean = false;
         if (this._autocompletePredictions === undefined) {
-            this._autocompletePredictions = this._terminal.getPredictions(this._terminal.getInputValue());
+            const input = this._terminal.getInputValue();
+            const selectionStart = this._terminal.input.selectionStart;
+            const cursor =
+                selectionStart === null
+                    ? input.length
+                    : Math.max(0, Math.min(input.length, selectionStart - this._terminal.getFullPrompt().length));
+            this._autocompletePredictions = this._terminal.getPredictions(input, cursor);
         }
 
         event.preventDefault();

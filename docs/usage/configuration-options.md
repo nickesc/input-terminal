@@ -39,6 +39,27 @@ terminal.updateOptions({
 
 When an initialized terminal's `prompt` or `preprompt` changes, `updateOptions()` preserves any unfinished input and redraws it with the new full prompt. Pass related changes in one call so they are applied together.
 
+### Custom Autocomplete
+
+Use `completionProvider` to return app-specific predictions for the full user input:
+
+```typescript
+const terminal = new Terminal({
+  input,
+  completionProvider: ({ input }) => {
+    if (input.startsWith("cd ")) {
+      return ["cd projects/", "cd documents/"];
+    }
+
+    return undefined;
+  }
+});
+```
+
+The provider receives the user input, the cursor position relative to that input, and the terminal instance. Each returned string replaces the full user input. Tab cycles through multiple results using the existing autocomplete behavior.
+
+Return `undefined` to use the built-in command-name completion. Return an empty array when there are no matches and the built-in completion should not run. If `completionProvider` is omitted, autocomplete keeps its default behavior.
+
 ### Available Options
 
 | Option | Type | Default | Description |

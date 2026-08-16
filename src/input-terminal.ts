@@ -71,7 +71,19 @@ export interface TerminalConfig {
     options?: Partial<TermOptions>;
     history?: ExitObject[];
     commands?: Command[];
+    completionProvider?: CompletionProvider;
 }
+
+/**
+ * Supplies autocomplete predictions for the terminal's full user input.
+ * Return complete input replacements, `undefined` to use command-name completion,
+ * or an empty array when there are no matches.
+ */
+export type CompletionProvider = (context: {
+    input: string;
+    cursor: number;
+    terminal: Terminal;
+}) => string[] | undefined;
 
 export class Terminal extends EventTarget {
     private _listeners: TermListeners;
@@ -80,6 +92,7 @@ export class Terminal extends EventTarget {
     private _outputSequence: number = 0;
     private _currentStdoutLog: unknown[] = [];
     private _currentStderrLog: unknown[] = [];
+    private _completionProvider: CompletionProvider | undefined;
 
     private createOutputMetadata(): OutputMetadata {
         return Object.freeze({
@@ -291,13 +304,14 @@ export class Terminal extends EventTarget {
     /**
      * @param {TerminalConfig} config - terminal configuration
      */
-    constructor({input, output, options = {}, history = [], commands = []}: TerminalConfig) {
+    constructor({input, output, options = {}, history = [], commands = [], completionProvider}: TerminalConfig) {
         super();
         this.input = input;
         this.output = output;
         this.history = new TermHistory(history);
         this.bin = new TermBin(commands);
         this._options = Object.freeze({...defaultTermOptions, ...options});
+        this._completionProvider = completionProvider;
         this._listeners = new TermListeners(this);
     }
 
@@ -414,9 +428,15 @@ export class Terminal extends EventTarget {
     /**
      * Gets the command predictions based on the user's input.
      * @param {string} [text] - The text to get predictions for; if no text is provided, all commands are returned
+     * @param {number} [cursor] - The cursor position relative to the user input; defaults to the end of the input
      * @returns {string[]} The predictions for the terminal's user input
      */
-    public getPredictions(text?: string): string[] {
+    public getPredictions(text: string = "", cursor: number = text.length): string[] {
+        const providedPredictions = this._completionProvider?.({input: text, cursor, terminal: this});
+        if (providedPredictions !== undefined) {
+            return providedPredictions;
+        }
+
         let predictions: string[] = [];
         if (text) {
             const partialMatches: string[] = this.bin.getCommandKeys().filter((key) => key.startsWith(text));
