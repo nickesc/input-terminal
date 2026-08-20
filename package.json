@@ -34,6 +34,10 @@
     "./svelte": {
       "types": "./build/svelte/index.d.ts",
       "default": "./build/svelte/index.js"
+    },
+    "./react": {
+      "types": "./build/react/index.d.ts",
+      "default": "./build/react/index.js"
     }
   },
   "directories": {
